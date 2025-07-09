@@ -164,7 +164,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                      <PostIt
                        key={postIt.id}
                        {...postIt}
-                       showMetadata={true}
+                       showMetadata={false}
                        onUpdate={updatePostIt}
                        onResize={resizePostIt}
                        onDelete={deletePostIt}
@@ -234,7 +234,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                      <PostIt
                        key={postIt.id}
                         {...postIt}
-                        showMetadata={true}
+                        showMetadata={false}
                         onUpdate={updatePostIt}
                         onResize={resizePostIt}
                        onDelete={deletePostIt}
@@ -279,7 +279,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                      <PostIt
                        key={postIt.id}
                         {...postIt}
-                        showMetadata={true}
+                        showMetadata={false}
                         onUpdate={updatePostIt}
                         onResize={resizePostIt}
                        onDelete={deletePostIt}
@@ -314,7 +314,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                      <PostIt
                        key={postIt.id}
                         {...postIt}
-                        showMetadata={true}
+                        showMetadata={false}
                         onUpdate={updatePostIt}
                         onResize={resizePostIt}
                        onDelete={deletePostIt}
@@ -349,7 +349,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                      <PostIt
                        key={postIt.id}
                         {...postIt}
-                        showMetadata={true}
+                        showMetadata={false}
                         onUpdate={updatePostIt}
                         onResize={resizePostIt}
                        onDelete={deletePostIt}

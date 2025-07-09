@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, Edit3 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { X, Edit3, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
@@ -9,12 +11,13 @@ export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "pur
 interface PostItProps {
   id: string;
   text: string;
+  comment?: string;
   color: PostItColor;
   x: number;
   y: number;
   width?: number;
   height?: number;
-  onUpdate: (id: string, text: string) => void;
+  onUpdate: (id: string, text: string, comment?: string) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
   onDragStart: (id: string) => void;
@@ -35,11 +38,12 @@ const colorClasses: Record<PostItColor, string> = {
 export function PostIt({
   id,
   text,
+  comment = "",
   color,
   x,
   y,
-  width = 192,
-  height = 128,
+  width = 120,
+  height = 80,
   onUpdate,
   onResize,
   onDelete,
@@ -50,7 +54,9 @@ export function PostIt({
 }: PostItProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(text);
+  const [editComment, setEditComment] = useState(comment);
   const [isHovered, setIsHovered] = useState(false);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -61,8 +67,13 @@ export function PostIt({
   }, [isEditing]);
 
   const handleSave = () => {
-    onUpdate(id, editText.trim());
+    onUpdate(id, editText.trim(), editComment.trim());
     setIsEditing(false);
+  };
+
+  const handleCommentSave = () => {
+    onUpdate(id, text, editComment.trim());
+    setIsCommentOpen(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -75,6 +86,7 @@ export function PostIt({
     }
     if (e.key === "Escape") {
       setEditText(text);
+      setEditComment(comment);
       setIsEditing(false);
     }
   };
@@ -88,7 +100,7 @@ export function PostIt({
   return (
     <Card
       className={cn(
-        "absolute p-3 cursor-move select-none transition-all duration-200 border-2 resize overflow-auto",
+        "absolute p-2 cursor-move select-none transition-all duration-200 border-2 resize overflow-hidden",
         colorClasses[color],
         isDragging && "opacity-50 scale-105 rotate-2",
         isHovered && !isDragging && "shadow-medium scale-105",
@@ -99,8 +111,8 @@ export function PostIt({
         top: y, 
         width: width, 
         height: height,
-        minWidth: 150,
-        minHeight: 100
+        minWidth: 80,
+        minHeight: 60
       }}
       draggable={!isEditing}
       onDragStart={handleDragStart}
@@ -116,27 +128,70 @@ export function PostIt({
             isHovered || isEditing ? "opacity-100" : "opacity-0"
           )}
         >
+          <Dialog open={isCommentOpen} onOpenChange={setIsCommentOpen}>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <MessageSquare className="h-2.5 w-2.5" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Post-it Comment</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Main Text:</label>
+                  <p className="text-sm text-muted-foreground mt-1">{text || "No text"}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Comment:</label>
+                  <Textarea
+                    value={editComment}
+                    onChange={(e) => setEditComment(e.target.value)}
+                    placeholder="Add detailed comments here..."
+                    className="mt-1"
+                    rows={4}
+                  />
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={() => setIsCommentOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleCommentSave}>
+                    Save Comment
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0 bg-white/80 hover:bg-white border shadow-soft"
+            className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft"
             onClick={(e) => {
               e.stopPropagation();
               setIsEditing(true);
             }}
           >
-            <Edit3 className="h-3 w-3" />
+            <Edit3 className="h-2.5 w-2.5" />
           </Button>
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0 bg-white/80 hover:bg-white border shadow-soft text-destructive hover:text-destructive"
+            className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft text-destructive hover:text-destructive"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(id);
             }}
           >
-            <X className="h-3 w-3" />
+            <X className="h-2.5 w-2.5" />
           </Button>
         </div>
 
@@ -148,15 +203,21 @@ export function PostIt({
             onChange={(e) => setEditText(e.target.value)}
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
-            className="w-full h-24 resize-none border-none outline-none bg-transparent text-sm font-medium placeholder:text-gray-500"
-            placeholder="Add your note..."
+            className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500"
+            placeholder="Short text..."
+            maxLength={50}
           />
         ) : (
           <div
-            className="w-full h-24 text-sm font-medium text-gray-800 whitespace-pre-wrap overflow-hidden cursor-text"
+            className="w-full h-full text-xs font-medium text-gray-800 overflow-hidden cursor-text flex items-center justify-center text-center leading-tight"
             onClick={() => setIsEditing(true)}
           >
-            {text || "Click to edit..."}
+            <span className="break-words">
+              {text || "Click to edit..."}
+              {comment && (
+                <div className="absolute bottom-0 right-0 w-2 h-2 bg-blue-500 rounded-full opacity-60" />
+              )}
+            </span>
           </div>
         )}
       </div>

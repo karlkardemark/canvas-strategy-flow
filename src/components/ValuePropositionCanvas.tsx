@@ -16,6 +16,7 @@ import bmcHeaderImage from "@/assets/bmc-header.jpg";
 interface PostItData {
   id: string;
   text: string;
+  comment?: string;
   color: PostItColor;
   x: number;
   y: number;
@@ -42,17 +43,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
       color: defaultColors[Math.floor(Math.random() * defaultColors.length)],
       x: Math.random() * 100 + 20,
       y: Math.random() * 50 + 60,
-      width: 192, // Default width (w-48)
-      height: 128, // Default height (min-h-32)
+      width: 120, // Smaller default width
+      height: 80, // Smaller default height
       areaId,
     };
     setPostIts(prev => [...prev, newPostIt]);
   };
 
-  const updatePostIt = (id: string, text: string) => {
+  const updatePostIt = (id: string, text: string, comment?: string) => {
     setPostIts(prev => 
       prev.map(postIt => 
-        postIt.id === id ? { ...postIt, text } : postIt
+        postIt.id === id ? { ...postIt, text, comment } : postIt
       )
     );
   };
@@ -94,8 +95,8 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
             ? { 
                 ...postIt, 
                 areaId,
-                x: Math.max(0, Math.min(x - 96, rect.width - 192)), // Center the post-it and keep within bounds
-                y: Math.max(0, Math.min(y - 64, rect.height - 128))
+                x: Math.max(0, Math.min(x - 60, rect.width - 120)), // Center the smaller post-it and keep within bounds
+                y: Math.max(0, Math.min(y - 40, rect.height - 80))
               }
             : postIt
         )

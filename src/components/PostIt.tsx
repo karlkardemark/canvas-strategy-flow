@@ -3,21 +3,27 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Edit3, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
+export type PostItMetric = "Piece" | "Monthly" | "Weekly" | "Credits";
 
 interface PostItProps {
   id: string;
   text: string;
   comment?: string;
+  price?: string;
+  metric?: PostItMetric;
   color: PostItColor;
   x: number;
   y: number;
   width?: number;
   height?: number;
-  onUpdate: (id: string, text: string, comment?: string) => void;
+  showMetadata?: boolean;
+  onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
   onDragStart: (id: string) => void;
@@ -39,11 +45,14 @@ export function PostIt({
   id,
   text,
   comment = "",
+  price = "",
+  metric,
   color,
   x,
   y,
   width = 120,
   height = 80,
+  showMetadata = false,
   onUpdate,
   onResize,
   onDelete,
@@ -55,6 +64,8 @@ export function PostIt({
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(text);
   const [editComment, setEditComment] = useState(comment);
+  const [editPrice, setEditPrice] = useState(price);
+  const [editMetric, setEditMetric] = useState<PostItMetric | undefined>(metric);
   const [isHovered, setIsHovered] = useState(false);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -66,13 +77,20 @@ export function PostIt({
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    setEditText(text);
+    setEditComment(comment);
+    setEditPrice(price);
+    setEditMetric(metric);
+  }, [text, comment, price, metric]);
+
   const handleSave = () => {
-    onUpdate(id, editText.trim(), editComment.trim());
+    onUpdate(id, editText.trim(), editComment.trim(), editPrice.trim(), editMetric);
     setIsEditing(false);
   };
 
   const handleCommentSave = () => {
-    onUpdate(id, text, editComment.trim());
+    onUpdate(id, text, editComment.trim(), editPrice.trim(), editMetric);
     setIsCommentOpen(false);
   };
 
@@ -87,6 +105,8 @@ export function PostIt({
     if (e.key === "Escape") {
       setEditText(text);
       setEditComment(comment);
+      setEditPrice(price);
+      setEditMetric(metric);
       setIsEditing(false);
     }
   };
@@ -160,6 +180,33 @@ export function PostIt({
                     rows={4}
                   />
                 </div>
+                {showMetadata && (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium">Price:</label>
+                      <Input
+                        value={editPrice}
+                        onChange={(e) => setEditPrice(e.target.value)}
+                        placeholder="Enter price..."
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Metric:</label>
+                      <Select value={editMetric} onValueChange={(value) => setEditMetric(value as PostItMetric)}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue placeholder="Select metric..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Piece">Piece</SelectItem>
+                          <SelectItem value="Monthly">Monthly</SelectItem>
+                          <SelectItem value="Weekly">Weekly</SelectItem>
+                          <SelectItem value="Credits">Credits</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-end space-x-2">
                   <Button variant="outline" onClick={() => setIsCommentOpen(false)}>
                     Cancel

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CanvasArea } from "./CanvasArea";
-import { PostIt, PostItColor } from "./PostIt";
+import { PostIt, PostItColor, PostItMetric } from "./PostIt";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { 
@@ -17,6 +17,8 @@ interface PostItData {
   id: string;
   text: string;
   comment?: string;
+  price?: string;
+  metric?: PostItMetric;
   color: PostItColor;
   x: number;
   y: number;
@@ -50,10 +52,10 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
     setPostIts(prev => [...prev, newPostIt]);
   };
 
-  const updatePostIt = (id: string, text: string, comment?: string) => {
+  const updatePostIt = (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => {
     setPostIts(prev => 
       prev.map(postIt => 
-        postIt.id === id ? { ...postIt, text, comment } : postIt
+        postIt.id === id ? { ...postIt, text, comment, price, metric } : postIt
       )
     );
   };
@@ -159,16 +161,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                 {postIts
                   .filter(postIt => postIt.areaId === "gain-creators")
                   .map(postIt => (
-                    <PostIt
-                      key={postIt.id}
-                      {...postIt}
-                      onUpdate={updatePostIt}
-                      onResize={resizePostIt}
-                      onDelete={deletePostIt}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      isDragging={draggedPostIt === postIt.id}
-                    />
+                     <PostIt
+                       key={postIt.id}
+                       {...postIt}
+                       showMetadata={true}
+                       onUpdate={updatePostIt}
+                       onResize={resizePostIt}
+                       onDelete={deletePostIt}
+                       onDragStart={handleDragStart}
+                       onDragEnd={handleDragEnd}
+                       isDragging={draggedPostIt === postIt.id}
+                     />
                   ))}
               </CanvasArea>
 
@@ -193,16 +196,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                 {postIts
                   .filter(postIt => postIt.areaId === "products-services")
                   .map(postIt => (
-                    <PostIt
-                      key={postIt.id}
-                      {...postIt}
-                      onUpdate={updatePostIt}
-                      onResize={resizePostIt}
-                      onDelete={deletePostIt}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      isDragging={draggedPostIt === postIt.id}
-                    />
+                     <PostIt
+                       key={postIt.id}
+                       {...postIt}
+                       showMetadata={true}
+                       onUpdate={updatePostIt}
+                       onResize={resizePostIt}
+                       onDelete={deletePostIt}
+                       onDragStart={handleDragStart}
+                       onDragEnd={handleDragEnd}
+                       isDragging={draggedPostIt === postIt.id}
+                     />
                   ))}
               </CanvasArea>
 
@@ -227,16 +231,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                 {postIts
                   .filter(postIt => postIt.areaId === "pain-relievers")
                   .map(postIt => (
-                    <PostIt
-                      key={postIt.id}
-                       {...postIt}
-                       onUpdate={updatePostIt}
-                       onResize={resizePostIt}
-                      onDelete={deletePostIt}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      isDragging={draggedPostIt === postIt.id}
-                    />
+                     <PostIt
+                       key={postIt.id}
+                        {...postIt}
+                        showMetadata={true}
+                        onUpdate={updatePostIt}
+                        onResize={resizePostIt}
+                       onDelete={deletePostIt}
+                       onDragStart={handleDragStart}
+                       onDragEnd={handleDragEnd}
+                       isDragging={draggedPostIt === postIt.id}
+                     />
                   ))}
               </CanvasArea>
             </div>
@@ -271,16 +276,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                 {postIts
                   .filter(postIt => postIt.areaId === "gains")
                   .map(postIt => (
-                    <PostIt
-                      key={postIt.id}
-                       {...postIt}
-                       onUpdate={updatePostIt}
-                       onResize={resizePostIt}
-                      onDelete={deletePostIt}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      isDragging={draggedPostIt === postIt.id}
-                    />
+                     <PostIt
+                       key={postIt.id}
+                        {...postIt}
+                        showMetadata={true}
+                        onUpdate={updatePostIt}
+                        onResize={resizePostIt}
+                       onDelete={deletePostIt}
+                       onDragStart={handleDragStart}
+                       onDragEnd={handleDragEnd}
+                       isDragging={draggedPostIt === postIt.id}
+                     />
                   ))}
               </CanvasArea>
 
@@ -305,16 +311,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                 {postIts
                   .filter(postIt => postIt.areaId === "customer-jobs")
                   .map(postIt => (
-                    <PostIt
-                      key={postIt.id}
-                       {...postIt}
-                       onUpdate={updatePostIt}
-                       onResize={resizePostIt}
-                      onDelete={deletePostIt}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      isDragging={draggedPostIt === postIt.id}
-                    />
+                     <PostIt
+                       key={postIt.id}
+                        {...postIt}
+                        showMetadata={true}
+                        onUpdate={updatePostIt}
+                        onResize={resizePostIt}
+                       onDelete={deletePostIt}
+                       onDragStart={handleDragStart}
+                       onDragEnd={handleDragEnd}
+                       isDragging={draggedPostIt === postIt.id}
+                     />
                   ))}
               </CanvasArea>
 
@@ -339,16 +346,17 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                 {postIts
                   .filter(postIt => postIt.areaId === "pains")
                   .map(postIt => (
-                    <PostIt
-                      key={postIt.id}
-                       {...postIt}
-                       onUpdate={updatePostIt}
-                       onResize={resizePostIt}
-                      onDelete={deletePostIt}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      isDragging={draggedPostIt === postIt.id}
-                    />
+                     <PostIt
+                       key={postIt.id}
+                        {...postIt}
+                        showMetadata={true}
+                        onUpdate={updatePostIt}
+                        onResize={resizePostIt}
+                       onDelete={deletePostIt}
+                       onDragStart={handleDragStart}
+                       onDragEnd={handleDragEnd}
+                       isDragging={draggedPostIt === postIt.id}
+                     />
                   ))}
               </CanvasArea>
             </div>

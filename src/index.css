@@ -2,41 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Business Canvas Design System - Inspired by Miro/Figma */
 
 @layer base {
   :root {
+    /* Canvas backgrounds */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 220 13% 18%;
+    --workspace: 220 14% 96%;
+    
+    /* Canvas elements */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    --card-foreground: 220 13% 18%;
+    --canvas-area: 0 0% 100%;
+    --canvas-border: 220 13% 91%;
+    
+    /* Interactive elements */
+    --primary: 230 100% 63%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 230 100% 58%;
+    
+    /* Post-it colors */
+    --postit-yellow: 48 100% 80%;
+    --postit-blue: 200 100% 80%;
+    --postit-green: 120 60% 80%;
+    --postit-pink: 330 100% 85%;
+    --postit-orange: 25 100% 80%;
+    --postit-purple: 270 100% 85%;
+    
+    /* UI elements */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 13% 18%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14% 95%;
+    --accent-foreground: 220 13% 18%;
+    
+    /* Status colors */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+    
+    /* Borders and inputs */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 230 100% 63%;
+    
+    /* Shadows */
+    --shadow-soft: 220 13% 69% / 0.1;
+    --shadow-medium: 220 13% 69% / 0.15;
+    --shadow-strong: 220 13% 69% / 0.25;
+    
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 

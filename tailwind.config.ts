@@ -24,9 +24,11 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				workspace: 'hsl(var(--workspace))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					hover: 'hsl(var(--primary-hover))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +54,20 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				canvas: {
+					area: 'hsl(var(--canvas-area))',
+					border: 'hsl(var(--canvas-border))'
+				},
+				postit: {
+					yellow: 'hsl(var(--postit-yellow))',
+					blue: 'hsl(var(--postit-blue))',
+					green: 'hsl(var(--postit-green))',
+					pink: 'hsl(var(--postit-pink))',
+					orange: 'hsl(var(--postit-orange))',
+					purple: 'hsl(var(--postit-purple))'
+				},
+				success: 'hsl(var(--success))',
+				warning: 'hsl(var(--warning))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -62,6 +78,12 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			boxShadow: {
+				'soft': '0 2px 8px hsl(var(--shadow-soft))',
+				'medium': '0 4px 12px hsl(var(--shadow-medium))',
+				'strong': '0 8px 24px hsl(var(--shadow-strong))',
+				'canvas': '0 1px 3px hsl(var(--shadow-soft))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

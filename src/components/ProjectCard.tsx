@@ -1,16 +1,16 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MoreVertical, Calendar, Users } from "lucide-react";
+import { MoreVertical, Calendar, Users, Layout, Target } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface ProjectCardProps {
   id: string;
   title: string;
   description: string;
-  type: "BMC" | "VPC";
   lastModified: string;
   collaborators: number;
+  canvasCount: { bmc: number; vpc: number };
   onOpen: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -19,9 +19,9 @@ interface ProjectCardProps {
 export function ProjectCard({
   title,
   description,
-  type,
   lastModified,
   collaborators,
+  canvasCount,
   onOpen,
   onEdit,
   onDelete,
@@ -55,9 +55,25 @@ export function ProjectCard({
       <CardContent onClick={onOpen} className="pt-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Badge variant="secondary" className="text-xs font-medium">
-              {type}
-            </Badge>
+            <div className="flex items-center gap-1">
+              {canvasCount.bmc > 0 && (
+                <Badge variant="secondary" className="text-xs font-medium flex items-center gap-1">
+                  <Layout className="h-3 w-3" />
+                  BMC ({canvasCount.bmc})
+                </Badge>
+              )}
+              {canvasCount.vpc > 0 && (
+                <Badge variant="outline" className="text-xs font-medium flex items-center gap-1">
+                  <Target className="h-3 w-3" />
+                  VPC ({canvasCount.vpc})
+                </Badge>
+              )}
+              {canvasCount.bmc === 0 && canvasCount.vpc === 0 && (
+                <Badge variant="outline" className="text-xs font-medium">
+                  Empty Project
+                </Badge>
+              )}
+            </div>
             <div className="flex items-center text-xs text-muted-foreground">
               <Users className="h-3 w-3 mr-1" />
               {collaborators}

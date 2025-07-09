@@ -14,9 +14,9 @@ interface Project {
   id: string;
   title: string;
   description: string;
-  type: "BMC" | "VPC";
   lastModified: string;
   collaborators: number;
+  canvasCount: { bmc: number; vpc: number };
   createdAt: string;
 }
 
@@ -27,27 +27,27 @@ export default function Dashboard() {
       id: "1",
       title: "SaaS Product Canvas",
       description: "Business model for our new SaaS platform targeting small businesses",
-      type: "BMC",
       lastModified: "2 hours ago",
       collaborators: 3,
+      canvasCount: { bmc: 1, vpc: 1 },
       createdAt: "2024-01-15",
     },
     {
       id: "2",
       title: "Mobile App Value Prop",
       description: "Value proposition analysis for our fitness tracking mobile application",
-      type: "VPC",
       lastModified: "1 day ago",
       collaborators: 2,
+      canvasCount: { bmc: 0, vpc: 1 },
       createdAt: "2024-01-14",
     },
     {
       id: "3",
       title: "E-commerce Strategy",
       description: "Complete business model for our new e-commerce venture",
-      type: "BMC",
       lastModified: "3 days ago",
       collaborators: 5,
+      canvasCount: { bmc: 1, vpc: 0 },
       createdAt: "2024-01-12",
     },
   ]);
@@ -57,7 +57,6 @@ export default function Dashboard() {
   const [newProject, setNewProject] = useState({
     title: "",
     description: "",
-    type: "BMC" as "BMC" | "VPC",
   });
 
   const filteredProjects = projects.filter(project =>
@@ -75,24 +74,20 @@ export default function Dashboard() {
       id: `project-${Date.now()}`,
       title: newProject.title,
       description: newProject.description,
-      type: newProject.type,
       lastModified: "Just now",
       collaborators: 1,
+      canvasCount: { bmc: 0, vpc: 0 },
       createdAt: new Date().toISOString().split('T')[0],
     };
 
     setProjects(prev => [project, ...prev]);
-    setNewProject({ title: "", description: "", type: "BMC" });
+    setNewProject({ title: "", description: "" });
     setIsCreateDialogOpen(false);
     toast.success("Project created successfully!");
   };
 
   const handleOpenProject = (project: Project) => {
-    if (project.type === "BMC") {
-      navigate(`/canvas/${project.id}`);
-    } else {
-      navigate(`/value-proposition/${project.id}`);
-    }
+    navigate(`/project/${project.id}`);
   };
 
   const handleEditProject = (project: Project) => {
@@ -138,7 +133,7 @@ export default function Dashboard() {
               <DialogHeader>
                 <DialogTitle>Create New Project</DialogTitle>
                 <DialogDescription>
-                  Start a new Business Model Canvas or Value Proposition Canvas project.
+                  Start a new project that can contain both Business Model and Value Proposition canvases.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -160,31 +155,6 @@ export default function Dashboard() {
                     placeholder="Describe your project..."
                     rows={3}
                   />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="type">Canvas Type</Label>
-                  <Select
-                    value={newProject.type}
-                    onValueChange={(value: "BMC" | "VPC") => setNewProject(prev => ({ ...prev, type: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="BMC">
-                        <div className="flex items-center gap-2">
-                          <Layout className="h-4 w-4" />
-                          Business Model Canvas
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="VPC">
-                        <div className="flex items-center gap-2">
-                          <Target className="h-4 w-4" />
-                          Value Proposition Canvas
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
               <div className="flex justify-end gap-2">

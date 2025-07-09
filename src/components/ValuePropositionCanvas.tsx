@@ -70,16 +70,20 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
     e.preventDefault();
   };
 
-  const handleDrop = (areaId: string) => {
+  const handleDrop = (areaId: string, e: React.DragEvent) => {
     if (draggedPostIt) {
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
       setPostIts(prev =>
         prev.map(postIt =>
           postIt.id === draggedPostIt
             ? { 
                 ...postIt, 
                 areaId,
-                x: Math.random() * 100 + 20,
-                y: Math.random() * 50 + 60
+                x: Math.max(0, Math.min(x - 96, rect.width - 192)), // Center the post-it and keep within bounds
+                y: Math.max(0, Math.min(y - 64, rect.height - 128))
               }
             : postIt
         )

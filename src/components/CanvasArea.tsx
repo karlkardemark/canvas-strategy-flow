@@ -6,7 +6,7 @@ interface CanvasAreaProps {
   title: string;
   icon?: React.ReactNode;
   children?: React.ReactNode;
-  onDrop: (areaId: string) => void;
+  onDrop: (areaId: string, e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   isDragOver?: boolean;
   className?: string;
@@ -24,7 +24,7 @@ export function CanvasArea({
 }: CanvasAreaProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    onDrop(id);
+    onDrop(id, e);
   };
 
   return (

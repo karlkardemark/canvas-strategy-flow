@@ -85,16 +85,20 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
     e.preventDefault();
   };
 
-  const handleDrop = (areaId: string) => {
+  const handleDrop = (areaId: string, e: React.DragEvent) => {
     if (draggedPostIt) {
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
       setPostIts(prev =>
         prev.map(postIt =>
           postIt.id === draggedPostIt
             ? { 
                 ...postIt, 
                 areaId,
-                x: Math.random() * 100 + 20,
-                y: Math.random() * 50 + 60
+                x: Math.max(0, Math.min(x - 96, rect.width - 192)), // Center the post-it and keep within bounds
+                y: Math.max(0, Math.min(y - 64, rect.height - 128))
               }
             : postIt
         )
@@ -133,7 +137,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="key-partners"
             title="Key Partners"
             icon={<Users className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={handleDragOver}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
@@ -166,7 +170,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="key-activities"
             title="Key Activities"
             icon={<CheckCircle className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-activities")}
             isDragOver={dragOverArea === "key-activities"}
           >
@@ -198,7 +202,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="value-propositions"
             title="Value Propositions"
             icon={<Gift className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "value-propositions")}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
@@ -231,7 +235,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="customer-relationships"
             title="Customer Relationships"
             icon={<Heart className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-relationships")}
             isDragOver={dragOverArea === "customer-relationships"}
           >
@@ -263,7 +267,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="customer-segments"
             title="Customer Segments"
             icon={<UserCheck className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-segments")}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
@@ -297,7 +301,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="key-resources"
             title="Key Resources"
             icon={<TrendingUp className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-resources")}
             isDragOver={dragOverArea === "key-resources"}
           >
@@ -329,7 +333,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="channels"
             title="Channels"
             icon={<Truck className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "channels")}
             isDragOver={dragOverArea === "channels"}
           >
@@ -364,7 +368,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="cost-structure"
             title="Cost Structure"
             icon={<CreditCard className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "cost-structure")}
             isDragOver={dragOverArea === "cost-structure"}
           >
@@ -396,7 +400,7 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
             id="revenue-streams"
             title="Revenue Streams"
             icon={<DollarSign className="h-4 w-4" />}
-            onDrop={handleDrop}
+            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "revenue-streams")}
             isDragOver={dragOverArea === "revenue-streams"}
           >

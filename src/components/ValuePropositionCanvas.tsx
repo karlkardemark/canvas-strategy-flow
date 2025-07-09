@@ -19,6 +19,8 @@ interface PostItData {
   color: PostItColor;
   x: number;
   y: number;
+  width: number;
+  height: number;
   areaId: string;
 }
 
@@ -40,6 +42,8 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
       color: defaultColors[Math.floor(Math.random() * defaultColors.length)],
       x: Math.random() * 100 + 20,
       y: Math.random() * 50 + 60,
+      width: 192, // Default width (w-48)
+      height: 128, // Default height (min-h-32)
       areaId,
     };
     setPostIts(prev => [...prev, newPostIt]);
@@ -49,6 +53,14 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
     setPostIts(prev => 
       prev.map(postIt => 
         postIt.id === id ? { ...postIt, text } : postIt
+      )
+    );
+  };
+
+  const resizePostIt = (id: string, width: number, height: number) => {
+    setPostIts(prev => 
+      prev.map(postIt => 
+        postIt.id === id ? { ...postIt, width, height } : postIt
       )
     );
   };
@@ -150,6 +162,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                       key={postIt.id}
                       {...postIt}
                       onUpdate={updatePostIt}
+                      onResize={resizePostIt}
                       onDelete={deletePostIt}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
@@ -183,6 +196,7 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                       key={postIt.id}
                       {...postIt}
                       onUpdate={updatePostIt}
+                      onResize={resizePostIt}
                       onDelete={deletePostIt}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
@@ -214,8 +228,9 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                   .map(postIt => (
                     <PostIt
                       key={postIt.id}
-                      {...postIt}
-                      onUpdate={updatePostIt}
+                       {...postIt}
+                       onUpdate={updatePostIt}
+                       onResize={resizePostIt}
                       onDelete={deletePostIt}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
@@ -257,8 +272,9 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                   .map(postIt => (
                     <PostIt
                       key={postIt.id}
-                      {...postIt}
-                      onUpdate={updatePostIt}
+                       {...postIt}
+                       onUpdate={updatePostIt}
+                       onResize={resizePostIt}
                       onDelete={deletePostIt}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
@@ -290,8 +306,9 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                   .map(postIt => (
                     <PostIt
                       key={postIt.id}
-                      {...postIt}
-                      onUpdate={updatePostIt}
+                       {...postIt}
+                       onUpdate={updatePostIt}
+                       onResize={resizePostIt}
                       onDelete={deletePostIt}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
@@ -323,8 +340,9 @@ export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProp
                   .map(postIt => (
                     <PostIt
                       key={postIt.id}
-                      {...postIt}
-                      onUpdate={updatePostIt}
+                       {...postIt}
+                       onUpdate={updatePostIt}
+                       onResize={resizePostIt}
                       onDelete={deletePostIt}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}

@@ -12,7 +12,10 @@ interface PostItProps {
   color: PostItColor;
   x: number;
   y: number;
+  width?: number;
+  height?: number;
   onUpdate: (id: string, text: string) => void;
+  onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
   onDragStart: (id: string) => void;
   onDragEnd: () => void;
@@ -35,7 +38,10 @@ export function PostIt({
   color,
   x,
   y,
+  width = 192,
+  height = 128,
   onUpdate,
+  onResize,
   onDelete,
   onDragStart,
   onDragEnd,
@@ -82,13 +88,20 @@ export function PostIt({
   return (
     <Card
       className={cn(
-        "absolute w-48 min-h-32 p-3 cursor-move select-none transition-all duration-200 border-2",
+        "absolute p-3 cursor-move select-none transition-all duration-200 border-2 resize overflow-auto",
         colorClasses[color],
         isDragging && "opacity-50 scale-105 rotate-2",
         isHovered && !isDragging && "shadow-medium scale-105",
         className
       )}
-      style={{ left: x, top: y }}
+      style={{ 
+        left: x, 
+        top: y, 
+        width: width, 
+        height: height,
+        minWidth: 150,
+        minHeight: 100
+      }}
       draggable={!isEditing}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}

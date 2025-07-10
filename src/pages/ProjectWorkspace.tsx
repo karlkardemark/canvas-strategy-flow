@@ -207,8 +207,8 @@ export default function ProjectWorkspace() {
                 size="sm"
                 className="flex items-center space-x-1 h-8"
               >
-                <CreditCard className="h-3 w-3" />
-                <span className="text-xs">Buy more</span>
+                <Plus className="h-3 w-3" />
+                <span className="text-xs">Add Credit</span>
               </Button>
             </div>
             

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CanvasArea } from "./CanvasArea";
 import { PostIt, PostItColor, PostItMetric } from "./PostIt";
+import { AreaInfoDialog } from "./AreaInfoDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -16,6 +17,7 @@ import {
   DollarSign 
 } from "lucide-react";
 import bmcHeaderImage from "@/assets/bmc-header.jpg";
+import { bmcAreaInfo } from "@/data/areaInformation";
 
 interface PostItData {
   id: string;
@@ -66,6 +68,7 @@ const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange
 export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
+  const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
 
   const createPostIt = (areaId: string) => {
     const newPostIt: PostItData = {
@@ -175,6 +178,10 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
     setDragOverArea(areaId);
   };
 
+  const handleIconClick = (areaId: string) => {
+    setSelectedAreaId(areaId);
+  };
+
   return (
     <div className="h-full bg-workspace overflow-auto">
       <div className="min-w-[1400px] p-8">
@@ -204,6 +211,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={handleDragOver}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
           >
@@ -231,6 +239,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "key-activities")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "key-activities"}
           >
             {postIts
@@ -257,6 +266,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "value-propositions")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
           >
@@ -290,6 +300,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "customer-relationships")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "customer-relationships"}
           >
             {postIts
@@ -316,6 +327,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "customer-segments")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
           >
@@ -344,6 +356,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "key-resources")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "key-resources"}
           >
             {postIts
@@ -370,6 +383,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "channels")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "channels"}
           >
             {postIts
@@ -399,6 +413,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "cost-structure")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "cost-structure"}
           >
             {postIts
@@ -425,6 +440,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDragOver={(e) => handleAreaDragOver(e, "revenue-streams")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
+            onIconClick={handleIconClick}
             isDragOver={dragOverArea === "revenue-streams"}
           >
             {postIts
@@ -444,6 +460,15 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
           </CanvasArea>
         </div>
       </div>
+      
+      {/* Area Information Dialog */}
+      {selectedAreaId && bmcAreaInfo[selectedAreaId as keyof typeof bmcAreaInfo] && (
+        <AreaInfoDialog
+          isOpen={!!selectedAreaId}
+          onClose={() => setSelectedAreaId(null)}
+          areaInfo={bmcAreaInfo[selectedAreaId as keyof typeof bmcAreaInfo]}
+        />
+      )}
     </div>
   );
 }

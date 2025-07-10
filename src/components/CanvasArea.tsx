@@ -12,6 +12,7 @@ interface CanvasAreaProps {
   onDragOver: (e: React.DragEvent) => void;
   onDoubleClick?: (areaId: string, x: number, y: number) => void;
   onCreatePostIt?: (areaId: string) => void;
+  onIconClick?: (areaId: string) => void;
   isDragOver?: boolean;
   className?: string;
 }
@@ -25,6 +26,7 @@ export function CanvasArea({
   onDragOver,
   onDoubleClick,
   onCreatePostIt,
+  onIconClick,
   isDragOver = false,
   className,
 }: CanvasAreaProps) {
@@ -58,9 +60,15 @@ export function CanvasArea({
       <div className="flex items-center justify-between mb-4 relative z-10">
         <div className="flex items-center space-x-2">
           {icon && (
-            <div className="p-2 rounded-lg bg-secondary">
+            <Button
+              onClick={() => onIconClick?.(id)}
+              variant="ghost"
+              size="sm"
+              className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+              title={`Learn more about ${title}`}
+            >
               {icon}
-            </div>
+            </Button>
           )}
           <h3 className="font-semibold text-foreground">{title}</h3>
         </div>

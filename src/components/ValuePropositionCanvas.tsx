@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CanvasArea } from "./CanvasArea";
 import { PostIt, PostItColor, PostItMetric } from "./PostIt";
+import { AreaInfoDialog } from "./AreaInfoDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { 
@@ -12,6 +13,7 @@ import {
   Shield
 } from "lucide-react";
 import bmcHeaderImage from "@/assets/bmc-header.jpg";
+import { vpcAreaInfo } from "@/data/areaInformation";
 
 interface PostItData {
   id: string;
@@ -41,6 +43,11 @@ const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange
 export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsChange }: ValuePropositionCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
+  const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
+
+  const handleIconClick = (areaId: string) => {
+    setSelectedAreaId(areaId);
+  };
 
   const createPostIt = (areaId: string) => {
     const newPostIt: PostItData = {
@@ -172,6 +179,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
                 onDragOver={(e) => handleAreaDragOver(e, "gain-creators")}
                 onDoubleClick={handleDoubleClick}
                 onCreatePostIt={createPostIt}
+                onIconClick={handleIconClick}
                 isDragOver={dragOverArea === "gain-creators"}
                 className="min-h-64"
               >
@@ -200,6 +208,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
                 onDragOver={(e) => handleAreaDragOver(e, "products-services")}
                 onDoubleClick={handleDoubleClick}
                 onCreatePostIt={createPostIt}
+                onIconClick={handleIconClick}
                 isDragOver={dragOverArea === "products-services"}
                 className="min-h-64"
               >
@@ -228,6 +237,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
                 onDragOver={(e) => handleAreaDragOver(e, "pain-relievers")}
                 onDoubleClick={handleDoubleClick}
                 onCreatePostIt={createPostIt}
+                onIconClick={handleIconClick}
                 isDragOver={dragOverArea === "pain-relievers"}
                 className="min-h-64"
               >
@@ -266,6 +276,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
                 onDragOver={(e) => handleAreaDragOver(e, "gains")}
                 onDoubleClick={handleDoubleClick}
                 onCreatePostIt={createPostIt}
+                onIconClick={handleIconClick}
                 isDragOver={dragOverArea === "gains"}
                 className="min-h-64"
               >
@@ -294,6 +305,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
                 onDragOver={(e) => handleAreaDragOver(e, "customer-jobs")}
                 onDoubleClick={handleDoubleClick}
                 onCreatePostIt={createPostIt}
+                onIconClick={handleIconClick}
                 isDragOver={dragOverArea === "customer-jobs"}
                 className="min-h-64"
               >
@@ -322,6 +334,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
                 onDragOver={(e) => handleAreaDragOver(e, "pains")}
                 onDoubleClick={handleDoubleClick}
                 onCreatePostIt={createPostIt}
+                onIconClick={handleIconClick}
                 isDragOver={dragOverArea === "pains"}
                 className="min-h-64"
               >
@@ -345,6 +358,15 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
           </div>
         </div>
       </div>
+      
+      {/* Area Information Dialog */}
+      {selectedAreaId && vpcAreaInfo[selectedAreaId as keyof typeof vpcAreaInfo] && (
+        <AreaInfoDialog
+          isOpen={!!selectedAreaId}
+          onClose={() => setSelectedAreaId(null)}
+          areaInfo={vpcAreaInfo[selectedAreaId as keyof typeof vpcAreaInfo]}
+        />
+      )}
     </div>
   );
 }

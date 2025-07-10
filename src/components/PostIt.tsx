@@ -7,14 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Edit3, MessageSquare, ExternalLink, Link, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
 export type PostItMetric = "Piece" | "Monthly" | "Weekly" | "Credits";
+
 interface VPCOption {
   id: string;
   name: string;
   linkedBmcId?: string;
   linkedPostItId?: string;
 }
+
 interface PostItProps {
   id: string;
   text: string;
@@ -40,14 +43,16 @@ interface PostItProps {
   isDragging?: boolean;
   className?: string;
 }
+
 const colorClasses: Record<PostItColor, string> = {
   yellow: "bg-postit-yellow border-yellow-400",
   blue: "bg-postit-blue border-blue-400",
   green: "bg-postit-green border-green-400",
   pink: "bg-postit-pink border-pink-400",
   orange: "bg-postit-orange border-orange-400",
-  purple: "bg-postit-purple border-purple-400"
+  purple: "bg-postit-purple border-purple-400",
 };
+
 export function PostIt({
   id,
   text,
@@ -71,7 +76,7 @@ export function PostIt({
   onLinkVpc,
   onCreateAndLinkVpc,
   isDragging = false,
-  className
+  className,
 }: PostItProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(text);
@@ -85,12 +90,14 @@ export function PostIt({
   const [isTitleEditing, setIsTitleEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(text);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       textareaRef.current.focus();
       textareaRef.current.select();
     }
   }, [isEditing]);
+
   useEffect(() => {
     setEditText(text);
     setEditComment(comment);
@@ -98,14 +105,17 @@ export function PostIt({
     setEditMetric(metric);
     setEditTitle(text);
   }, [text, comment, price, metric]);
+
   const handleSave = () => {
     onUpdate(id, editText.trim(), editComment.trim(), editPrice.trim(), editMetric);
     setIsEditing(false);
   };
+
   const handleCommentSave = () => {
     onUpdate(id, text, editComment.trim(), editPrice.trim(), editMetric);
     setIsCommentOpen(false);
   };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.shiftKey) {
       return; // Allow line breaks with Shift+Enter
@@ -122,60 +132,110 @@ export function PostIt({
       setIsEditing(false);
     }
   };
+
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
     onDragStart(id);
   };
-  return <Card className={cn("absolute p-2 cursor-move select-none transition-all duration-200 border-2 resize overflow-hidden", colorClasses[color], isDragging && "opacity-50 scale-105 rotate-2", isHovered && !isDragging && "shadow-medium scale-105", className)} style={{
-    left: x,
-    top: y,
-    width: width,
-    height: height,
-    minWidth: 80,
-    minHeight: 60
-  }} draggable={!isEditing} onDragStart={handleDragStart} onDragEnd={onDragEnd} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+
+  return (
+    <Card
+      className={cn(
+        "absolute p-2 cursor-move select-none transition-all duration-200 border-2 resize overflow-hidden",
+        colorClasses[color],
+        isDragging && "opacity-50 scale-105 rotate-2",
+        isHovered && !isDragging && "shadow-medium scale-105",
+        className
+      )}
+      style={{ 
+        left: x, 
+        top: y, 
+        width: width, 
+        height: height,
+        minWidth: 80,
+        minHeight: 60
+      }}
+      draggable={!isEditing}
+      onDragStart={handleDragStart}
+      onDragEnd={onDragEnd}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="relative h-full">
         {/* Properties icon */}
         <Dialog open={isPropertiesOpen} onOpenChange={setIsPropertiesOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" variant="ghost" className={cn("absolute -top-1 -right-1 h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft transition-opacity duration-200", isHovered || isEditing ? "opacity-100" : "opacity-0")}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className={cn(
+                "absolute -top-1 -right-1 h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft transition-opacity duration-200",
+                isHovered || isEditing ? "opacity-100" : "opacity-0"
+              )}
+            >
               <Settings className="h-2.5 w-2.5" />
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              {isTitleEditing ? <Input value={editTitle} onChange={e => setEditTitle(e.target.value)} onBlur={() => {
-              onUpdate(id, editTitle.trim(), editComment.trim(), editPrice.trim(), editMetric);
-              setIsTitleEditing(false);
-            }} onKeyDown={e => {
-              if (e.key === "Enter") {
-                onUpdate(id, editTitle.trim(), editComment.trim(), editPrice.trim(), editMetric);
-                setIsTitleEditing(false);
-              }
-              if (e.key === "Escape") {
-                setEditTitle(text);
-                setIsTitleEditing(false);
-              }
-            }} className="text-lg font-semibold" autoFocus /> : <DialogTitle className="cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors text-left" onClick={() => setIsTitleEditing(true)}>
+              {isTitleEditing ? (
+                <Input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onBlur={() => {
+                    onUpdate(id, editTitle.trim(), editComment.trim(), editPrice.trim(), editMetric);
+                    setIsTitleEditing(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      onUpdate(id, editTitle.trim(), editComment.trim(), editPrice.trim(), editMetric);
+                      setIsTitleEditing(false);
+                    }
+                    if (e.key === "Escape") {
+                      setEditTitle(text);
+                      setIsTitleEditing(false);
+                    }
+                  }}
+                  className="text-lg font-semibold"
+                  autoFocus
+                />
+              ) : (
+                <DialogTitle 
+                  className="cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors text-left"
+                  onClick={() => setIsTitleEditing(true)}
+                >
                   {text || "Untitled Post-it"}
-                </DialogTitle>}
+                </DialogTitle>
+              )}
             </DialogHeader>
             <div className="space-y-4">
               
               <div>
                 <label className="text-sm font-medium">Comment:</label>
-                <Textarea value={editComment} onChange={e => setEditComment(e.target.value)} placeholder="Add detailed comments here..." className="mt-1" rows={4} />
+                <Textarea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  placeholder="Add detailed comments here..."
+                  className="mt-1"
+                  rows={4}
+                />
               </div>
               
-              {showMetadata && <>
+              {showMetadata && (
+                <>
                   <div>
                     <label className="text-sm font-medium">Price:</label>
-                    <Input value={editPrice} onChange={e => setEditPrice(e.target.value)} placeholder="Enter price..." className="mt-1" />
+                    <Input
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(e.target.value)}
+                      placeholder="Enter price..."
+                      className="mt-1"
+                    />
                   </div>
                   <div>
                     <label className="text-sm font-medium">Metric:</label>
-                    <Select value={editMetric} onValueChange={value => setEditMetric(value as PostItMetric)}>
+                    <Select value={editMetric} onValueChange={(value) => setEditMetric(value as PostItMetric)}>
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Select metric..." />
                       </SelectTrigger>
@@ -187,29 +247,52 @@ export function PostIt({
                       </SelectContent>
                     </Select>
                   </div>
-                </>}
+                </>
+              )}
               
               <div className="border-t pt-4">
                 <label className="text-sm font-medium">Actions:</label>
                 <div className="flex space-x-2 mt-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditing(true);
+                      setIsPropertiesOpen(false);
+                    }}
+                  >
+                    <Edit3 className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
                   
-                  
-                  {showVpcConnection && <Button size="sm" variant="outline" className={linkedVpcId ? "text-green-600" : ""} onClick={() => {
-                  if (!linkedVpcId) {
-                    onCreateAndLinkVpc?.(id, text);
-                  } else {
-                    setIsVpcLinkOpen(true);
-                  }
-                  setIsPropertiesOpen(false);
-                }}>
+                  {showVpcConnection && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={linkedVpcId ? "text-green-600" : ""}
+                      onClick={() => {
+                        if (!linkedVpcId) {
+                          onCreateAndLinkVpc?.(id, text);
+                        } else {
+                          setIsVpcLinkOpen(true);
+                        }
+                        setIsPropertiesOpen(false);
+                      }}
+                    >
                       {linkedVpcId ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
                       {linkedVpcId ? "VPC" : "Create VPC"}
-                    </Button>}
+                    </Button>
+                  )}
                   
-                  <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => {
-                  onDelete(id);
-                  setIsPropertiesOpen(false);
-                }}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => {
+                      onDelete(id);
+                      setIsPropertiesOpen(false);
+                    }}
+                  >
                     <X className="h-3 w-3 mr-1" />
                     Delete
                   </Button>
@@ -221,9 +304,9 @@ export function PostIt({
                   Cancel
                 </Button>
                 <Button onClick={() => {
-                onUpdate(id, text, editComment.trim(), editPrice.trim(), editMetric);
-                setIsPropertiesOpen(false);
-              }}>
+                  onUpdate(id, text, editComment.trim(), editPrice.trim(), editMetric);
+                  setIsPropertiesOpen(false);
+                }}>
                   Save
                 </Button>
               </div>
@@ -232,14 +315,31 @@ export function PostIt({
         </Dialog>
 
         {/* Content */}
-        {isEditing ? <textarea ref={textareaRef} value={editText} onChange={e => setEditText(e.target.value)} onBlur={handleSave} onKeyDown={handleKeyDown} className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500 text-center" style={{
-        paddingTop: "calc(50% - 0.6em)"
-      }} placeholder="Short text..." maxLength={50} /> : <div className="w-full h-full text-xs font-medium text-gray-800 overflow-hidden cursor-text flex items-center justify-center text-center leading-tight" onClick={() => setIsEditing(true)}>
+        {isEditing ? (
+          <textarea
+            ref={textareaRef}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500 text-center"
+            style={{ paddingTop: "calc(50% - 0.6em)" }}
+            placeholder="Short text..."
+            maxLength={50}
+          />
+        ) : (
+          <div
+            className="w-full h-full text-xs font-medium text-gray-800 overflow-hidden cursor-text flex items-center justify-center text-center leading-tight"
+            onClick={() => setIsEditing(true)}
+          >
             <span className="break-words">
               {text || "Click to edit..."}
-              {comment && <div className="absolute bottom-0 right-0 w-2 h-2 bg-blue-500 rounded-full opacity-60" />}
+              {comment && (
+                <div className="absolute bottom-0 right-0 w-2 h-2 bg-blue-500 rounded-full opacity-60" />
+              )}
             </span>
-          </div>}
+          </div>
+        )}
       </div>
 
       {/* VPC Link Dialog */}
@@ -249,25 +349,40 @@ export function PostIt({
             <DialogTitle>Link to VPC</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {linkedVpcId && <div className="p-3 bg-green-50 border border-green-200 rounded">
+            {linkedVpcId && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded">
                 <p className="text-sm text-green-800">
                   Currently linked to: {availableVpcs.find(v => v.id === linkedVpcId)?.name}
                 </p>
-              </div>}
+              </div>
+            )}
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">Select a VPC to link to this value proposition:</p>
-              {availableVpcs.length === 0 ? <p className="text-sm text-muted-foreground">No VPCs available. Create a VPC first.</p> : <div className="space-y-2">
-                  {availableVpcs.map(vpc => <Button key={vpc.id} variant={vpc.linkedPostItId === id ? "default" : "outline"} className="w-full justify-start" onClick={() => {
-                onLinkVpc?.(id, vpc.id);
-                setIsVpcLinkOpen(false);
-              }} disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}>
+              {availableVpcs.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No VPCs available. Create a VPC first.</p>
+              ) : (
+                <div className="space-y-2">
+                  {availableVpcs.map((vpc) => (
+                    <Button
+                      key={vpc.id}
+                      variant={vpc.linkedPostItId === id ? "default" : "outline"}
+                      className="w-full justify-start"
+                      onClick={() => {
+                        onLinkVpc?.(id, vpc.id);
+                        setIsVpcLinkOpen(false);
+                      }}
+                      disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
+                    >
                       {vpc.name}
                       {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
-                    </Button>)}
-                </div>}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </DialogContent>
       </Dialog>
-    </Card>;
+    </Card>
+  );
 }

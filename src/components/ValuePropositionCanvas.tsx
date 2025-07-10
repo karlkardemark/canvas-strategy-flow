@@ -25,17 +25,20 @@ interface PostItData {
   width: number;
   height: number;
   areaId: string;
+  vpcId?: string; // For VPC post-its
+  bmcId?: string; // For BMC post-its
 }
 
 interface ValuePropositionCanvasProps {
   projectId: string;
   vpcId: string;
+  postIts: PostItData[];
+  onPostItsChange: (postIts: PostItData[]) => void;
 }
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCanvasProps) {
-  const [postIts, setPostIts] = useState<PostItData[]>([]);
+export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsChange }: ValuePropositionCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
 
@@ -49,28 +52,29 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
       width: 120, // Smaller default width
       height: 80, // Smaller default height
       areaId,
+      vpcId, // Add the vpcId to associate with this canvas
     };
-    setPostIts(prev => [...prev, newPostIt]);
+    onPostItsChange([...postIts, newPostIt]);
   };
 
   const updatePostIt = (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => {
-    setPostIts(prev => 
-      prev.map(postIt => 
+    onPostItsChange(
+      postIts.map(postIt => 
         postIt.id === id ? { ...postIt, text, comment, price, metric } : postIt
       )
     );
   };
 
   const resizePostIt = (id: string, width: number, height: number) => {
-    setPostIts(prev => 
-      prev.map(postIt => 
+    onPostItsChange(
+      postIts.map(postIt => 
         postIt.id === id ? { ...postIt, width, height } : postIt
       )
     );
   };
 
   const deletePostIt = (id: string) => {
-    setPostIts(prev => prev.filter(postIt => postIt.id !== id));
+    onPostItsChange(postIts.filter(postIt => postIt.id !== id));
   };
 
   const handleDragStart = (id: string) => {
@@ -86,7 +90,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
     const colors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     
-    const newPostIt = {
+    const newPostIt: PostItData = {
       id: `postit_${Date.now()}`,
       text: "",
       areaId,
@@ -95,9 +99,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
       color: randomColor,
       width: 120,
       height: 80,
+      vpcId, // Add vpcId to associate with this canvas
     };
     
-    setPostIts(prev => [...prev, newPostIt]);
+    onPostItsChange([...postIts, newPostIt]);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -110,8 +115,8 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      setPostIts(prev =>
-        prev.map(postIt =>
+      onPostItsChange(
+        postIts.map(postIt =>
           postIt.id === draggedPostIt
             ? { 
                 ...postIt, 

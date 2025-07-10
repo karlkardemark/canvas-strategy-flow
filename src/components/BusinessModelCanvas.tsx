@@ -29,7 +29,7 @@ interface PostItData {
   width: number;
   height: number;
   areaId: string;
-  bmcId: string;
+  bmcId?: string; // Optional to match parent interface
 }
 
 interface VPCOption {

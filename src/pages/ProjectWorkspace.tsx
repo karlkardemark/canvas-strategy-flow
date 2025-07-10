@@ -22,7 +22,8 @@ interface PostItData {
   width: number;
   height: number;
   areaId: string;
-  bmcId: string;
+  bmcId?: string; // For BMC post-its
+  vpcId?: string; // For VPC post-its
 }
 
 type CanvasType = "BMC" | "VPC" | null;
@@ -228,6 +229,14 @@ export default function ProjectWorkspace() {
             <ValuePropositionCanvas 
               projectId={id || ""} 
               vpcId={activeCanvasId}
+              postIts={postIts.filter(p => p.vpcId === activeCanvasId)}
+              onPostItsChange={(updatedPostIts) => {
+                // Merge the updated postIts for this VPC with postIts from other canvases
+                setPostIts(prev => [
+                  ...prev.filter(p => p.vpcId !== activeCanvasId),
+                  ...updatedPostIts
+                ]);
+              }}
             />
           )}
         </main>

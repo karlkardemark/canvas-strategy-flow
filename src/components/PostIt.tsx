@@ -334,6 +334,7 @@ export function PostIt({
                         } else {
                           setIsVpcLinkOpen(true);
                         }
+                        setIsPropertiesOpen(false);
                       }}
                     >
                       {linkedVpcId ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
@@ -380,11 +381,7 @@ export function PostIt({
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
             className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500 text-center"
-            style={{ 
-              paddingTop: "calc(50% - 0.5em)", 
-              paddingBottom: "calc(50% - 0.5em)",
-              lineHeight: "1"
-            }}
+            style={{ paddingTop: "calc(50% - 0.6em)" }}
             placeholder="Short text..."
             maxLength={50}
           />

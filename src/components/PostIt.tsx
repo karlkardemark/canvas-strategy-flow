@@ -211,25 +211,6 @@ export function PostIt({
                 </DialogTitle>
                )}
                
-               {/* VPC Link button in upper right */}
-               {showVpcConnection && linkedVpcId && (
-                 <div className="absolute top-4 right-4">
-                   <Button
-                     size="sm"
-                     variant="outline"
-                     className="flex items-center gap-1 text-xs"
-                      onClick={() => {
-                        if (onNavigateToVpc && linkedVpcId) {
-                          onNavigateToVpc(linkedVpcId);
-                          setIsPropertiesOpen(false);
-                        }
-                      }}
-                   >
-                     <ExternalLink className="h-3 w-3" />
-                     Go to VPC
-                   </Button>
-                 </div>
-               )}
              </DialogHeader>
              <div className="space-y-4">
               
@@ -272,45 +253,71 @@ export function PostIt({
                 </>
               )}
               
-              {showVpcConnection && (
-                <div>
-                  <label className="text-sm font-medium">Link to VPC:</label>
-                   <Select 
-                     value={linkedVpcId || "none"} 
-                      onValueChange={(value) => {
-                        // Prevent any default navigation behavior
-                        if (value === "none") {
-                          onLinkVpc?.(id, "");
-                        } else if (value && onLinkVpc) {
-                          onLinkVpc(id, value);
-                        }
-                        // Keep the properties dialog open
-                      }}
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select VPC to link..." />
-                    </SelectTrigger>
-                    <SelectContent className="z-50 bg-background">
-                      <SelectItem value="none">No VPC linked</SelectItem>
-                      {availableVpcs.map((vpc) => (
-                        <SelectItem 
-                          key={vpc.id} 
-                          value={vpc.id}
-                          disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
-                        >
-                          {vpc.name}
-                          {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {availableVpcs.length === 0 && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      No VPCs available. Create a VPC first.
-                    </p>
-                  )}
-                </div>
-              )}
+               {showVpcConnection && (
+                 <div>
+                   <label className="text-sm font-medium">
+                     {linkedVpcId ? "VPC Connection:" : "Link to VPC:"}
+                   </label>
+                   {linkedVpcId ? (
+                     <div className="mt-1 flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded">
+                       <span className="text-sm text-green-800">
+                         Linked to: {availableVpcs.find(v => v.id === linkedVpcId)?.name}
+                       </span>
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         className="flex items-center gap-1 text-xs"
+                         onClick={() => {
+                           if (onNavigateToVpc && linkedVpcId) {
+                             onNavigateToVpc(linkedVpcId);
+                             setIsPropertiesOpen(false);
+                           }
+                         }}
+                       >
+                         <ExternalLink className="h-3 w-3" />
+                         Go to VPC
+                       </Button>
+                     </div>
+                   ) : (
+                     <>
+                       <Select 
+                         value={linkedVpcId || "none"} 
+                         onValueChange={(value) => {
+                           // Prevent any default navigation behavior
+                           if (value === "none") {
+                             onLinkVpc?.(id, "");
+                           } else if (value && onLinkVpc) {
+                             onLinkVpc(id, value);
+                           }
+                           // Keep the properties dialog open
+                         }}
+                       >
+                         <SelectTrigger className="mt-1">
+                           <SelectValue placeholder="Select VPC to link..." />
+                         </SelectTrigger>
+                         <SelectContent className="z-50 bg-background">
+                           <SelectItem value="none">No VPC linked</SelectItem>
+                           {availableVpcs.map((vpc) => (
+                             <SelectItem 
+                               key={vpc.id} 
+                               value={vpc.id}
+                               disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
+                             >
+                               {vpc.name}
+                               {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
+                             </SelectItem>
+                           ))}
+                         </SelectContent>
+                       </Select>
+                       {availableVpcs.length === 0 && (
+                         <p className="text-xs text-muted-foreground mt-1">
+                           No VPCs available. Create a VPC first.
+                         </p>
+                       )}
+                     </>
+                   )}
+                 </div>
+               )}
               
               <div className="border-t pt-4">
                 <label className="text-sm font-medium">Actions:</label>

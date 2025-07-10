@@ -339,15 +339,20 @@ export default function ProjectWorkspace() {
         const postItWidth = 100;
         const postItHeight = 70;
         const spacing = 10;
-        const startX = 20;
-        const startY = 20; // Reduced from 70 to place Post-its higher within the area
+        const startX = 10; // Closer to left edge
+        const startY = 10; // Much closer to top
+        
+        const x = startX + col * (postItWidth + spacing);
+        const y = startY + row * (postItHeight + spacing);
+        
+        console.log(`AI Post-it ${index} positioned at:`, { x, y, areaId, col, row });
         
         return {
           id: `ai-postit-${Date.now()}-${index}`,
           text: suggestion.text,
           color: suggestion.color,
-          x: startX + col * (postItWidth + spacing),
-          y: startY + row * (postItHeight + spacing),
+          x,
+          y,
           width: postItWidth,
           height: postItHeight,
           areaId,

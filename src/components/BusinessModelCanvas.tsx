@@ -92,7 +92,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
       text: "",
       color: defaultColors[Math.floor(Math.random() * defaultColors.length)],
       x: Math.random() * 100 + 20,
-      y: Math.random() * 50 + 60,
+      y: Math.random() * 30 + 20, // Fixed positioning to stay within area bounds
       width: 120, // Smaller default width
       height: 80, // Smaller default height
       areaId,
@@ -113,8 +113,8 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     const postItWidth = 100;
     const postItHeight = 70;
     const spacing = 10;
-    const startX = 20;
-    const startY = 20; // Reduced to place Post-its higher within the area
+    const startX = 10; // Closer to left edge
+    const startY = 10; // Much closer to top
 
     const updatedPostIts = postIts.map(postIt => {
       if (postIt.areaId === areaId && postIt.bmcId === bmcId) {
@@ -258,7 +258,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
       text: "",
       areaId,
       x: Math.max(0, x - 60), // Center the post-it on click position
-      y: Math.max(0, y - 40),
+      y: Math.max(20, y - 40), // Ensure minimum Y position of 20
       color: randomColor,
       width: 120,
       height: 80,

@@ -380,7 +380,7 @@ export function PostIt({
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
             className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500 text-center"
-            style={{ paddingTop: "calc(50% - 0.6em)" }}
+            style={{ paddingTop: "calc(50% - 0.75em)" }}
             placeholder="Short text..."
             maxLength={50}
           />

@@ -5,11 +5,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Edit3, MessageSquare, ExternalLink } from "lucide-react";
+import { X, Edit3, MessageSquare, ExternalLink, Link } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
 export type PostItMetric = "Piece" | "Monthly" | "Weekly" | "Credits";
+
+interface VPCOption {
+  id: string;
+  name: string;
+  linkedBmcId?: string;
+  linkedPostItId?: string;
+}
 
 interface PostItProps {
   id: string;
@@ -24,12 +31,14 @@ interface PostItProps {
   height?: number;
   showMetadata?: boolean;
   showVpcConnection?: boolean;
+  availableVpcs?: VPCOption[];
+  linkedVpcId?: string;
   onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
   onDragStart: (id: string) => void;
   onDragEnd: () => void;
-  onCreateVpc?: (id: string) => void;
+  onLinkVpc?: (postItId: string, vpcId: string) => void;
   isDragging?: boolean;
   className?: string;
 }
@@ -56,12 +65,14 @@ export function PostIt({
   height = 80,
   showMetadata = false,
   showVpcConnection = false,
+  availableVpcs = [],
+  linkedVpcId,
   onUpdate,
   onResize,
   onDelete,
   onDragStart,
   onDragEnd,
-  onCreateVpc,
+  onLinkVpc,
   isDragging = false,
   className,
 }: PostItProps) {
@@ -72,6 +83,7 @@ export function PostIt({
   const [editMetric, setEditMetric] = useState<PostItMetric | undefined>(metric);
   const [isHovered, setIsHovered] = useState(false);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [isVpcLinkOpen, setIsVpcLinkOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -156,14 +168,17 @@ export function PostIt({
             <Button
               size="sm"
               variant="ghost"
-              className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft text-primary hover:text-primary"
+              className={cn(
+                "h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft hover:text-primary",
+                linkedVpcId ? "text-green-600" : "text-primary"
+              )}
               onClick={(e) => {
                 e.stopPropagation();
-                onCreateVpc?.(id);
+                setIsVpcLinkOpen(true);
               }}
-              title="Create VPC"
+              title={linkedVpcId ? "Linked to VPC" : "Link to VPC"}
             >
-              <ExternalLink className="h-2.5 w-2.5" />
+              {linkedVpcId ? <Link className="h-2.5 w-2.5" /> : <ExternalLink className="h-2.5 w-2.5" />}
             </Button>
           )}
           <Dialog open={isCommentOpen} onOpenChange={setIsCommentOpen}>
@@ -286,6 +301,48 @@ export function PostIt({
           </div>
         )}
       </div>
+
+      {/* VPC Link Dialog */}
+      <Dialog open={isVpcLinkOpen} onOpenChange={setIsVpcLinkOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Link to VPC</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {linkedVpcId && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded">
+                <p className="text-sm text-green-800">
+                  Currently linked to: {availableVpcs.find(v => v.id === linkedVpcId)?.name}
+                </p>
+              </div>
+            )}
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Select a VPC to link to this value proposition:</p>
+              {availableVpcs.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No VPCs available. Create a VPC first.</p>
+              ) : (
+                <div className="space-y-2">
+                  {availableVpcs.map((vpc) => (
+                    <Button
+                      key={vpc.id}
+                      variant={vpc.linkedPostItId === id ? "default" : "outline"}
+                      className="w-full justify-start"
+                      onClick={() => {
+                        onLinkVpc?.(id, vpc.id);
+                        setIsVpcLinkOpen(false);
+                      }}
+                      disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
+                    >
+                      {vpc.name}
+                      {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

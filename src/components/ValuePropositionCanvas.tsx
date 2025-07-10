@@ -29,11 +29,12 @@ interface PostItData {
 
 interface ValuePropositionCanvasProps {
   projectId: string;
+  vpcId: string;
 }
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function ValuePropositionCanvas({ projectId }: ValuePropositionCanvasProps) {
+export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCanvasProps) {
   const [postIts, setPostIts] = useState<PostItData[]>([]);
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);

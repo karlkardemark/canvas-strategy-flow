@@ -3,6 +3,7 @@ import { CanvasArea } from "./CanvasArea";
 import { PostIt, PostItColor } from "./PostIt";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 import { 
   Users, 
   CheckCircle, 
@@ -28,8 +29,18 @@ interface PostItData {
   areaId: string;
 }
 
+interface VPCOption {
+  id: string;
+  name: string;
+  linkedBmcId?: string;
+  linkedPostItId?: string;
+}
+
 interface BusinessModelCanvasProps {
   projectId: string;
+  bmcId: string;
+  availableVpcs: VPCOption[];
+  onLinkVpc: (postItId: string, vpcId: string) => void;
 }
 
 const canvasAreas = [
@@ -46,7 +57,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
+export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc }: BusinessModelCanvasProps) {
   const [postIts, setPostIts] = useState<PostItData[]>([]);
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
@@ -73,9 +84,9 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
     );
   };
 
-  const createVpc = (postItId: string) => {
-    // For now, just show an alert - will be connected to actual VPC creation later
-    alert(`Creating VPC for Value Proposition: ${postIts.find(p => p.id === postItId)?.text || 'Untitled'}`);
+  const handleVpcLink = (postItId: string, vpcId: string) => {
+    onLinkVpc(postItId, vpcId);
+    toast.success("VPC linked successfully!");
   };
 
   const resizePostIt = (id: string, width: number, height: number) => {
@@ -243,12 +254,14 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
                   key={postIt.id}
                   {...postIt}
                   showVpcConnection={true}
+                  availableVpcs={availableVpcs}
+                  linkedVpcId={availableVpcs.find(vpc => vpc.linkedPostItId === postIt.id)?.id}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
-                  onCreateVpc={createVpc}
+                  onLinkVpc={handleVpcLink}
                   isDragging={draggedPostIt === postIt.id}
                 />
               ))}

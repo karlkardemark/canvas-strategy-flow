@@ -4,15 +4,38 @@ import { BusinessModelCanvas } from "@/components/BusinessModelCanvas";
 import { ValuePropositionCanvas } from "@/components/ValuePropositionCanvas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Save, Share, Download, Layout, Target } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 type CanvasType = "BMC" | "VPC" | null;
+
+interface BMCData {
+  id: string;
+  name: string;
+  createdAt: Date;
+}
+
+interface VPCData {
+  id: string;
+  name: string;
+  createdAt: Date;
+  linkedBmcId?: string;
+  linkedPostItId?: string;
+}
 
 export default function ProjectWorkspace() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeCanvas, setActiveCanvas] = useState<CanvasType>(null);
+  const [activeCanvasId, setActiveCanvasId] = useState<string>("");
+  const [bmcs, setBmcs] = useState<BMCData[]>([]);
+  const [vpcs, setVpcs] = useState<VPCData[]>([]);
+  const [newBmcName, setNewBmcName] = useState("");
+  const [newVpcName, setNewVpcName] = useState("");
+  const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
+  const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
 
   const handleSave = () => {
     toast.success("Project saved successfully!");
@@ -26,6 +49,53 @@ export default function ProjectWorkspace() {
     toast.info("Export functionality coming soon!");
   };
 
+  const createBmc = () => {
+    if (!newBmcName.trim()) return;
+    const newBmc: BMCData = {
+      id: `bmc_${Date.now()}`,
+      name: newBmcName,
+      createdAt: new Date(),
+    };
+    setBmcs([...bmcs, newBmc]);
+    setNewBmcName("");
+    setIsCreateBmcOpen(false);
+    toast.success("BMC created successfully!");
+  };
+
+  const createVpc = () => {
+    if (!newVpcName.trim()) return;
+    const newVpc: VPCData = {
+      id: `vpc_${Date.now()}`,
+      name: newVpcName,
+      createdAt: new Date(),
+    };
+    setVpcs([...vpcs, newVpc]);
+    setNewVpcName("");
+    setIsCreateVpcOpen(false);
+    toast.success("VPC created successfully!");
+  };
+
+  const deleteBmc = (bmcId: string) => {
+    setBmcs(bmcs.filter(bmc => bmc.id !== bmcId));
+    // Remove any VPC links to this BMC
+    setVpcs(vpcs.map(vpc => 
+      vpc.linkedBmcId === bmcId 
+        ? { ...vpc, linkedBmcId: undefined, linkedPostItId: undefined }
+        : vpc
+    ));
+    toast.success("BMC deleted successfully!");
+  };
+
+  const deleteVpc = (vpcId: string) => {
+    setVpcs(vpcs.filter(vpc => vpc.id !== vpcId));
+    toast.success("VPC deleted successfully!");
+  };
+
+  const openCanvas = (type: CanvasType, canvasId: string) => {
+    setActiveCanvas(type);
+    setActiveCanvasId(canvasId);
+  };
+
   if (activeCanvas) {
     return (
       <div className="h-screen flex flex-col bg-workspace">
@@ -35,7 +105,10 @@ export default function ProjectWorkspace() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setActiveCanvas(null)}
+              onClick={() => {
+                setActiveCanvas(null);
+                setActiveCanvasId("");
+              }}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -43,7 +116,9 @@ export default function ProjectWorkspace() {
             </Button>
             <div className="h-6 w-px bg-canvas-border" />
             <h1 className="text-lg font-semibold text-foreground">
-              {activeCanvas === "BMC" ? "Business Model Canvas" : "Value Proposition Canvas"}
+              {activeCanvas === "BMC" 
+                ? bmcs.find(b => b.id === activeCanvasId)?.name || "Business Model Canvas"
+                : vpcs.find(v => v.id === activeCanvasId)?.name || "Value Proposition Canvas"}
             </h1>
           </div>
 
@@ -80,9 +155,23 @@ export default function ProjectWorkspace() {
         {/* Canvas Content */}
         <main className="flex-1 overflow-hidden">
           {activeCanvas === "BMC" ? (
-            <BusinessModelCanvas projectId={id || ""} />
+            <BusinessModelCanvas 
+              projectId={id || ""} 
+              bmcId={activeCanvasId}
+              availableVpcs={vpcs}
+              onLinkVpc={(postItId: string, vpcId: string) => {
+                setVpcs(vpcs.map(vpc => 
+                  vpc.id === vpcId 
+                    ? { ...vpc, linkedBmcId: activeCanvasId, linkedPostItId: postItId }
+                    : vpc
+                ));
+              }}
+            />
           ) : (
-            <ValuePropositionCanvas projectId={id || ""} />
+            <ValuePropositionCanvas 
+              projectId={id || ""} 
+              vpcId={activeCanvasId}
+            />
           )}
         </main>
       </div>

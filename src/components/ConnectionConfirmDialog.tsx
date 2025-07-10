@@ -60,7 +60,7 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
             </Button>
             <Button onClick={handleConfirm}>
               <Check className="h-4 w-4 mr-1" />
-              Connect
+              Confirm
             </Button>
           </div>
         </div>

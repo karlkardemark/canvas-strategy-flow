@@ -114,6 +114,16 @@ export default function ProjectWorkspace() {
       }
     }
     
+    // If unlinking (empty vpcId), remove the links
+    if (!vpcId || vpcId === "") {
+      setVpcs(prev => prev.map(vpc => 
+        vpc.linkedPostItId === postItId 
+          ? { ...vpc, linkedBmcId: undefined, linkedPostItId: undefined }
+          : vpc
+      ));
+      return;
+    }
+    
     // Link the VPC to the BMC and Post-it
     setVpcs(prev => prev.map(vpc => 
       vpc.id === targetVpcId 
@@ -121,8 +131,7 @@ export default function ProjectWorkspace() {
         : vpc
     ));
     
-    // Navigate to the VPC
-    openCanvas("VPC", targetVpcId);
+    // Don't automatically navigate - let user stay in properties dialog
   };
 
   if (activeCanvas) {

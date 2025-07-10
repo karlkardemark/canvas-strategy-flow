@@ -175,6 +175,7 @@ export function PostIt({
     if (areaId !== "channels") return; // Only Channel Post-its can receive connections
     
     e.preventDefault();
+    e.stopPropagation(); // Prevent the CanvasArea drop handler from firing
     const draggedPostItId = e.dataTransfer.getData("text/plain");
     
     if (draggedPostItId === id) return; // Can't connect to itself

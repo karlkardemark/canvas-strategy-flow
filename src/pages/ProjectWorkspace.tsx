@@ -482,9 +482,9 @@ export default function ProjectWorkspace() {
         </div>
       </div>
 
-      {/* Credit History Dialog - Available in both canvas and workspace views */}
+      {/* Credit History Dialog - Available globally */}
       <Dialog open={showCreditHistory} onOpenChange={setShowCreditHistory}>
-        <DialogContent className="max-w-2xl z-50">{/* Added z-50 to ensure it's on top */}
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
               <Coins className="h-5 w-5 text-yellow-600" />

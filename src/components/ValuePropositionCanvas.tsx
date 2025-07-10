@@ -281,93 +281,103 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
               <p className="text-muted-foreground">Who you're creating value for</p>
             </div>
 
-            <div className="grid gap-4">
-              <CanvasArea
-                id="gains"
-                title="Gains"
-                icon={<Smile className="h-4 w-4" />}
-                onDrop={handleDrop}
-                onDragOver={(e) => handleAreaDragOver(e, "gains")}
-                onDoubleClick={handleDoubleClick}
-                onCreatePostIt={createPostIt}
-                onIconClick={handleIconClick}
-                isDragOver={dragOverArea === "gains"}
-                className="min-h-64"
-              >
-                {postIts
-                  .filter(postIt => postIt.areaId === "gains")
-                  .map(postIt => (
-                     <PostIt
-                       key={postIt.id}
-                        {...postIt}
-                        showMetadata={false}
-                        onUpdate={updatePostIt}
-                        onResize={resizePostIt}
-                       onDelete={deletePostIt}
-                       onDragStart={handleDragStart}
-                       onDragEnd={handleDragEnd}
-                       isDragging={draggedPostIt === postIt.id}
-                     />
-                  ))}
-              </CanvasArea>
+            {/* Square layout for Customer Segment areas */}
+            <div className="aspect-square grid grid-cols-2 grid-rows-2 gap-2">
+              {/* Gains - Top Left */}
+              <div className="col-start-1 row-start-1">
+                <CanvasArea
+                  id="gains"
+                  title="Gains"
+                  icon={<Smile className="h-4 w-4" />}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => handleAreaDragOver(e, "gains")}
+                  onDoubleClick={handleDoubleClick}
+                  onCreatePostIt={createPostIt}
+                  onIconClick={handleIconClick}
+                  isDragOver={dragOverArea === "gains"}
+                  className="h-full"
+                >
+                  {postIts
+                    .filter(postIt => postIt.areaId === "gains")
+                    .map(postIt => (
+                       <PostIt
+                         key={postIt.id}
+                          {...postIt}
+                          showMetadata={false}
+                          onUpdate={updatePostIt}
+                          onResize={resizePostIt}
+                         onDelete={deletePostIt}
+                         onDragStart={handleDragStart}
+                         onDragEnd={handleDragEnd}
+                         isDragging={draggedPostIt === postIt.id}
+                       />
+                    ))}
+                </CanvasArea>
+              </div>
 
-              <CanvasArea
-                id="customer-jobs"
-                title="Customer Jobs"
-                icon={<Briefcase className="h-4 w-4" />}
-                onDrop={handleDrop}
-                onDragOver={(e) => handleAreaDragOver(e, "customer-jobs")}
-                onDoubleClick={handleDoubleClick}
-                onCreatePostIt={createPostIt}
-                onIconClick={handleIconClick}
-                isDragOver={dragOverArea === "customer-jobs"}
-                className="min-h-64"
-              >
-                {postIts
-                  .filter(postIt => postIt.areaId === "customer-jobs")
-                  .map(postIt => (
-                     <PostIt
-                       key={postIt.id}
-                        {...postIt}
-                        showMetadata={false}
-                        onUpdate={updatePostIt}
-                        onResize={resizePostIt}
-                       onDelete={deletePostIt}
-                       onDragStart={handleDragStart}
-                       onDragEnd={handleDragEnd}
-                       isDragging={draggedPostIt === postIt.id}
-                     />
-                  ))}
-              </CanvasArea>
+              {/* Customer Jobs - Right side spanning both rows */}
+              <div className="col-start-2 row-span-2">
+                <CanvasArea
+                  id="customer-jobs"
+                  title="Customer Jobs"
+                  icon={<Briefcase className="h-4 w-4" />}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => handleAreaDragOver(e, "customer-jobs")}
+                  onDoubleClick={handleDoubleClick}
+                  onCreatePostIt={createPostIt}
+                  onIconClick={handleIconClick}
+                  isDragOver={dragOverArea === "customer-jobs"}
+                  className="h-full"
+                >
+                  {postIts
+                    .filter(postIt => postIt.areaId === "customer-jobs")
+                    .map(postIt => (
+                       <PostIt
+                         key={postIt.id}
+                          {...postIt}
+                          showMetadata={false}
+                          onUpdate={updatePostIt}
+                          onResize={resizePostIt}
+                         onDelete={deletePostIt}
+                         onDragStart={handleDragStart}
+                         onDragEnd={handleDragEnd}
+                         isDragging={draggedPostIt === postIt.id}
+                       />
+                    ))}
+                </CanvasArea>
+              </div>
 
-              <CanvasArea
-                id="pains"
-                title="Pains"
-                icon={<Frown className="h-4 w-4" />}
-                onDrop={handleDrop}
-                onDragOver={(e) => handleAreaDragOver(e, "pains")}
-                onDoubleClick={handleDoubleClick}
-                onCreatePostIt={createPostIt}
-                onIconClick={handleIconClick}
-                isDragOver={dragOverArea === "pains"}
-                className="min-h-64"
-              >
-                {postIts
-                  .filter(postIt => postIt.areaId === "pains")
-                  .map(postIt => (
-                     <PostIt
-                       key={postIt.id}
-                        {...postIt}
-                        showMetadata={false}
-                        onUpdate={updatePostIt}
-                        onResize={resizePostIt}
-                       onDelete={deletePostIt}
-                       onDragStart={handleDragStart}
-                       onDragEnd={handleDragEnd}
-                       isDragging={draggedPostIt === postIt.id}
-                     />
-                  ))}
-              </CanvasArea>
+              {/* Pains - Bottom Left */}
+              <div className="col-start-1 row-start-2">
+                <CanvasArea
+                  id="pains"
+                  title="Pains"
+                  icon={<Frown className="h-4 w-4" />}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => handleAreaDragOver(e, "pains")}
+                  onDoubleClick={handleDoubleClick}
+                  onCreatePostIt={createPostIt}
+                  onIconClick={handleIconClick}
+                  isDragOver={dragOverArea === "pains"}
+                  className="h-full"
+                >
+                  {postIts
+                    .filter(postIt => postIt.areaId === "pains")
+                    .map(postIt => (
+                       <PostIt
+                         key={postIt.id}
+                          {...postIt}
+                          showMetadata={false}
+                          onUpdate={updatePostIt}
+                          onResize={resizePostIt}
+                         onDelete={deletePostIt}
+                         onDragStart={handleDragStart}
+                         onDragEnd={handleDragEnd}
+                         isDragging={draggedPostIt === postIt.id}
+                       />
+                    ))}
+                </CanvasArea>
+              </div>
             </div>
           </div>
         </div>

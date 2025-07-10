@@ -51,9 +51,6 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
         
         <div className="space-y-4">
 
-          <div className="flex justify-center">
-            <div className="w-8 h-0.5 bg-gradient-to-r from-blue-300 to-green-300 my-4"></div>
-          </div>
 
 
           <div className="flex justify-end space-x-2 pt-4">

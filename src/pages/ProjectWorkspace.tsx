@@ -522,22 +522,31 @@ export default function ProjectWorkspace() {
                 bmcs.map((bmc) => (
                   <Card key={bmc.id} className="p-4 hover:shadow-medium transition-shadow">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-1">
                         <Layout className="h-5 w-5 text-primary" />
-                        <div>
-                          <h3 className="font-medium">{bmc.name}</h3>
+                        <div 
+                          className="cursor-pointer flex-1"
+                          onClick={() => openCanvas("BMC", bmc.id)}
+                        >
+                          <h3 className="font-medium hover:text-primary transition-colors">{bmc.name}</h3>
                           <p className="text-sm text-muted-foreground">
                             Created {bmc.createdAt.toLocaleDateString()}
                           </p>
+                          {bmc.description && (
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {bmc.description}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" onClick={() => openCanvas("BMC", bmc.id)}>
-                          <Edit3 className="h-4 w-4" />
-                        </Button>
+                        <BmcEditDialog 
+                          bmc={bmc}
+                          onEdit={editBmc}
+                        />
                         <Button 
                           size="sm" 
-                          variant="destructive" 
+                          variant="destructive"
                           onClick={() => deleteBmc(bmc.id)}
                         >
                           <Trash2 className="h-4 w-4" />

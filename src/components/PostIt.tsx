@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Edit3, MessageSquare } from "lucide-react";
+import { X, Edit3, MessageSquare, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
@@ -23,11 +23,13 @@ interface PostItProps {
   width?: number;
   height?: number;
   showMetadata?: boolean;
+  showVpcConnection?: boolean;
   onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
   onDragStart: (id: string) => void;
   onDragEnd: () => void;
+  onCreateVpc?: (id: string) => void;
   isDragging?: boolean;
   className?: string;
 }
@@ -53,11 +55,13 @@ export function PostIt({
   width = 120,
   height = 80,
   showMetadata = false,
+  showVpcConnection = false,
   onUpdate,
   onResize,
   onDelete,
   onDragStart,
   onDragEnd,
+  onCreateVpc,
   isDragging = false,
   className,
 }: PostItProps) {
@@ -148,6 +152,20 @@ export function PostIt({
             isHovered || isEditing ? "opacity-100" : "opacity-0"
           )}
         >
+          {showVpcConnection && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft text-primary hover:text-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCreateVpc?.(id);
+              }}
+              title="Create VPC"
+            >
+              <ExternalLink className="h-2.5 w-2.5" />
+            </Button>
+          )}
           <Dialog open={isCommentOpen} onOpenChange={setIsCommentOpen}>
             <DialogTrigger asChild>
               <Button

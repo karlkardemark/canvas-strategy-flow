@@ -73,6 +73,11 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
     );
   };
 
+  const createVpc = (postItId: string) => {
+    // For now, just show an alert - will be connected to actual VPC creation later
+    alert(`Creating VPC for Value Proposition: ${postIts.find(p => p.id === postItId)?.text || 'Untitled'}`);
+  };
+
   const resizePostIt = (id: string, width: number, height: number) => {
     setPostIts(prev => 
       prev.map(postIt => 
@@ -237,11 +242,13 @@ export function BusinessModelCanvas({ projectId }: BusinessModelCanvasProps) {
                 <PostIt
                   key={postIt.id}
                   {...postIt}
+                  showVpcConnection={true}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
+                  onCreateVpc={createVpc}
                   isDragging={draggedPostIt === postIt.id}
                 />
               ))}

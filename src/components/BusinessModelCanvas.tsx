@@ -38,8 +38,8 @@ interface VPCOption {
   id: string;
   name: string;
   linkedBmcId?: string;
-  linkedValuePropositionId?: string;
-  linkedCustomerSegmentId?: string;
+  linkedValuePropositionIds: string[];
+  linkedCustomerSegmentIds: string[];
   isDraft: boolean;
 }
 
@@ -127,7 +127,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     // If deleting a Value Proposition or Customer Segment post-it, clear its VPC link
     if (postItToDelete?.areaId === "value-propositions" || postItToDelete?.areaId === "customer-segments") {
       const linkedVpc = availableVpcs.find(vpc => 
-        vpc.linkedValuePropositionId === id || vpc.linkedCustomerSegmentId === id
+        vpc.linkedValuePropositionIds.includes(id) || vpc.linkedCustomerSegmentIds.includes(id)
       );
       if (linkedVpc) {
         // Clear the VPC connection to make it available again
@@ -303,7 +303,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   {...postIt}
                   showVpcConnection={true}
                   availableVpcs={availableVpcs}
-                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedValuePropositionId === postIt.id).map(vpc => vpc.id)}
+                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedValuePropositionIds.includes(postIt.id)).map(vpc => vpc.id)}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
@@ -366,7 +366,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   {...postIt}
                   showVpcConnection={true}
                   availableVpcs={availableVpcs}
-                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedCustomerSegmentId === postIt.id).map(vpc => vpc.id)}
+                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedCustomerSegmentIds.includes(postIt.id)).map(vpc => vpc.id)}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}

@@ -39,9 +39,9 @@ interface VPCData {
   name: string;
   createdAt: Date;
   linkedBmcId?: string;
-  linkedValuePropositionId?: string; // One Value Proposition Post-it
-  linkedCustomerSegmentId?: string;   // One Customer Segment Post-it
-  isDraft: boolean; // True until both value proposition and customer segment are linked
+  linkedValuePropositionIds: string[]; // Multiple Value Proposition Post-its
+  linkedCustomerSegmentIds: string[];   // Multiple Customer Segment Post-its
+  isDraft: boolean; // True until at least one value proposition and one customer segment are linked
 }
 
 export default function ProjectWorkspace() {
@@ -90,6 +90,8 @@ export default function ProjectWorkspace() {
       id: `vpc_${Date.now()}`,
       name: vpcName,
       createdAt: new Date(),
+      linkedValuePropositionIds: [],
+      linkedCustomerSegmentIds: [],
       isDraft: true, // Start as draft
     };
     setVpcs([...vpcs, newVpc]);
@@ -108,7 +110,7 @@ export default function ProjectWorkspace() {
     // Remove any VPC links to this BMC
     setVpcs(vpcs.map(vpc => 
       vpc.linkedBmcId === bmcId 
-        ? { ...vpc, linkedBmcId: undefined, linkedValuePropositionId: undefined, linkedCustomerSegmentId: undefined, isDraft: true }
+        ? { ...vpc, linkedBmcId: undefined, linkedValuePropositionIds: [], linkedCustomerSegmentIds: [], isDraft: true }
         : vpc
     ));
     toast.success("BMC deleted successfully!");
@@ -143,28 +145,20 @@ export default function ProjectWorkspace() {
     if (!vpcId || vpcId === "") {
       setVpcs(prev => prev.map(vpc => {
         const updatedVpc = { ...vpc };
-        if (postItArea === "value-propositions" && vpc.linkedValuePropositionId === postItId) {
-          updatedVpc.linkedValuePropositionId = undefined;
-          updatedVpc.isDraft = true;
-        } else if (postItArea === "customer-segments" && vpc.linkedCustomerSegmentId === postItId) {
-          updatedVpc.linkedCustomerSegmentId = undefined;
-          updatedVpc.isDraft = true;
+        if (postItArea === "value-propositions") {
+          updatedVpc.linkedValuePropositionIds = vpc.linkedValuePropositionIds.filter(id => id !== postItId);
+        } else if (postItArea === "customer-segments") {
+          updatedVpc.linkedCustomerSegmentIds = vpc.linkedCustomerSegmentIds.filter(id => id !== postItId);
         }
         
-        // Update VPC name if it becomes draft
-        if (updatedVpc.isDraft) {
-          // Reset to original name or keep current if manually set
-          const valuePropositionText = updatedVpc.linkedValuePropositionId 
-            ? postIts.find(p => p.id === updatedVpc.linkedValuePropositionId)?.text || ""
-            : "";
-          const customerSegmentText = updatedVpc.linkedCustomerSegmentId 
-            ? postIts.find(p => p.id === updatedVpc.linkedCustomerSegmentId)?.text || ""
-            : "";
-          
-          if (valuePropositionText && customerSegmentText) {
-            updatedVpc.name = `${valuePropositionText} for ${customerSegmentText}`;
-            updatedVpc.isDraft = false;
-          }
+        // Check if VPC becomes draft (no connections in either array)
+        updatedVpc.isDraft = updatedVpc.linkedValuePropositionIds.length === 0 || updatedVpc.linkedCustomerSegmentIds.length === 0;
+        
+        // Update VPC name if still complete
+        if (!updatedVpc.isDraft && updatedVpc.linkedValuePropositionIds.length > 0 && updatedVpc.linkedCustomerSegmentIds.length > 0) {
+          const firstValueProposition = postIts.find(p => p.id === updatedVpc.linkedValuePropositionIds[0])?.text || "";
+          const firstCustomerSegment = postIts.find(p => p.id === updatedVpc.linkedCustomerSegmentIds[0])?.text || "";
+          updatedVpc.name = `${firstValueProposition} for ${firstCustomerSegment}`;
         }
         
         return updatedVpc;
@@ -180,23 +174,18 @@ export default function ProjectWorkspace() {
           linkedBmcId: activeCanvasId,
         };
         
-        // Add the post-it based on its area
-        if (postItArea === "value-propositions") {
-          updatedVpc.linkedValuePropositionId = postItId;
-        } else if (postItArea === "customer-segments") {
-          updatedVpc.linkedCustomerSegmentId = postItId;
+        // Add the post-it based on its area (if not already linked)
+        if (postItArea === "value-propositions" && !updatedVpc.linkedValuePropositionIds.includes(postItId)) {
+          updatedVpc.linkedValuePropositionIds = [...updatedVpc.linkedValuePropositionIds, postItId];
+        } else if (postItArea === "customer-segments" && !updatedVpc.linkedCustomerSegmentIds.includes(postItId)) {
+          updatedVpc.linkedCustomerSegmentIds = [...updatedVpc.linkedCustomerSegmentIds, postItId];
         }
         
         // Check if VPC is complete and update name
-        const valuePropositionText = updatedVpc.linkedValuePropositionId 
-          ? postIts.find(p => p.id === updatedVpc.linkedValuePropositionId)?.text || ""
-          : "";
-        const customerSegmentText = updatedVpc.linkedCustomerSegmentId 
-          ? postIts.find(p => p.id === updatedVpc.linkedCustomerSegmentId)?.text || ""
-          : "";
-        
-        if (valuePropositionText && customerSegmentText) {
-          updatedVpc.name = `${valuePropositionText} for ${customerSegmentText}`;
+        if (updatedVpc.linkedValuePropositionIds.length > 0 && updatedVpc.linkedCustomerSegmentIds.length > 0) {
+          const firstValueProposition = postIts.find(p => p.id === updatedVpc.linkedValuePropositionIds[0])?.text || "";
+          const firstCustomerSegment = postIts.find(p => p.id === updatedVpc.linkedCustomerSegmentIds[0])?.text || "";
+          updatedVpc.name = `${firstValueProposition} for ${firstCustomerSegment}`;
           updatedVpc.isDraft = false;
         } else {
           updatedVpc.isDraft = true;

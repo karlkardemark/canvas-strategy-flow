@@ -39,13 +39,14 @@ interface ValuePropositionCanvasProps {
   postIts: PostItData[];
   allPostIts: PostItData[]; // All post-its to find linked customer segment
   linkedCustomerSegmentIds: string[];
+  linkedValuePropositionIds: string[];
   onPostItsChange: (postIts: PostItData[]) => void;
   onAiClick?: (areaId: string) => void;
 }
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, allPostIts, linkedCustomerSegmentIds, onPostItsChange, onAiClick }: ValuePropositionCanvasProps) {
+export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, allPostIts, linkedCustomerSegmentIds, linkedValuePropositionIds, onPostItsChange, onAiClick }: ValuePropositionCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -174,7 +175,11 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-foreground mb-2">
-                Value Proposition: {vpcName || "Untitled"}
+                Value Proposition: {linkedValuePropositionIds.length > 0 
+                  ? linkedValuePropositionIds.map(id => 
+                      allPostIts.find(postIt => postIt.id === id)?.text || "Untitled"
+                    ).join(", ")
+                  : "Not connected"}
               </h2>
               <p className="text-muted-foreground">What you offer to customers</p>
             </div>

@@ -296,6 +296,7 @@ export default function ProjectWorkspace() {
               postIts={postIts.filter(p => p.vpcId === activeCanvasId)}
               allPostIts={postIts}
               linkedCustomerSegmentIds={vpcs.find(vpc => vpc.id === activeCanvasId)?.linkedCustomerSegmentIds || []}
+              linkedValuePropositionIds={vpcs.find(vpc => vpc.id === activeCanvasId)?.linkedValuePropositionIds || []}
               onPostItsChange={(updatedPostIts) => {
                 // Merge the updated postIts for this VPC with postIts from other canvases
                 setPostIts(prev => [

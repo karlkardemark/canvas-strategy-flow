@@ -412,28 +412,60 @@ export function PostIt({
                            })}
                          </div>
                        )}
-                       <Select 
-                         value="none" 
-                         onValueChange={(value) => {
-                           if (value !== "none" && onLinkValueProposition) {
-                             onLinkValueProposition(id, value);
-                           }
-                         }}
-                       >
-                         <SelectTrigger>
-                           <SelectValue placeholder="Link to Value Proposition..." />
-                         </SelectTrigger>
-                          <SelectContent className="z-[100]" side="bottom" align="start">
-                           <SelectItem value="none">Select Value Proposition...</SelectItem>
-                           {availableValuePropositionPostIts
-                             .filter(vp => !linkedValuePropositionIds.includes(vp.id))
-                             .map((vp) => (
-                               <SelectItem key={vp.id} value={vp.id}>
-                                 {vp.text}
-                               </SelectItem>
-                             ))}
-                         </SelectContent>
-                       </Select>
+                        <Select 
+                          value="none" 
+                          onValueChange={(value) => {
+                            console.log('Select onValueChange triggered:', value);
+                            if (value !== "none" && onLinkValueProposition) {
+                              console.log('Calling onLinkValueProposition:', id, value);
+                              onLinkValueProposition(id, value);
+                            }
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="pointer-events-auto"
+                            onClick={(e) => {
+                              console.log('SelectTrigger clicked');
+                              e.stopPropagation();
+                            }}
+                          >
+                            <SelectValue placeholder="Link to Value Proposition..." />
+                          </SelectTrigger>
+                          <SelectContent 
+                            className="z-[100] bg-background border shadow-lg pointer-events-auto" 
+                            side="bottom" 
+                            align="start"
+                            sideOffset={4}
+                            onClick={(e) => {
+                              console.log('SelectContent clicked');
+                              e.stopPropagation();
+                            }}
+                          >
+                            <SelectItem 
+                              value="none"
+                              onClick={(e) => {
+                                console.log('SelectItem none clicked');
+                                e.stopPropagation();
+                              }}
+                            >
+                              Select Value Proposition...
+                            </SelectItem>
+                            {availableValuePropositionPostIts
+                              .filter(vp => !linkedValuePropositionIds.includes(vp.id))
+                              .map((vp) => (
+                                <SelectItem 
+                                  key={vp.id} 
+                                  value={vp.id}
+                                  onClick={(e) => {
+                                    console.log('SelectItem clicked:', vp.id, vp.text);
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {vp.text}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
                      </div>
                    </div>
 
@@ -461,28 +493,60 @@ export function PostIt({
                            })}
                          </div>
                        )}
-                       <Select 
-                         value="none" 
-                         onValueChange={(value) => {
-                           if (value !== "none" && onLinkCustomerSegment) {
-                             onLinkCustomerSegment(id, value);
-                           }
-                         }}
-                       >
-                         <SelectTrigger>
-                           <SelectValue placeholder="Link to Customer Segment..." />
-                         </SelectTrigger>
-                          <SelectContent className="z-[100]" side="bottom" align="start">
-                           <SelectItem value="none">Select Customer Segment...</SelectItem>
-                           {availableCustomerSegmentPostIts
-                             .filter(cs => !linkedCustomerSegmentIds.includes(cs.id))
-                             .map((cs) => (
-                               <SelectItem key={cs.id} value={cs.id}>
-                                 {cs.text}
-                               </SelectItem>
-                             ))}
-                         </SelectContent>
-                       </Select>
+                        <Select 
+                          value="none" 
+                          onValueChange={(value) => {
+                            console.log('CS Select onValueChange triggered:', value);
+                            if (value !== "none" && onLinkCustomerSegment) {
+                              console.log('Calling onLinkCustomerSegment:', id, value);
+                              onLinkCustomerSegment(id, value);
+                            }
+                          }}
+                        >
+                          <SelectTrigger 
+                            className="pointer-events-auto"
+                            onClick={(e) => {
+                              console.log('CS SelectTrigger clicked');
+                              e.stopPropagation();
+                            }}
+                          >
+                            <SelectValue placeholder="Link to Customer Segment..." />
+                          </SelectTrigger>
+                          <SelectContent 
+                            className="z-[100] bg-background border shadow-lg pointer-events-auto" 
+                            side="bottom" 
+                            align="start"
+                            sideOffset={4}
+                            onClick={(e) => {
+                              console.log('CS SelectContent clicked');
+                              e.stopPropagation();
+                            }}
+                          >
+                            <SelectItem 
+                              value="none"
+                              onClick={(e) => {
+                                console.log('CS SelectItem none clicked');
+                                e.stopPropagation();
+                              }}
+                            >
+                              Select Customer Segment...
+                            </SelectItem>
+                            {availableCustomerSegmentPostIts
+                              .filter(cs => !linkedCustomerSegmentIds.includes(cs.id))
+                              .map((cs) => (
+                                <SelectItem 
+                                  key={cs.id} 
+                                  value={cs.id}
+                                  onClick={(e) => {
+                                    console.log('CS SelectItem clicked:', cs.id, cs.text);
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  {cs.text}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
                      </div>
                    </div>
                  </div>

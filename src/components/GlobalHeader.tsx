@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Coins, CreditCard, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { PromptSettingsDialog } from "@/components/PromptSettingsDialog";
 
 interface Transaction {
   id: string;
@@ -61,6 +62,9 @@ export function GlobalHeader() {
       <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-6 h-full flex items-center justify-end">
           <div className="flex items-center space-x-4">
+            {/* AI Settings */}
+            <PromptSettingsDialog />
+            
             {/* Credits Section */}
             <div className="flex items-center space-x-2 p-2 rounded-lg bg-muted/50">
               <Button

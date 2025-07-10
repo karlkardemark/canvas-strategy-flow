@@ -1,3 +1,5 @@
+import { PromptSettingsService } from './promptSettings';
+
 interface GeneratePostItsRequest {
   businessDescription: string;
   areaId: string;
@@ -70,26 +72,34 @@ export async function generateRandomBusinessIdea(llmId: string): Promise<Busines
 }
 
 export async function generatePostIts({ businessDescription, areaId, llmModel }: GeneratePostItsRequest): Promise<PostItSuggestion[]> {
+  const promptService = PromptSettingsService.getInstance();
+  const areaSettings = promptService.getAreaSettings(areaId);
   const areaDescription = BMC_AREA_DESCRIPTIONS[areaId as keyof typeof BMC_AREA_DESCRIPTIONS];
   
   // For now, return example suggestions since API key integration is not set up
   // In a production environment, you would connect this to Supabase Edge Functions
+  // The custom system prompt would be used like this:
+  // const systemPrompt = areaSettings.systemPrompt;
+  // const maxSuggestions = areaSettings.maxSuggestions;
+  
+  console.log(`Using custom prompt for ${areaId}:`, areaSettings.systemPrompt);
+  console.log(`Max suggestions: ${areaSettings.maxSuggestions}`);
   
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000));
   
   // Return contextual suggestions based on the area
-  const suggestions = getAreaSuggestions(areaId, businessDescription);
+  const suggestions = getAreaSuggestions(areaId, businessDescription, areaSettings);
   
   const colors: PostItSuggestion["color"][] = ["yellow", "blue", "green", "pink", "orange", "purple"];
   
-  return suggestions.map((text) => ({
+  return suggestions.slice(0, areaSettings.maxSuggestions).map((text) => ({
     text,
     color: colors[Math.floor(Math.random() * colors.length)]
   }));
 }
 
-function getAreaSuggestions(areaId: string, businessDescription: string): string[] {
+function getAreaSuggestions(areaId: string, businessDescription: string, areaSettings?: any): string[] {
   const isDigitalBusiness = businessDescription.toLowerCase().includes('app') || 
                            businessDescription.toLowerCase().includes('digital') ||
                            businessDescription.toLowerCase().includes('online') ||

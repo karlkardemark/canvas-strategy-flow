@@ -532,11 +532,6 @@ export default function ProjectWorkspace() {
                           <p className="text-sm text-muted-foreground">
                             Created {bmc.createdAt.toLocaleDateString()}
                           </p>
-                          {bmc.description && (
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {bmc.description}
-                            </p>
-                          )}
                         </div>
                       </div>
                       <div className="flex gap-2">

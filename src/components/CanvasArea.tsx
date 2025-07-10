@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LlmSelectionMenu } from "./LlmSelectionMenu";
 
@@ -15,6 +15,7 @@ interface CanvasAreaProps {
   onCreatePostIt?: (areaId: string) => void;
   onIconClick?: (areaId: string) => void;
   onAiClick?: (areaId: string, llmId: string) => void;
+  onGridArrange?: (areaId: string) => void;
   isDragOver?: boolean;
   className?: string;
   isGeneratingAi?: boolean;
@@ -31,6 +32,7 @@ export function CanvasArea({
   onCreatePostIt,
   onIconClick,
   onAiClick,
+  onGridArrange,
   isDragOver = false,
   className,
   isGeneratingAi = false,
@@ -80,8 +82,21 @@ export function CanvasArea({
           <h3 className="font-semibold text-foreground">{title}</h3>
         </div>
         
-        {/* AI and Add Post-it buttons */}
+        {/* Grid, AI and Add Post-it buttons */}
         <div className="flex items-center gap-1">
+          {/* Grid arrange button */}
+          {onGridArrange && (
+            <Button
+              onClick={() => onGridArrange(id)}
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground opacity-60 hover:opacity-100"
+              title="Arrange Post-its in grid"
+            >
+              <Grid3X3 className="h-4 w-4" />
+            </Button>
+          )}
+          
           {/* AI button */}
           {onAiClick && (
             <LlmSelectionMenu 

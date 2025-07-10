@@ -101,6 +101,42 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     onPostItsChange([...postIts, newPostIt]);
   };
 
+  const arrangePostItsInGrid = (areaId: string) => {
+    const areaPostIts = postIts.filter(p => p.areaId === areaId && p.bmcId === bmcId);
+    if (areaPostIts.length === 0) return;
+
+    // Calculate grid dimensions
+    const cols = Math.ceil(Math.sqrt(areaPostIts.length));
+    const rows = Math.ceil(areaPostIts.length / cols);
+    
+    // Post-it dimensions and spacing
+    const postItWidth = 100;
+    const postItHeight = 70;
+    const spacing = 10;
+    const startX = 20;
+    const startY = 70;
+
+    const updatedPostIts = postIts.map(postIt => {
+      if (postIt.areaId === areaId && postIt.bmcId === bmcId) {
+        const index = areaPostIts.findIndex(p => p.id === postIt.id);
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        
+        return {
+          ...postIt,
+          x: startX + col * (postItWidth + spacing),
+          y: startY + row * (postItHeight + spacing),
+          width: postItWidth,
+          height: postItHeight
+        };
+      }
+      return postIt;
+    });
+
+    onPostItsChange(updatedPostIts);
+    toast.success("Post-its arranged in grid!");
+  };
+
   const updatePostIt = (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => {
     onPostItsChange(
       postIts.map(postIt => 
@@ -334,6 +370,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
@@ -364,6 +401,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "key-activities"}
           >
@@ -393,6 +431,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
@@ -430,6 +469,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "customer-relationships"}
           >
@@ -459,6 +499,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
@@ -497,6 +538,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "key-resources"}
           >
@@ -526,6 +568,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "channels"}
           >
@@ -641,6 +684,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "cost-structure"}
           >
@@ -670,6 +714,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "revenue-streams"}
           >

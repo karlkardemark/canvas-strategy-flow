@@ -289,6 +289,14 @@ export function PromptSettingsDialog() {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Always visible save button */}
+        <div className="flex justify-end gap-2 pt-4 border-t">
+          <Button onClick={saveSettings} className="px-6">
+            <Save className="h-4 w-4 mr-2" />
+            Save All Settings
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );

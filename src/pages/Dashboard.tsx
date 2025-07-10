@@ -100,7 +100,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-workspace">
+    <div className="bg-workspace">
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">

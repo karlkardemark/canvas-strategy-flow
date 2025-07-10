@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Coins, CreditCard } from "lucide-react";
+import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
 
@@ -54,17 +54,6 @@ export default function ProjectWorkspace() {
   const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
   const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
   const [postIts, setPostIts] = useState<PostItData[]>([]);
-  const [credits, setCredits] = useState(50); // Demo credit balance
-  const [showCreditHistory, setShowCreditHistory] = useState(false);
-
-  // Demo credit transaction history
-  const creditHistory = [
-    { id: 1, date: "2024-01-15", type: "Purchase", amount: +100, description: "Credit package - Basic", balance: 150 },
-    { id: 2, date: "2024-01-14", type: "Usage", amount: -5, description: "AI assistant - Business Model Canvas", balance: 50 },
-    { id: 3, date: "2024-01-14", type: "Usage", amount: -3, description: "AI assistant - Value Proposition", balance: 55 },
-    { id: 4, date: "2024-01-13", type: "Usage", amount: -2, description: "AI assistant - Customer Segments", balance: 58 },
-    { id: 5, date: "2024-01-10", type: "Bonus", amount: +10, description: "Welcome bonus", balance: 60 },
-  ];
 
   const handleSave = () => {
     toast.success("Project saved successfully!");
@@ -173,18 +162,6 @@ export default function ProjectWorkspace() {
     // In a real implementation, this would show AI assistance features
   };
 
-  const handleBuyCredits = () => {
-    // Placeholder for buy credits functionality
-    toast.info("Buy credits functionality coming soon!");
-  };
-
-  const handleCreditsClick = () => {
-    console.log("Credits clicked, current showCreditHistory:", showCreditHistory);
-    console.log("Current activeCanvas:", activeCanvas);
-    console.log("Current activeCanvasId:", activeCanvasId);
-    setShowCreditHistory(true);
-    console.log("Setting showCreditHistory to true");
-  };
 
   if (activeCanvas) {
     return (
@@ -212,55 +189,33 @@ export default function ProjectWorkspace() {
             </h1>
           </div>
 
-          <div className="flex items-center space-x-4">
-            {/* Credit balance with buy button */}
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={handleCreditsClick}
-                className="flex items-center space-x-2 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors cursor-pointer"
-              >
-                <Coins className="h-4 w-4 text-yellow-600" />
-                <span className="text-sm font-medium text-yellow-800">{credits} Credits</span>
-              </button>
-              <Button
-                onClick={handleBuyCredits}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-1 h-8 border-yellow-300 text-yellow-700 hover:bg-yellow-50 hover:text-yellow-800"
-              >
-                <Plus className="h-3 w-3" />
-                <span className="text-xs">Add Credit</span>
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleShare}
-                className="flex items-center gap-2"
-              >
-                <Share className="h-4 w-4" />
-                Share
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDownload}
-                className="flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Export
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleSave}
-                className="flex items-center gap-2"
-              >
-                <Save className="h-4 w-4" />
-                Save
-              </Button>
-            </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              className="flex items-center gap-2"
+            >
+              <Share className="h-4 w-4" />
+              Share
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownload}
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleSave}
+              className="flex items-center gap-2"
+            >
+              <Save className="h-4 w-4" />
+              Save
+            </Button>
           </div>
         </header>
 
@@ -481,57 +436,6 @@ export default function ProjectWorkspace() {
           </div>
         </div>
       </div>
-
-      {/* Credit History Dialog - Available globally */}
-      <Dialog open={showCreditHistory} onOpenChange={setShowCreditHistory}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center space-x-2">
-              <Coins className="h-5 w-5 text-yellow-600" />
-              <span>Credit Transaction History</span>
-            </DialogTitle>
-            <DialogDescription>
-              View your complete credit transaction history including purchases, usage, and bonuses.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="max-h-96 overflow-y-auto">
-            <div className="space-y-2">
-              {creditHistory.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-sm">{transaction.description}</span>
-                      <span className="text-xs text-muted-foreground">{transaction.date}</span>
-                    </div>
-                    <div className="flex items-center justify-between mt-1">
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        transaction.type === 'Purchase' ? 'bg-green-100 text-green-700' :
-                        transaction.type === 'Bonus' ? 'bg-blue-100 text-blue-700' :
-                        'bg-red-100 text-red-700'
-                      }`}>
-                        {transaction.type}
-                      </span>
-                      <div className="flex items-center space-x-3">
-                        <span className={`font-medium ${
-                          transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                        }`}>
-                          {transaction.amount > 0 ? '+' : ''}{transaction.amount}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Balance: {transaction.balance}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

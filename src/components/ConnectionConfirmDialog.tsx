@@ -43,9 +43,9 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Confirm Connection</DialogTitle>
+          <DialogTitle>Confirm Business Connection</DialogTitle>
           <DialogDescription>
-            Do you want to connect these Post-its?
+            Do you sell <strong>{sourcePostIt.text}</strong> via <strong>{targetPostIt.text}</strong>?
           </DialogDescription>
         </DialogHeader>
         

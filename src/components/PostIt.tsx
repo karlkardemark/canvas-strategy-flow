@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Edit3, MessageSquare, ExternalLink, Link } from "lucide-react";
+import { X, Edit3, MessageSquare, ExternalLink, Link, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
@@ -86,6 +86,7 @@ export function PostIt({
   const [isHovered, setIsHovered] = useState(false);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [isVpcLinkOpen, setIsVpcLinkOpen] = useState(false);
+  const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -159,38 +160,15 @@ export function PostIt({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative h-full">
-        {/* Action buttons */}
-        <div
-          className={cn(
-            "absolute -top-1 -right-1 flex space-x-1 transition-opacity duration-200",
-            isHovered || isEditing ? "opacity-100" : "opacity-0"
-          )}
-        >
-          {showVpcConnection && (
-            <Button
-              size="sm"
-              variant="ghost"
+        {/* Properties icon */}
+        <Dialog open={isPropertiesOpen} onOpenChange={setIsPropertiesOpen}>
+          <DialogTrigger asChild>
+            <div
               className={cn(
-                "h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft hover:text-primary",
-                linkedVpcId ? "text-green-600" : "text-primary"
+                "absolute -top-1 -right-1 transition-opacity duration-200",
+                isHovered || isEditing ? "opacity-100" : "opacity-0"
               )}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!linkedVpcId) {
-                  // No VPC linked, create new one
-                  onCreateAndLinkVpc?.(id, text);
-                } else {
-                  // VPC already linked, show linking options
-                  setIsVpcLinkOpen(true);
-                }
-              }}
-              title={linkedVpcId ? "Linked to VPC" : "Create VPC"}
             >
-              {linkedVpcId ? <Link className="h-2.5 w-2.5" /> : <ExternalLink className="h-2.5 w-2.5" />}
-            </Button>
-          )}
-          <Dialog open={isCommentOpen} onOpenChange={setIsCommentOpen}>
-            <DialogTrigger asChild>
               <Button
                 size="sm"
                 variant="ghost"
@@ -199,89 +177,122 @@ export function PostIt({
                   e.stopPropagation();
                 }}
               >
-                <MessageSquare className="h-2.5 w-2.5" />
+                <Settings className="h-2.5 w-2.5" />
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Post-it Comment</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Main Text:</label>
-                  <p className="text-sm text-muted-foreground mt-1">{text || "No text"}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Comment:</label>
-                  <Textarea
-                    value={editComment}
-                    onChange={(e) => setEditComment(e.target.value)}
-                    placeholder="Add detailed comments here..."
-                    className="mt-1"
-                    rows={4}
-                  />
-                </div>
-                {showMetadata && (
-                  <>
-                    <div>
-                      <label className="text-sm font-medium">Price:</label>
-                      <Input
-                        value={editPrice}
-                        onChange={(e) => setEditPrice(e.target.value)}
-                        placeholder="Enter price..."
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Metric:</label>
-                      <Select value={editMetric} onValueChange={(value) => setEditMetric(value as PostItMetric)}>
-                        <SelectTrigger className="mt-1">
-                          <SelectValue placeholder="Select metric..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Piece">Piece</SelectItem>
-                          <SelectItem value="Monthly">Monthly</SelectItem>
-                          <SelectItem value="Weekly">Weekly</SelectItem>
-                          <SelectItem value="Credits">Credits</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </>
-                )}
-                <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setIsCommentOpen(false)}>
-                    Cancel
+            </div>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Post-it Properties</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Main Text:</label>
+                <p className="text-sm text-muted-foreground mt-1">{text || "No text"}</p>
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium">Comment:</label>
+                <Textarea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  placeholder="Add detailed comments here..."
+                  className="mt-1"
+                  rows={4}
+                />
+              </div>
+              
+              {showMetadata && (
+                <>
+                  <div>
+                    <label className="text-sm font-medium">Price:</label>
+                    <Input
+                      value={editPrice}
+                      onChange={(e) => setEditPrice(e.target.value)}
+                      placeholder="Enter price..."
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Metric:</label>
+                    <Select value={editMetric} onValueChange={(value) => setEditMetric(value as PostItMetric)}>
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Select metric..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Piece">Piece</SelectItem>
+                        <SelectItem value="Monthly">Monthly</SelectItem>
+                        <SelectItem value="Weekly">Weekly</SelectItem>
+                        <SelectItem value="Credits">Credits</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
+              
+              <div className="border-t pt-4">
+                <label className="text-sm font-medium">Actions:</label>
+                <div className="flex space-x-2 mt-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditing(true);
+                      setIsPropertiesOpen(false);
+                    }}
+                  >
+                    <Edit3 className="h-3 w-3 mr-1" />
+                    Edit
                   </Button>
-                  <Button onClick={handleCommentSave}>
-                    Save Comment
+                  
+                  {showVpcConnection && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={linkedVpcId ? "text-green-600" : ""}
+                      onClick={() => {
+                        if (!linkedVpcId) {
+                          onCreateAndLinkVpc?.(id, text);
+                        } else {
+                          setIsVpcLinkOpen(true);
+                        }
+                        setIsPropertiesOpen(false);
+                      }}
+                    >
+                      {linkedVpcId ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
+                      {linkedVpcId ? "VPC" : "Create VPC"}
+                    </Button>
+                  )}
+                  
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => {
+                      onDelete(id);
+                      setIsPropertiesOpen(false);
+                    }}
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Delete
                   </Button>
                 </div>
               </div>
-            </DialogContent>
-          </Dialog>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsEditing(true);
-            }}
-          >
-            <Edit3 className="h-2.5 w-2.5" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft text-destructive hover:text-destructive"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(id);
-            }}
-          >
-            <X className="h-2.5 w-2.5" />
-          </Button>
-        </div>
+              
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsPropertiesOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  onUpdate(id, text, editComment.trim(), editPrice.trim(), editMetric);
+                  setIsPropertiesOpen(false);
+                }}>
+                  Save
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Content */}
         {isEditing ? (

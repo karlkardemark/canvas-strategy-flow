@@ -163,23 +163,16 @@ export function PostIt({
         {/* Properties icon */}
         <Dialog open={isPropertiesOpen} onOpenChange={setIsPropertiesOpen}>
           <DialogTrigger asChild>
-            <div
+            <Button
+              size="sm"
+              variant="ghost"
               className={cn(
-                "absolute -top-1 -right-1 transition-opacity duration-200",
+                "absolute -top-1 -right-1 h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft transition-opacity duration-200",
                 isHovered || isEditing ? "opacity-100" : "opacity-0"
               )}
             >
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-5 w-5 p-0 bg-white/80 hover:bg-white border shadow-soft"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Settings className="h-2.5 w-2.5" />
-              </Button>
-            </div>
+              <Settings className="h-2.5 w-2.5" />
+            </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>

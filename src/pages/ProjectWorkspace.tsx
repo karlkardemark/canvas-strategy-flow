@@ -8,9 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Bot } from "lucide-react";
+import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Bot, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { generatePostIts } from "@/services/aiService";
+import { generatePostIts, generateRandomBusinessIdea } from "@/services/aiService";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
 import { BmcEditDialog } from "@/components/BmcEditDialog";
 
@@ -62,6 +62,7 @@ export default function ProjectWorkspace() {
   const [newBmcName, setNewBmcName] = useState("");
   const [newBmcDescription, setNewBmcDescription] = useState("");
   const [isGeneratingPostIts, setIsGeneratingPostIts] = useState(false);
+  const [isGeneratingRandomBmc, setIsGeneratingRandomBmc] = useState(false);
   const [newVpcName, setNewVpcName] = useState("");
   const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
   const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
@@ -290,6 +291,26 @@ export default function ProjectWorkspace() {
     toast.success("BMC updated successfully!");
   };
 
+  const createRandomBmc = async () => {
+    setIsGeneratingRandomBmc(true);
+    try {
+      const businessIdea = await generateRandomBusinessIdea("gpt-4.1-2025-04-14");
+      const newBmc: BMCData = {
+        id: `bmc_${Date.now()}`,
+        name: businessIdea.name,
+        description: businessIdea.description,
+        createdAt: new Date(),
+      };
+      setBmcs([...bmcs, newBmc]);
+      toast.success(`Created "${businessIdea.name}" BMC!`);
+      openCanvas("BMC", newBmc.id);
+    } catch (error) {
+      toast.error("Failed to generate random BMC");
+    } finally {
+      setIsGeneratingRandomBmc(false);
+    }
+  };
+
   const handleAiClick = async (areaId: string, llmId: string) => {
     const currentBmc = bmcs.find(bmc => bmc.id === activeCanvasId);
     
@@ -480,36 +501,48 @@ export default function ProjectWorkspace() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-foreground">Business Model Canvas</h2>
-              <Dialog open={isCreateBmcOpen} onOpenChange={setIsCreateBmcOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    New BMC
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create New BMC</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Input
-                      placeholder="BMC Name"
-                      value={newBmcName}
-                      onChange={(e) => setNewBmcName(e.target.value)}
-                    />
-                    <Textarea
-                      placeholder="Business description (optional - for AI generation)"
-                      value={newBmcDescription}
-                      onChange={(e) => setNewBmcDescription(e.target.value)}
-                      className="min-h-[80px]"
-                    />
-                    <div className="flex gap-2">
-                      <Button onClick={createBmc} className="flex-1">Create</Button>
-                      <Button variant="outline" onClick={() => setIsCreateBmcOpen(false)}>Cancel</Button>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={createRandomBmc}
+                  disabled={isGeneratingRandomBmc}
+                  className="flex items-center gap-2"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {isGeneratingRandomBmc ? "Generating..." : "Random BMC"}
+                </Button>
+                <Dialog open={isCreateBmcOpen} onOpenChange={setIsCreateBmcOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="flex items-center gap-2">
+                      <Plus className="h-4 w-4" />
+                      New BMC
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Create New BMC</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Input
+                        placeholder="BMC Name"
+                        value={newBmcName}
+                        onChange={(e) => setNewBmcName(e.target.value)}
+                      />
+                      <Textarea
+                        placeholder="Business description (optional - for AI generation)"
+                        value={newBmcDescription}
+                        onChange={(e) => setNewBmcDescription(e.target.value)}
+                        className="min-h-[80px]"
+                      />
+                      <div className="flex gap-2">
+                        <Button onClick={createBmc} className="flex-1">Create</Button>
+                        <Button variant="outline" onClick={() => setIsCreateBmcOpen(false)}>Cancel</Button>
+                      </div>
                     </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
             
             <div className="space-y-3">

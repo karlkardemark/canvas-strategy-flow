@@ -9,6 +9,11 @@ interface PostItSuggestion {
   color: "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
 }
 
+interface BusinessIdea {
+  name: string;
+  description: string;
+}
+
 const BMC_AREA_DESCRIPTIONS = {
   "key-partners": "Key Partners: Who are the key partners and suppliers that will help your business work?",
   "key-activities": "Key Activities: What are the most important things your company must do to make the business model work?",
@@ -20,6 +25,49 @@ const BMC_AREA_DESCRIPTIONS = {
   "cost-structure": "Cost Structure: What are the most important costs inherent in your business model?",
   "revenue-streams": "Revenue Streams: For what value are your customers really willing to pay?"
 };
+
+export async function generateRandomBusinessIdea(llmId: string): Promise<BusinessIdea> {
+  // For now, return mock data since we don't have API keys configured
+  const mockBusinesses = [
+    {
+      name: "EcoClean Solutions",
+      description: "A sustainable cleaning service using eco-friendly products and methods, targeting environmentally conscious homeowners and businesses."
+    },
+    {
+      name: "PetConnect",
+      description: "A social platform connecting pet owners for playdates, pet sitting, and sharing pet care tips in local communities."
+    },
+    {
+      name: "SkillSwap Academy",
+      description: "An online marketplace where people can exchange skills - teach what you know, learn what you need without money changing hands."
+    },
+    {
+      name: "FarmToTable Direct",
+      description: "A subscription service connecting local farmers directly with consumers, delivering fresh, seasonal produce weekly."
+    },
+    {
+      name: "MindfulTech",
+      description: "A digital wellness app that helps users manage screen time and develop healthier relationships with technology."
+    },
+    {
+      name: "Urban Garden Solutions",
+      description: "Smart indoor gardening systems and consulting services for apartment dwellers who want to grow their own food."
+    },
+    {
+      name: "ElderConnect",
+      description: "A technology platform helping seniors stay connected with family and access essential services through simplified interfaces."
+    },
+    {
+      name: "WorkoutBuddy",
+      description: "An AI-powered fitness app that creates personalized workout plans and matches users with exercise partners based on goals and location."
+    }
+  ];
+
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  return mockBusinesses[Math.floor(Math.random() * mockBusinesses.length)];
+}
 
 export async function generatePostIts({ businessDescription, areaId, llmModel }: GeneratePostItsRequest): Promise<PostItSuggestion[]> {
   const areaDescription = BMC_AREA_DESCRIPTIONS[areaId as keyof typeof BMC_AREA_DESCRIPTIONS];

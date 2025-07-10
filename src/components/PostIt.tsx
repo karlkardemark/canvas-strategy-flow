@@ -36,11 +36,11 @@ interface PostItProps {
   showVpcConnection?: boolean;
   availableVpcs?: VPCOption[];
   linkedVpcIds?: string[]; // Changed to array to support multiple VPCs
-  // New properties for Channel Post-its
-  linkedValuePropositionIds?: string[];
-  linkedCustomerSegmentIds?: string[];
-  availableValuePropositions?: { id: string; text: string }[];
-  availableCustomerSegments?: { id: string; text: string }[];
+  // New properties for Channel Post-its (connections to other Post-its)
+  linkedValuePropositionIds?: string[]; // IDs of Value Proposition Post-its
+  linkedCustomerSegmentIds?: string[]; // IDs of Customer Segment Post-its
+  availableValuePropositionPostIts?: { id: string; text: string }[]; // Available VP Post-its to connect to
+  availableCustomerSegmentPostIts?: { id: string; text: string }[]; // Available CS Post-its to connect to
   onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
@@ -86,8 +86,8 @@ export function PostIt({
   // New Channel connection props
   linkedValuePropositionIds = [],
   linkedCustomerSegmentIds = [],
-  availableValuePropositions = [],
-  availableCustomerSegments = [],
+  availableValuePropositionPostIts = [],
+  availableCustomerSegmentPostIts = [],
   onUpdate,
   onResize,
   onDelete,
@@ -395,7 +395,7 @@ export function PostIt({
                        {linkedValuePropositionIds.length > 0 && (
                          <div className="space-y-2">
                            {linkedValuePropositionIds.map(vpId => {
-                             const vp = availableValuePropositions.find(v => v.id === vpId);
+                             const vp = availableValuePropositionPostIts.find(v => v.id === vpId);
                              return vp ? (
                                <div key={vpId} className="flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded">
                                  <span className="text-sm text-blue-800">{vp.text}</span>
@@ -425,7 +425,7 @@ export function PostIt({
                          </SelectTrigger>
                          <SelectContent>
                            <SelectItem value="none">Select Value Proposition...</SelectItem>
-                           {availableValuePropositions
+                           {availableValuePropositionPostIts
                              .filter(vp => !linkedValuePropositionIds.includes(vp.id))
                              .map((vp) => (
                                <SelectItem key={vp.id} value={vp.id}>
@@ -444,7 +444,7 @@ export function PostIt({
                        {linkedCustomerSegmentIds.length > 0 && (
                          <div className="space-y-2">
                            {linkedCustomerSegmentIds.map(csId => {
-                             const cs = availableCustomerSegments.find(c => c.id === csId);
+                             const cs = availableCustomerSegmentPostIts.find(c => c.id === csId);
                              return cs ? (
                                <div key={csId} className="flex items-center justify-between p-2 bg-purple-50 border border-purple-200 rounded">
                                  <span className="text-sm text-purple-800">{cs.text}</span>
@@ -474,7 +474,7 @@ export function PostIt({
                          </SelectTrigger>
                          <SelectContent>
                            <SelectItem value="none">Select Customer Segment...</SelectItem>
-                           {availableCustomerSegments
+                           {availableCustomerSegmentPostIts
                              .filter(cs => !linkedCustomerSegmentIds.includes(cs.id))
                              .map((cs) => (
                                <SelectItem key={cs.id} value={cs.id}>

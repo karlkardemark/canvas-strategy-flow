@@ -32,6 +32,9 @@ interface PostItData {
   height: number;
   areaId: string;
   bmcId?: string; // Optional to match parent interface
+  // Channel connections
+  linkedValuePropositionIds?: string[];
+  linkedCustomerSegmentIds?: string[];
 }
 
 interface VPCOption {
@@ -424,6 +427,33 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                 <PostIt
                   key={postIt.id}
                   {...postIt}
+                  // Add Channel-specific props
+                  availableValuePropositionPostIts={postIts
+                    .filter(p => p.areaId === "value-propositions")
+                    .map(p => ({ id: p.id, text: p.text }))
+                  }
+                  availableCustomerSegmentPostIts={postIts
+                    .filter(p => p.areaId === "customer-segments")
+                    .map(p => ({ id: p.id, text: p.text }))
+                  }
+                  linkedValuePropositionIds={postIt.linkedValuePropositionIds || []}
+                  linkedCustomerSegmentIds={postIt.linkedCustomerSegmentIds || []}
+                  onLinkValueProposition={(channelId, vpId) => {
+                    // TODO: Implement connection logic
+                    console.log('Link Channel to VP:', channelId, vpId);
+                  }}
+                  onLinkCustomerSegment={(channelId, csId) => {
+                    // TODO: Implement connection logic
+                    console.log('Link Channel to CS:', channelId, csId);
+                  }}
+                  onUnlinkValueProposition={(channelId, vpId) => {
+                    // TODO: Implement unlink logic
+                    console.log('Unlink Channel from VP:', channelId, vpId);
+                  }}
+                  onUnlinkCustomerSegment={(channelId, csId) => {
+                    // TODO: Implement unlink logic
+                    console.log('Unlink Channel from CS:', channelId, csId);
+                  }}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}

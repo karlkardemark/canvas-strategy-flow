@@ -25,6 +25,9 @@ interface PostItData {
   areaId: string;
   bmcId?: string; // For BMC post-its
   vpcId?: string; // For VPC post-its
+  // Channel connections
+  linkedValuePropositionIds?: string[];
+  linkedCustomerSegmentIds?: string[];
 }
 
 type CanvasType = "BMC" | "VPC" | null;

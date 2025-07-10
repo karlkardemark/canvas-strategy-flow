@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LlmSelectionMenu } from "./LlmSelectionMenu";
 
 interface CanvasAreaProps {
   id: string;
@@ -13,9 +14,10 @@ interface CanvasAreaProps {
   onDoubleClick?: (areaId: string, x: number, y: number) => void;
   onCreatePostIt?: (areaId: string) => void;
   onIconClick?: (areaId: string) => void;
-  onAiClick?: (areaId: string) => void;
+  onAiClick?: (areaId: string, llmId: string) => void;
   isDragOver?: boolean;
   className?: string;
+  isGeneratingAi?: boolean;
 }
 
 export function CanvasArea({
@@ -31,6 +33,7 @@ export function CanvasArea({
   onAiClick,
   isDragOver = false,
   className,
+  isGeneratingAi = false,
 }: CanvasAreaProps) {
 
   const handleDrop = (e: React.DragEvent) => {
@@ -81,15 +84,10 @@ export function CanvasArea({
         <div className="flex items-center gap-1">
           {/* AI button */}
           {onAiClick && (
-            <Button
-              onClick={() => onAiClick(id)}
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0 text-purple-500 hover:text-purple-600 opacity-60 hover:opacity-100"
-              title="AI assistance"
-            >
-              <Sparkles className="h-4 w-4" />
-            </Button>
+            <LlmSelectionMenu 
+              onSelect={(llmId) => onAiClick(id, llmId)} 
+              isGenerating={isGeneratingAi}
+            />
           )}
           
           {/* Add Post-it button */}

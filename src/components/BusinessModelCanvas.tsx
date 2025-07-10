@@ -59,7 +59,8 @@ interface BusinessModelCanvasProps {
   onNavigateToVpc?: (vpcId: string) => void;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
-  onAiClick?: (areaId: string) => void;
+  onAiClick?: (areaId: string, llmId: string) => void;
+  isGeneratingAi?: boolean;
 }
 
 const canvasAreas = [
@@ -76,7 +77,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onCreateAndLinkVpc, onNavigateToVpc, postIts, onPostItsChange, onAiClick }: BusinessModelCanvasProps) {
+export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onCreateAndLinkVpc, onNavigateToVpc, postIts, onPostItsChange, onAiClick, isGeneratingAi = false }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [dragOverPostIt, setDragOverPostIt] = useState<string | null>(null);
@@ -333,6 +334,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
           >
@@ -362,6 +364,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "key-activities"}
           >
             {postIts
@@ -390,6 +393,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
           >
@@ -426,6 +430,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "customer-relationships"}
           >
             {postIts
@@ -454,6 +459,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
           >
@@ -491,6 +497,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "key-resources"}
           >
             {postIts
@@ -519,6 +526,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "channels"}
           >
             {postIts
@@ -633,6 +641,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "cost-structure"}
           >
             {postIts
@@ -661,6 +670,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
             onAiClick={onAiClick}
+            isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "revenue-streams"}
           >
             {postIts

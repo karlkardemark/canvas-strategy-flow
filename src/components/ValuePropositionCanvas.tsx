@@ -32,7 +32,7 @@ interface ValuePropositionCanvasProps {
   linkedCustomerSegmentIds: string[];
   linkedValuePropositionIds: string[];
   onPostItsChange: (postIts: PostItData[]) => void;
-  onAiClick?: (areaId: string) => void;
+  onAiClick?: (areaId: string, llmId: string) => void;
 }
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 export function ValuePropositionCanvas({

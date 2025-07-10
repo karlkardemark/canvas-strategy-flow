@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { generatePostIts } from "@/services/aiService";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
 
 interface PostItData {
@@ -35,6 +37,7 @@ type CanvasType = "BMC" | "VPC" | null;
 interface BMCData {
   id: string;
   name: string;
+  description?: string;
   createdAt: Date;
 }
 
@@ -56,6 +59,8 @@ export default function ProjectWorkspace() {
   const [bmcs, setBmcs] = useState<BMCData[]>([]);
   const [vpcs, setVpcs] = useState<VPCData[]>([]);
   const [newBmcName, setNewBmcName] = useState("");
+  const [newBmcDescription, setNewBmcDescription] = useState("");
+  const [isGeneratingPostIts, setIsGeneratingPostIts] = useState(false);
   const [newVpcName, setNewVpcName] = useState("");
   const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
   const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
@@ -89,10 +94,12 @@ export default function ProjectWorkspace() {
     const newBmc: BMCData = {
       id: `bmc_${Date.now()}`,
       name: newBmcName,
+      description: newBmcDescription,
       createdAt: new Date(),
     };
     setBmcs([...bmcs, newBmc]);
     setNewBmcName("");
+    setNewBmcDescription("");
     setIsCreateBmcOpen(false);
     toast.success("BMC created successfully!");
   };
@@ -275,10 +282,45 @@ export default function ProjectWorkspace() {
     toast.success("VPC created and linked successfully!");
   };
 
-  const handleAiClick = (areaId: string) => {
-    // Placeholder for AI functionality
-    console.log('AI clicked for area:', areaId);
-    // In a real implementation, this would show AI assistance features
+  const handleAiClick = async (areaId: string, llmId: string) => {
+    const currentBmc = bmcs.find(bmc => bmc.id === activeCanvasId);
+    
+    if (!currentBmc?.description) {
+      toast.error("No business description found. Please add a description when creating the BMC.");
+      return;
+    }
+
+    setIsGeneratingPostIts(true);
+    
+    try {
+      const suggestions = await generatePostIts({
+        businessDescription: currentBmc.description,
+        areaId,
+        llmModel: llmId
+      });
+
+      // Create post-its from suggestions
+      const newPostIts = suggestions.map((suggestion, index) => ({
+        id: `ai-postit-${Date.now()}-${index}`,
+        text: suggestion.text,
+        color: suggestion.color,
+        x: Math.random() * 200 + 50,
+        y: Math.random() * 100 + 80,
+        width: 120,
+        height: 80,
+        areaId,
+        bmcId: activeCanvasId,
+      }));
+
+      setPostIts(prev => [...prev, ...newPostIts]);
+      toast.success(`Generated ${suggestions.length} Post-its for ${areaId.replace('-', ' ')}`);
+      
+    } catch (error) {
+      console.error('AI generation error:', error);
+      toast.error("Failed to generate Post-its. Please try again.");
+    } finally {
+      setIsGeneratingPostIts(false);
+    }
   };
 
 
@@ -359,6 +401,7 @@ export default function ProjectWorkspace() {
                 ]);
               }}
               onAiClick={handleAiClick}
+              isGeneratingAi={isGeneratingPostIts}
             />
           ) : (
             <ValuePropositionCanvas 
@@ -437,6 +480,12 @@ export default function ProjectWorkspace() {
                       placeholder="BMC Name"
                       value={newBmcName}
                       onChange={(e) => setNewBmcName(e.target.value)}
+                    />
+                    <Textarea
+                      placeholder="Business description (optional - for AI generation)"
+                      value={newBmcDescription}
+                      onChange={(e) => setNewBmcDescription(e.target.value)}
+                      className="min-h-[80px]"
                     />
                     <div className="flex gap-2">
                       <Button onClick={createBmc} className="flex-1">Create</Button>

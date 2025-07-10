@@ -44,6 +44,7 @@ interface BusinessModelCanvasProps {
   bmcId: string;
   availableVpcs: VPCOption[];
   onLinkVpc: (postItId: string, vpcId: string, vpcName?: string) => void;
+  onNavigateToVpc?: (vpcId: string) => void;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
 }
@@ -62,7 +63,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
+export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
 
@@ -273,9 +274,10 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
                   onDelete={deletePostIt}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
-                  onLinkVpc={handleVpcLink}
-                  onCreateAndLinkVpc={handleCreateAndLinkVpc}
-                  isDragging={draggedPostIt === postIt.id}
+                   onLinkVpc={handleVpcLink}
+                   onCreateAndLinkVpc={handleCreateAndLinkVpc}
+                   onNavigateToVpc={onNavigateToVpc}
+                   isDragging={draggedPostIt === postIt.id}
                 />
               ))}
           </CanvasArea>

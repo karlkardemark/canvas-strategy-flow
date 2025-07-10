@@ -40,6 +40,7 @@ interface PostItProps {
   onDragEnd: () => void;
   onLinkVpc?: (postItId: string, vpcId: string) => void;
   onCreateAndLinkVpc?: (postItId: string, postItText: string) => void;
+  onNavigateToVpc?: (vpcId: string) => void;
   isDragging?: boolean;
   className?: string;
 }
@@ -75,6 +76,7 @@ export function PostIt({
   onDragEnd,
   onLinkVpc,
   onCreateAndLinkVpc,
+  onNavigateToVpc,
   isDragging = false,
   className,
 }: PostItProps) {
@@ -207,9 +209,29 @@ export function PostIt({
                 >
                   {text || "Untitled Post-it"}
                 </DialogTitle>
-              )}
-            </DialogHeader>
-            <div className="space-y-4">
+               )}
+               
+               {/* VPC Link button in upper right */}
+               {showVpcConnection && linkedVpcId && (
+                 <div className="absolute top-4 right-4">
+                   <Button
+                     size="sm"
+                     variant="outline"
+                     className="flex items-center gap-1 text-xs"
+                      onClick={() => {
+                        if (onNavigateToVpc && linkedVpcId) {
+                          onNavigateToVpc(linkedVpcId);
+                          setIsPropertiesOpen(false);
+                        }
+                      }}
+                   >
+                     <ExternalLink className="h-3 w-3" />
+                     Go to VPC
+                   </Button>
+                 </div>
+               )}
+             </DialogHeader>
+             <div className="space-y-4">
               
               <div>
                 <label className="text-sm font-medium">Comment:</label>

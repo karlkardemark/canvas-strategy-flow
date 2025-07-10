@@ -152,6 +152,10 @@ export default function ProjectWorkspace() {
     // Don't automatically navigate - let user stay in properties dialog
   };
 
+  const handleNavigateToVpc = (vpcId: string) => {
+    openCanvas("VPC", vpcId);
+  };
+
   if (activeCanvas) {
     return (
       <div className="h-screen flex flex-col bg-workspace">
@@ -216,6 +220,7 @@ export default function ProjectWorkspace() {
               bmcId={activeCanvasId}
               availableVpcs={vpcs}
               onLinkVpc={handleVpcLink}
+              onNavigateToVpc={handleNavigateToVpc}
               postIts={postIts.filter(p => p.bmcId === activeCanvasId)}
               onPostItsChange={(updatedPostIts) => {
                 // Merge the updated postIts for this BMC with postIts from other BMCs

@@ -38,11 +38,12 @@ interface ValuePropositionCanvasProps {
   dateCreated?: string;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
+  onAiClick?: (areaId: string) => void;
 }
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, onPostItsChange }: ValuePropositionCanvasProps) {
+export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, onPostItsChange, onAiClick }: ValuePropositionCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -187,6 +188,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
                   onDoubleClick={handleDoubleClick}
                   onCreatePostIt={createPostIt}
                   onIconClick={handleIconClick}
+                  onAiClick={onAiClick}
                   isDragOver={dragOverArea === "gain-creators"}
                   className="h-full"
                 >
@@ -219,6 +221,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
                   onDoubleClick={handleDoubleClick}
                   onCreatePostIt={createPostIt}
                   onIconClick={handleIconClick}
+                  onAiClick={onAiClick}
                   isDragOver={dragOverArea === "products-services"}
                   className="h-full"
                 >
@@ -251,6 +254,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
                   onDoubleClick={handleDoubleClick}
                   onCreatePostIt={createPostIt}
                   onIconClick={handleIconClick}
+                  onAiClick={onAiClick}
                   isDragOver={dragOverArea === "pain-relievers"}
                   className="h-full"
                 >
@@ -294,6 +298,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
                   onDoubleClick={handleDoubleClick}
                   onCreatePostIt={createPostIt}
                   onIconClick={handleIconClick}
+                  onAiClick={onAiClick}
                   isDragOver={dragOverArea === "gains"}
                   className="h-full"
                 >
@@ -326,6 +331,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
                   onDoubleClick={handleDoubleClick}
                   onCreatePostIt={createPostIt}
                   onIconClick={handleIconClick}
+                  onAiClick={onAiClick}
                   isDragOver={dragOverArea === "customer-jobs"}
                   className="h-full"
                 >
@@ -358,6 +364,7 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
                   onDoubleClick={handleDoubleClick}
                   onCreatePostIt={createPostIt}
                   onIconClick={handleIconClick}
+                  onAiClick={onAiClick}
                   isDragOver={dragOverArea === "pains"}
                   className="h-full"
                 >

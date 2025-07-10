@@ -52,6 +52,7 @@ interface BusinessModelCanvasProps {
   onNavigateToVpc?: (vpcId: string) => void;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
+  onAiClick?: (areaId: string) => void;
 }
 
 const canvasAreas = [
@@ -68,7 +69,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
+export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange, onAiClick }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -218,6 +219,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
           >
@@ -246,6 +248,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "key-activities"}
           >
             {postIts
@@ -273,6 +276,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
           >
@@ -307,6 +311,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "customer-relationships"}
           >
             {postIts
@@ -334,6 +339,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
           >
@@ -363,6 +369,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "key-resources"}
           >
             {postIts
@@ -390,6 +397,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "channels"}
           >
             {postIts
@@ -420,6 +428,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "cost-structure"}
           >
             {postIts
@@ -447,6 +456,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
+            onAiClick={onAiClick}
             isDragOver={dragOverArea === "revenue-streams"}
           >
             {postIts

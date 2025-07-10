@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Coins } from "lucide-react";
 import { toast } from "sonner";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
 
@@ -54,6 +54,7 @@ export default function ProjectWorkspace() {
   const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
   const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
   const [postIts, setPostIts] = useState<PostItData[]>([]);
+  const [credits, setCredits] = useState(50); // Demo credit balance
 
   const handleSave = () => {
     toast.success("Project saved successfully!");
@@ -156,6 +157,12 @@ export default function ProjectWorkspace() {
     openCanvas("VPC", vpcId);
   };
 
+  const handleAiClick = (areaId: string) => {
+    // Placeholder for AI functionality
+    console.log('AI clicked for area:', areaId);
+    // In a real implementation, this would show AI assistance features
+  };
+
   if (activeCanvas) {
     return (
       <div className="h-screen flex flex-col bg-workspace">
@@ -182,33 +189,41 @@ export default function ProjectWorkspace() {
             </h1>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleShare}
-              className="flex items-center gap-2"
-            >
-              <Share className="h-4 w-4" />
-              Share
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownload}
-              className="flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Export
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              className="flex items-center gap-2"
-            >
-              <Save className="h-4 w-4" />
-              Save
-            </Button>
+          <div className="flex items-center space-x-4">
+            {/* Credit balance */}
+            <div className="flex items-center space-x-2 px-3 py-1.5 bg-secondary/50 rounded-lg">
+              <Coins className="h-4 w-4 text-yellow-500" />
+              <span className="text-sm font-medium">{credits} Credits</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShare}
+                className="flex items-center gap-2"
+              >
+                <Share className="h-4 w-4" />
+                Share
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownload}
+                className="flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                className="flex items-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                Save
+              </Button>
+            </div>
           </div>
         </header>
 
@@ -231,6 +246,7 @@ export default function ProjectWorkspace() {
                   ...updatedPostIts
                 ]);
               }}
+              onAiClick={handleAiClick}
             />
           ) : (
             <ValuePropositionCanvas 
@@ -246,6 +262,7 @@ export default function ProjectWorkspace() {
                   ...updatedPostIts
                 ]);
               }}
+              onAiClick={handleAiClick}
             />
           )}
         </main>

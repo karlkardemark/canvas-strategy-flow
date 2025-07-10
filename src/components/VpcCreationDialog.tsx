@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Check } from 'lucide-react';
@@ -7,8 +7,17 @@ import { Check } from 'lucide-react';
 interface PostItData {
   id: string;
   text: string;
+  comment?: string;
+  price?: string;
+  metric?: string;
   color: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   areaId: string;
+  bmcId?: string;
+  vpcId?: string;
 }
 
 interface VpcCreationDialogProps {
@@ -50,9 +59,12 @@ export const VpcCreationDialog: React.FC<VpcCreationDialogProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Create Value Proposition Canvas</DialogTitle>
-        </DialogHeader>
+         <DialogHeader>
+           <DialogTitle>Create Value Proposition Canvas</DialogTitle>
+           <DialogDescription>
+             Select a Post-it from the opposite area to create a new VPC combining both elements.
+           </DialogDescription>
+         </DialogHeader>
         
         {!initiatingPostIt ? (
           <div className="p-4">

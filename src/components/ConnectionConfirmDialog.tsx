@@ -53,9 +53,6 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
           <div>
             <h4 className="text-sm font-medium mb-2">From:</h4>
             <div className="p-3 bg-blue-50 border border-blue-200 rounded">
-              <Badge variant="outline" className="mb-1 bg-blue-100">
-                {getAreaTitle(sourcePostIt.areaId)}
-              </Badge>
               <p className="text-sm font-medium">{sourcePostIt.text}</p>
             </div>
           </div>

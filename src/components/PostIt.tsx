@@ -45,7 +45,7 @@ interface PostItProps {
   onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
-  onDragStart: (id: string) => void;
+  onDragStart: (id: string, dragEvent?: React.DragEvent) => void;
   onDragEnd: () => void;
   onLinkVpc?: (postItId: string, vpcId: string) => void;
   onCreateAndLinkVpc?: (postItId: string, postItText: string, areaId?: string) => void;
@@ -174,7 +174,7 @@ export function PostIt({
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
-    onDragStart(id);
+    onDragStart(id, e);
   };
 
   const handleDrop = (e: React.DragEvent) => {

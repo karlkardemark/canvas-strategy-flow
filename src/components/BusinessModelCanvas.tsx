@@ -80,6 +80,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [dragOverPostIt, setDragOverPostIt] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   const [showConnectionDialog, setShowConnectionDialog] = useState(false);
   const [pendingConnection, setPendingConnection] = useState<{source: PostItData, target: PostItData} | null>(null);
@@ -142,8 +143,27 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     onPostItsChange(postIts.filter(postIt => postIt.id !== id));
   };
 
-  const handleDragStart = (id: string) => {
+  const handleDragStart = (id: string, dragEvent?: React.DragEvent) => {
     setDraggedPostIt(id);
+    
+    if (dragEvent) {
+      const postIt = postIts.find(p => p.id === id);
+      if (postIt) {
+        // Get the canvas area position
+        const target = dragEvent.currentTarget as HTMLElement;
+        const canvasArea = target.closest('[data-canvas-area="true"]') as HTMLElement;
+        if (canvasArea) {
+          const canvasRect = canvasArea.getBoundingClientRect();
+          // Calculate cursor position relative to canvas area
+          const cursorX = dragEvent.clientX - canvasRect.left;
+          const cursorY = dragEvent.clientY - canvasRect.top;
+          // Calculate offset from post-it's position to cursor
+          const offsetX = cursorX - postIt.x;
+          const offsetY = cursorY - postIt.y;
+          setDragOffset({ x: offsetX, y: offsetY });
+        }
+      }
+    }
   };
 
   const handleDragEnd = () => {
@@ -163,16 +183,16 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
       // Only allow repositioning within the same area
       if (draggedPostItData && draggedPostItData.areaId === areaId) {
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const x = e.clientX - rect.left - dragOffset.x;
+        const y = e.clientY - rect.top - dragOffset.y;
         
         onPostItsChange(
           postIts.map(postIt =>
             postIt.id === draggedPostIt
               ? { 
                   ...postIt, 
-                  x: Math.max(0, Math.min(x - 60, rect.width - 120)), // Center the smaller post-it and keep within bounds
-                  y: Math.max(0, Math.min(y - 40, rect.height - 80))
+                  x: Math.max(0, Math.min(x, rect.width - (postIt.width || 120))),
+                  y: Math.max(0, Math.min(y, rect.height - (postIt.height || 80)))
                 }
               : postIt
           )

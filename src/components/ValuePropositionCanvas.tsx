@@ -50,6 +50,7 @@ export function ValuePropositionCanvas({
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const handleIconClick = (areaId: string) => {
     setSelectedAreaId(areaId);
   };
@@ -88,8 +89,27 @@ export function ValuePropositionCanvas({
   const deletePostIt = (id: string) => {
     onPostItsChange(postIts.filter(postIt => postIt.id !== id));
   };
-  const handleDragStart = (id: string) => {
+  const handleDragStart = (id: string, dragEvent?: React.DragEvent) => {
     setDraggedPostIt(id);
+    
+    if (dragEvent) {
+      const postIt = postIts.find(p => p.id === id);
+      if (postIt) {
+        // Get the canvas area position
+        const target = dragEvent.currentTarget as HTMLElement;
+        const canvasArea = target.closest('[data-canvas-area="true"]') as HTMLElement;
+        if (canvasArea) {
+          const canvasRect = canvasArea.getBoundingClientRect();
+          // Calculate cursor position relative to canvas area
+          const cursorX = dragEvent.clientX - canvasRect.left;
+          const cursorY = dragEvent.clientY - canvasRect.top;
+          // Calculate offset from post-it's position to cursor
+          const offsetX = cursorX - postIt.x;
+          const offsetY = cursorY - postIt.y;
+          setDragOffset({ x: offsetX, y: offsetY });
+        }
+      }
+    }
   };
   const handleDragEnd = () => {
     setDraggedPostIt(null);
@@ -118,14 +138,15 @@ export function ValuePropositionCanvas({
   const handleDrop = (areaId: string, e: React.DragEvent) => {
     if (draggedPostIt) {
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = e.clientX - rect.left - dragOffset.x;
+      const y = e.clientY - rect.top - dragOffset.y;
+      const draggedPostItData = postIts.find(p => p.id === draggedPostIt);
+      
       onPostItsChange(postIts.map(postIt => postIt.id === draggedPostIt ? {
         ...postIt,
         areaId,
-        x: Math.max(0, Math.min(x - 60, rect.width - 120)),
-        // Center the smaller post-it and keep within bounds
-        y: Math.max(0, Math.min(y - 40, rect.height - 80))
+        x: Math.max(0, Math.min(x, rect.width - (draggedPostItData?.width || 120))),
+        y: Math.max(0, Math.min(y, rect.height - (draggedPostItData?.height || 80)))
       } : postIt));
     }
     setDragOverArea(null);

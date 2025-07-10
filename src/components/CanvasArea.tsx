@@ -55,6 +55,7 @@ export function CanvasArea({
         isDragOver && "border-primary bg-primary/5 shadow-medium",
         className
       )}
+      data-canvas-area="true"
       onDrop={handleDrop}
       onDragOver={onDragOver}
       onDoubleClick={handleDoubleClick}

@@ -373,19 +373,21 @@ export function PostIt({
 
         {/* Content */}
         {isEditing ? (
-          <div className="w-full h-full flex items-center justify-center">
-            <textarea
-              ref={textareaRef}
-              value={editText}
-              onChange={(e) => setEditText(e.target.value)}
-              onBlur={handleSave}
-              onKeyDown={handleKeyDown}
-              className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500 text-center"
-              style={{ lineHeight: "1.2" }}
-              placeholder="Short text..."
-              maxLength={50}
-            />
-          </div>
+          <textarea
+            ref={textareaRef}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            className="w-full h-full resize-none border-none outline-none bg-transparent text-xs font-medium placeholder:text-gray-500 text-center"
+            style={{ 
+              paddingTop: "calc(50% - 0.5em)", 
+              paddingBottom: "calc(50% - 0.5em)",
+              lineHeight: "1"
+            }}
+            placeholder="Short text..."
+            maxLength={50}
+          />
         ) : (
           <div
             className="w-full h-full text-xs font-medium text-gray-800 overflow-hidden cursor-text flex items-center justify-center text-center leading-tight"

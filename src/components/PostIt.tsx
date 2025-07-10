@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -184,6 +184,9 @@ export function PostIt({
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Post-it Properties</DialogTitle>
+              <DialogDescription>
+                View and edit the properties of this Post-it note.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>

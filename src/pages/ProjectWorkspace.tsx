@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Coins } from "lucide-react";
+import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Coins, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
 
@@ -163,6 +163,11 @@ export default function ProjectWorkspace() {
     // In a real implementation, this would show AI assistance features
   };
 
+  const handleBuyCredits = () => {
+    // Placeholder for buy credits functionality
+    toast.info("Buy credits functionality coming soon!");
+  };
+
   if (activeCanvas) {
     return (
       <div className="h-screen flex flex-col bg-workspace">
@@ -190,10 +195,21 @@ export default function ProjectWorkspace() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {/* Credit balance */}
-            <div className="flex items-center space-x-2 px-3 py-1.5 bg-secondary/50 rounded-lg">
-              <Coins className="h-4 w-4 text-yellow-500" />
-              <span className="text-sm font-medium">{credits} Credits</span>
+            {/* Credit balance with buy button */}
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 px-3 py-1.5 bg-secondary/50 rounded-lg">
+                <Coins className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm font-medium">{credits} Credits</span>
+              </div>
+              <Button
+                onClick={handleBuyCredits}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-1 h-8"
+              >
+                <CreditCard className="h-3 w-3" />
+                <span className="text-xs">Buy more</span>
+              </Button>
             </div>
             
             <div className="flex items-center gap-2">

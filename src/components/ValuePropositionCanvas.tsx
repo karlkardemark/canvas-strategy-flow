@@ -34,13 +34,15 @@ interface PostItData {
 interface ValuePropositionCanvasProps {
   projectId: string;
   vpcId: string;
+  vpcName?: string;
+  dateCreated?: string;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
 }
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsChange }: ValuePropositionCanvasProps) {
+export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, onPostItsChange }: ValuePropositionCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -151,12 +153,14 @@ export function ValuePropositionCanvas({ projectId, vpcId, postIts, onPostItsCha
           <img 
             src={bmcHeaderImage} 
             alt="Value Proposition Canvas" 
-            className="w-full h-48 object-cover"
+            className="w-full h-32 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/80 to-pink-500/60 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">The Value Proposition Canvas</h1>
-              <p className="text-xl opacity-90">Map your value proposition to customer needs</p>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/80 to-pink-500/60 flex items-center justify-between px-8">
+            <div className="text-white">
+              <h1 className="text-2xl font-bold mb-1">Value Proposition Canvas: {vpcName}</h1>
+              <div className="text-sm opacity-90 space-y-0.5">
+                {dateCreated && <p>Created: {dateCreated}</p>}
+              </div>
             </div>
           </div>
         </div>

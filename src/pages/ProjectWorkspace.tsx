@@ -236,6 +236,8 @@ export default function ProjectWorkspace() {
             <ValuePropositionCanvas 
               projectId={id || ""} 
               vpcId={activeCanvasId}
+              vpcName={vpcs.find(vpc => vpc.id === activeCanvasId)?.name}
+              dateCreated={vpcs.find(vpc => vpc.id === activeCanvasId)?.createdAt.toLocaleDateString()}
               postIts={postIts.filter(p => p.vpcId === activeCanvasId)}
               onPostItsChange={(updatedPostIts) => {
                 // Merge the updated postIts for this VPC with postIts from other canvases

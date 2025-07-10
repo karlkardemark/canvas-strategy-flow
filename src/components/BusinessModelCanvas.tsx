@@ -40,7 +40,7 @@ interface BusinessModelCanvasProps {
   projectId: string;
   bmcId: string;
   availableVpcs: VPCOption[];
-  onLinkVpc: (postItId: string, vpcId: string) => void;
+  onLinkVpc: (postItId: string, vpcId: string, vpcName?: string) => void;
 }
 
 const canvasAreas = [
@@ -87,6 +87,15 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
   const handleVpcLink = (postItId: string, vpcId: string) => {
     onLinkVpc(postItId, vpcId);
     toast.success("VPC linked successfully!");
+  };
+
+  const handleCreateAndLinkVpc = (postItId: string, postItText: string) => {
+    const newVpcId = `vpc_${Date.now()}`;
+    const vpcName = postItText.trim() || "Untitled Value Proposition";
+    
+    // Create new VPC and link it
+    onLinkVpc(postItId, newVpcId, vpcName);
+    toast.success("VPC created and linked successfully!");
   };
 
   const resizePostIt = (id: string, width: number, height: number) => {
@@ -262,6 +271,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
                   onLinkVpc={handleVpcLink}
+                  onCreateAndLinkVpc={handleCreateAndLinkVpc}
                   isDragging={draggedPostIt === postIt.id}
                 />
               ))}

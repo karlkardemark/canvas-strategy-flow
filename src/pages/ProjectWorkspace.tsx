@@ -62,17 +62,24 @@ export default function ProjectWorkspace() {
     toast.success("BMC created successfully!");
   };
 
-  const createVpc = () => {
-    if (!newVpcName.trim()) return;
+  const createVpc = (name?: string) => {
+    const vpcName = name || newVpcName;
+    if (!vpcName.trim()) return null;
+    
     const newVpc: VPCData = {
       id: `vpc_${Date.now()}`,
-      name: newVpcName,
+      name: vpcName,
       createdAt: new Date(),
     };
     setVpcs([...vpcs, newVpc]);
-    setNewVpcName("");
-    setIsCreateVpcOpen(false);
+    
+    if (!name) {
+      setNewVpcName("");
+      setIsCreateVpcOpen(false);
+    }
+    
     toast.success("VPC created successfully!");
+    return newVpc.id;
   };
 
   const deleteBmc = (bmcId: string) => {
@@ -94,6 +101,28 @@ export default function ProjectWorkspace() {
   const openCanvas = (type: CanvasType, canvasId: string) => {
     setActiveCanvas(type);
     setActiveCanvasId(canvasId);
+  };
+
+  const handleVpcLink = (postItId: string, vpcId: string, vpcName?: string) => {
+    let targetVpcId = vpcId;
+    
+    // If vpcName is provided, create a new VPC
+    if (vpcName) {
+      const newVpcId = createVpc(vpcName);
+      if (newVpcId) {
+        targetVpcId = newVpcId;
+      }
+    }
+    
+    // Link the VPC to the BMC and Post-it
+    setVpcs(prev => prev.map(vpc => 
+      vpc.id === targetVpcId 
+        ? { ...vpc, linkedBmcId: activeCanvasId, linkedPostItId: postItId }
+        : vpc
+    ));
+    
+    // Navigate to the VPC
+    openCanvas("VPC", targetVpcId);
   };
 
   if (activeCanvas) {
@@ -159,13 +188,7 @@ export default function ProjectWorkspace() {
               projectId={id || ""} 
               bmcId={activeCanvasId}
               availableVpcs={vpcs}
-              onLinkVpc={(postItId: string, vpcId: string) => {
-                setVpcs(vpcs.map(vpc => 
-                  vpc.id === vpcId 
-                    ? { ...vpc, linkedBmcId: activeCanvasId, linkedPostItId: postItId }
-                    : vpc
-                ));
-              }}
+              onLinkVpc={handleVpcLink}
             />
           ) : (
             <ValuePropositionCanvas 
@@ -198,77 +221,148 @@ export default function ProjectWorkspace() {
           </div>
         </div>
 
-        {/* Canvas Selection */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
-          <Card 
-            className="cursor-pointer transition-all duration-200 hover:shadow-medium hover:scale-105 group"
-            onClick={() => setActiveCanvas("BMC")}
-          >
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <Layout className="h-8 w-8 text-primary" />
-              </div>
-              <CardTitle className="text-xl">Business Model Canvas</CardTitle>
-              <CardDescription>
-                Design your complete business model with the 9-building-block framework
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Key Partners & Activities
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Value Propositions
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Customer Segments & Relationships
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  Revenue & Cost Structure
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Canvas Management */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl">
+          {/* BMC Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-foreground">Business Model Canvas</h2>
+              <Dialog open={isCreateBmcOpen} onOpenChange={setIsCreateBmcOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    New BMC
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New BMC</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="BMC Name"
+                      value={newBmcName}
+                      onChange={(e) => setNewBmcName(e.target.value)}
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={createBmc} className="flex-1">Create</Button>
+                      <Button variant="outline" onClick={() => setIsCreateBmcOpen(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            
+            <div className="space-y-3">
+              {bmcs.length === 0 ? (
+                <Card className="p-6 text-center">
+                  <Layout className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No BMCs created yet</p>
+                </Card>
+              ) : (
+                bmcs.map((bmc) => (
+                  <Card key={bmc.id} className="p-4 hover:shadow-medium transition-shadow">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Layout className="h-5 w-5 text-primary" />
+                        <div>
+                          <h3 className="font-medium">{bmc.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Created {bmc.createdAt.toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => openCanvas("BMC", bmc.id)}>
+                          <Edit3 className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => deleteBmc(bmc.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
 
-          <Card 
-            className="cursor-pointer transition-all duration-200 hover:shadow-medium hover:scale-105 group"
-            onClick={() => setActiveCanvas("VPC")}
-          >
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
-                <Target className="h-8 w-8 text-purple-500" />
-              </div>
-              <CardTitle className="text-xl">Value Proposition Canvas</CardTitle>
-              <CardDescription>
-                Map your value proposition to customer needs and validate product-market fit
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  Gain Creators & Pain Relievers
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  Products & Services
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  Customer Jobs & Gains
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  Customer Pains
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* VPC Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-foreground">Value Proposition Canvas</h2>
+              <Dialog open={isCreateVpcOpen} onOpenChange={setIsCreateVpcOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    New VPC
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New VPC</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="VPC Name"
+                      value={newVpcName}
+                      onChange={(e) => setNewVpcName(e.target.value)}
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={() => createVpc()} className="flex-1">Create</Button>
+                      <Button variant="outline" onClick={() => setIsCreateVpcOpen(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            
+            <div className="space-y-3">
+              {vpcs.length === 0 ? (
+                <Card className="p-6 text-center">
+                  <Target className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No VPCs created yet</p>
+                </Card>
+              ) : (
+                vpcs.map((vpc) => (
+                  <Card key={vpc.id} className="p-4 hover:shadow-medium transition-shadow">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Target className="h-5 w-5 text-purple-500" />
+                        <div>
+                          <h3 className="font-medium">{vpc.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Created {vpc.createdAt.toLocaleDateString()}
+                          </p>
+                          {vpc.linkedBmcId && (
+                            <p className="text-xs text-primary">
+                              Linked to {bmcs.find(b => b.id === vpc.linkedBmcId)?.name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => openCanvas("VPC", vpc.id)}>
+                          <Edit3 className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => deleteVpc(vpc.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Recent Activity */}

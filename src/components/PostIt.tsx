@@ -39,6 +39,7 @@ interface PostItProps {
   onDragStart: (id: string) => void;
   onDragEnd: () => void;
   onLinkVpc?: (postItId: string, vpcId: string) => void;
+  onCreateAndLinkVpc?: (postItId: string, postItText: string) => void;
   isDragging?: boolean;
   className?: string;
 }
@@ -73,6 +74,7 @@ export function PostIt({
   onDragStart,
   onDragEnd,
   onLinkVpc,
+  onCreateAndLinkVpc,
   isDragging = false,
   className,
 }: PostItProps) {
@@ -174,9 +176,15 @@ export function PostIt({
               )}
               onClick={(e) => {
                 e.stopPropagation();
-                setIsVpcLinkOpen(true);
+                if (!linkedVpcId) {
+                  // No VPC linked, create new one
+                  onCreateAndLinkVpc?.(id, text);
+                } else {
+                  // VPC already linked, show linking options
+                  setIsVpcLinkOpen(true);
+                }
               }}
-              title={linkedVpcId ? "Linked to VPC" : "Link to VPC"}
+              title={linkedVpcId ? "Linked to VPC" : "Create VPC"}
             >
               {linkedVpcId ? <Link className="h-2.5 w-2.5" /> : <ExternalLink className="h-2.5 w-2.5" />}
             </Button>

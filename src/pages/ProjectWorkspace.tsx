@@ -12,6 +12,7 @@ import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 }
 import { toast } from "sonner";
 import { generatePostIts } from "@/services/aiService";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
+import { BmcEditDialog } from "@/components/BmcEditDialog";
 
 interface PostItData {
   id: string;
@@ -282,6 +283,13 @@ export default function ProjectWorkspace() {
     toast.success("VPC created and linked successfully!");
   };
 
+  const editBmc = (bmcId: string, name: string, description: string) => {
+    setBmcs(prev => prev.map(bmc => 
+      bmc.id === bmcId ? { ...bmc, name, description } : bmc
+    ));
+    toast.success("BMC updated successfully!");
+  };
+
   const handleAiClick = async (areaId: string, llmId: string) => {
     const currentBmc = bmcs.find(bmc => bmc.id === activeCanvasId);
     
@@ -343,11 +351,19 @@ export default function ProjectWorkspace() {
               Back to Project
             </Button>
             <div className="h-6 w-px bg-canvas-border" />
-            <h1 className="text-lg font-semibold text-foreground">
-              {activeCanvas === "BMC" 
-                ? bmcs.find(b => b.id === activeCanvasId)?.name || "Business Model Canvas"
-                : vpcs.find(v => v.id === activeCanvasId)?.name || "Value Proposition Canvas"}
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-semibold text-foreground">
+                {activeCanvas === "BMC" 
+                  ? bmcs.find(b => b.id === activeCanvasId)?.name || "Business Model Canvas"
+                  : vpcs.find(v => v.id === activeCanvasId)?.name || "Value Proposition Canvas"}
+              </h1>
+              {activeCanvas === "BMC" && (
+                <BmcEditDialog 
+                  bmc={bmcs.find(b => b.id === activeCanvasId)!}
+                  onEdit={editBmc}
+                />
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-2">

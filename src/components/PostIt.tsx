@@ -423,7 +423,7 @@ export function PostIt({
                          <SelectTrigger>
                            <SelectValue placeholder="Link to Value Proposition..." />
                          </SelectTrigger>
-                         <SelectContent>
+                          <SelectContent className="z-[100]" side="bottom" align="start">
                            <SelectItem value="none">Select Value Proposition...</SelectItem>
                            {availableValuePropositionPostIts
                              .filter(vp => !linkedValuePropositionIds.includes(vp.id))
@@ -472,7 +472,7 @@ export function PostIt({
                          <SelectTrigger>
                            <SelectValue placeholder="Link to Customer Segment..." />
                          </SelectTrigger>
-                         <SelectContent>
+                          <SelectContent className="z-[100]" side="bottom" align="start">
                            <SelectItem value="none">Select Customer Segment...</SelectItem>
                            {availableCustomerSegmentPostIts
                              .filter(cs => !linkedCustomerSegmentIds.includes(cs.id))

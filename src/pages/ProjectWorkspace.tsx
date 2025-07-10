@@ -197,15 +197,15 @@ export default function ProjectWorkspace() {
           <div className="flex items-center space-x-4">
             {/* Credit balance with buy button */}
             <div className="flex items-center space-x-2">
-              <div className="flex items-center space-x-2 px-3 py-1.5 bg-secondary/50 rounded-lg">
-                <Coins className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm font-medium">{credits} Credits</span>
+              <div className="flex items-center space-x-2 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <Coins className="h-4 w-4 text-yellow-600" />
+                <span className="text-sm font-medium text-yellow-800">{credits} Credits</span>
               </div>
               <Button
                 onClick={handleBuyCredits}
                 variant="outline"
                 size="sm"
-                className="flex items-center space-x-1 h-8"
+                className="flex items-center space-x-1 h-8 border-yellow-300 text-yellow-700 hover:bg-yellow-50 hover:text-yellow-800"
               >
                 <Plus className="h-3 w-3" />
                 <span className="text-xs">Add Credit</span>

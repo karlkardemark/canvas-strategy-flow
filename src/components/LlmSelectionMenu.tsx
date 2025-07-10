@@ -71,30 +71,18 @@ export function LlmSelectionMenu({ onSelect, isGenerating = false }: LlmSelectio
           <Sparkles className={cn("h-4 w-4", isGenerating && "animate-spin")} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-2" align="end">
-        <div className="space-y-1">
-          <div className="px-2 py-1 text-sm font-medium text-foreground border-b border-border">
-            Choose AI Model
-          </div>
+      <PopoverContent className="w-40 p-1" align="end">
+        <div className="space-y-0.5">
           {llmOptions.map((llm) => (
             <Button
               key={llm.id}
               variant="ghost"
               size="sm"
-              className="w-full justify-start h-auto p-3 flex-col items-start"
+              className="w-full justify-start h-8 px-2"
               onClick={() => handleSelect(llm.id)}
               disabled={isGenerating}
             >
-              <div className="flex items-center w-full gap-2">
-                {llm.icon}
-                <span className="font-medium">{llm.name}</span>
-                <span className={cn("text-xs ml-auto", getSpeedColor(llm.speed))}>
-                  {llm.speed}
-                </span>
-              </div>
-              <span className="text-xs text-muted-foreground mt-1">
-                {llm.description}
-              </span>
+              <span className="text-sm">{llm.name}</span>
             </Button>
           ))}
         </div>

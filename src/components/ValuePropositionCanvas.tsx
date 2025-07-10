@@ -37,13 +37,15 @@ interface ValuePropositionCanvasProps {
   vpcName?: string;
   dateCreated?: string;
   postIts: PostItData[];
+  allPostIts: PostItData[]; // All post-its to find linked customer segment
+  linkedCustomerSegmentIds: string[];
   onPostItsChange: (postIts: PostItData[]) => void;
   onAiClick?: (areaId: string) => void;
 }
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, onPostItsChange, onAiClick }: ValuePropositionCanvasProps) {
+export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Proposition Canvas", dateCreated, postIts, allPostIts, linkedCustomerSegmentIds, onPostItsChange, onAiClick }: ValuePropositionCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -283,7 +285,13 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
           {/* Customer Segment side */}
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Customer Segment</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                Customer Segment: {linkedCustomerSegmentIds.length > 0 
+                  ? linkedCustomerSegmentIds.map(id => 
+                      allPostIts.find(postIt => postIt.id === id)?.text || "Untitled"
+                    ).join(", ")
+                  : "Not connected"}
+              </h2>
               <p className="text-muted-foreground">Who you're creating value for</p>
             </div>
 

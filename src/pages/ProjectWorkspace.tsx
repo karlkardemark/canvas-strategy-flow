@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { BusinessModelCanvas } from "@/components/BusinessModelCanvas";
 import { ValuePropositionCanvas } from "@/components/ValuePropositionCanvas";
+import { VpcCreationDialog } from "@/components/VpcCreationDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
@@ -56,6 +57,15 @@ export default function ProjectWorkspace() {
   const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
   const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
   const [postIts, setPostIts] = useState<PostItData[]>([]);
+  const [vpcCreationDialog, setVpcCreationDialog] = useState<{
+    isOpen: boolean;
+    initiatingPostIt: PostItData | null;
+    availablePostIts: PostItData[];
+  }>({
+    isOpen: false,
+    initiatingPostIt: null,
+    availablePostIts: []
+  });
 
   const handleSave = () => {
     toast.success("Project saved successfully!");
@@ -203,6 +213,46 @@ export default function ProjectWorkspace() {
     openCanvas("VPC", vpcId);
   };
 
+  const handleCreateAndLinkVpc = (postItId: string, postItText: string, areaId?: string) => {
+    const initiatingPostIt = postIts.find(p => p.id === postItId);
+    if (!initiatingPostIt) return;
+
+    // Determine the opposite area type
+    const requiredAreaType = areaId === "value-propositions" ? "customer-segments" : "value-propositions";
+    
+    // Find available post-its of the opposite type
+    const availablePostIts = postIts.filter(p => 
+      p.areaId === requiredAreaType && 
+      p.bmcId === activeCanvasId // Only from the same BMC
+    );
+
+    setVpcCreationDialog({
+      isOpen: true,
+      initiatingPostIt,
+      availablePostIts
+    });
+  };
+
+  const handleVpcCreation = (initiatingPostItId: string, selectedPostItId: string) => {
+    // Create a new VPC
+    const initiatingPostIt = postIts.find(p => p.id === initiatingPostItId);
+    const selectedPostIt = postIts.find(p => p.id === selectedPostItId);
+    
+    if (!initiatingPostIt || !selectedPostIt) return;
+
+    // Generate VPC name based on the two post-its
+    const vpcName = `${initiatingPostIt.areaId === "value-propositions" ? initiatingPostIt.text : selectedPostIt.text} for ${initiatingPostIt.areaId === "customer-segments" ? initiatingPostIt.text : selectedPostIt.text}`;
+    
+    const newVpcId = createVpc(vpcName);
+    if (!newVpcId) return;
+
+    // Link both post-its to the new VPC
+    handleVpcLink(initiatingPostItId, newVpcId, undefined, initiatingPostIt.areaId);
+    handleVpcLink(selectedPostItId, newVpcId, undefined, selectedPostIt.areaId);
+
+    toast.success("VPC created and linked successfully!");
+  };
+
   const handleAiClick = (areaId: string) => {
     // Placeholder for AI functionality
     console.log('AI clicked for area:', areaId);
@@ -276,6 +326,7 @@ export default function ProjectWorkspace() {
               dateCreated={bmcs.find(bmc => bmc.id === activeCanvasId)?.createdAt.toLocaleDateString()}
               availableVpcs={vpcs}
               onLinkVpc={handleVpcLink}
+              onCreateAndLinkVpc={handleCreateAndLinkVpc}
               onNavigateToVpc={handleNavigateToVpc}
               postIts={postIts.filter(p => p.bmcId === activeCanvasId)}
               onPostItsChange={(updatedPostIts) => {
@@ -308,6 +359,15 @@ export default function ProjectWorkspace() {
             />
           )}
         </main>
+
+        {/* VPC Creation Dialog */}
+        <VpcCreationDialog
+          isOpen={vpcCreationDialog.isOpen}
+          onClose={() => setVpcCreationDialog({ isOpen: false, initiatingPostIt: null, availablePostIts: [] })}
+          initiatingPostIt={vpcCreationDialog.initiatingPostIt!}
+          availablePostIts={vpcCreationDialog.availablePostIts}
+          onCreateVpc={handleVpcCreation}
+        />
       </div>
     );
   }

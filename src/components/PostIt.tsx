@@ -31,6 +31,7 @@ interface PostItProps {
   y: number;
   width?: number;
   height?: number;
+  areaId: string;
   showMetadata?: boolean;
   showVpcConnection?: boolean;
   availableVpcs?: VPCOption[];
@@ -41,7 +42,7 @@ interface PostItProps {
   onDragStart: (id: string) => void;
   onDragEnd: () => void;
   onLinkVpc?: (postItId: string, vpcId: string) => void;
-  onCreateAndLinkVpc?: (postItId: string, postItText: string) => void;
+  onCreateAndLinkVpc?: (postItId: string, postItText: string, areaId?: string) => void;
   onNavigateToVpc?: (vpcId: string) => void;
   isDragging?: boolean;
   className?: string;
@@ -67,6 +68,7 @@ export function PostIt({
   y,
   width = 120,
   height = 80,
+  areaId,
   showMetadata = false,
   showVpcConnection = false,
   availableVpcs = [],
@@ -372,10 +374,10 @@ export function PostIt({
                        <Button
                          size="sm"
                          variant="outline"
-                         onClick={() => {
-                           onCreateAndLinkVpc?.(id, text);
-                           setIsPropertiesOpen(false);
-                         }}
+                          onClick={() => {
+                            onCreateAndLinkVpc?.(id, text, areaId);
+                            setIsPropertiesOpen(false);
+                          }}
                        >
                          <ExternalLink className="h-3 w-3 mr-1" />
                          Create VPC

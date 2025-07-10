@@ -51,6 +51,7 @@ interface BusinessModelCanvasProps {
   lastUpdated?: string;
   availableVpcs: VPCOption[];
   onLinkVpc: (postItId: string, vpcId: string, vpcName?: string, areaId?: string) => void;
+  onCreateAndLinkVpc?: (postItId: string, postItText: string, areaId?: string) => void;
   onNavigateToVpc?: (vpcId: string) => void;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
@@ -71,7 +72,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange, onAiClick }: BusinessModelCanvasProps) {
+export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onCreateAndLinkVpc, onNavigateToVpc, postIts, onPostItsChange, onAiClick }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -105,12 +106,8 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   };
 
   const handleCreateAndLinkVpc = (postItId: string, postItText: string, areaId?: string) => {
-    const newVpcId = `vpc_${Date.now()}`;
-    const vpcName = postItText.trim() || "Untitled Value Proposition";
-    
-    // Create new VPC and link it
-    onLinkVpc(postItId, newVpcId, vpcName, areaId);
-    toast.success("VPC created and linked successfully!");
+    // Pass the request to the parent component to show the selection dialog
+    onCreateAndLinkVpc?.(postItId, postItText, areaId);
   };
 
   const resizePostIt = (id: string, width: number, height: number) => {

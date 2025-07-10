@@ -120,6 +120,17 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   };
 
   const deletePostIt = (id: string) => {
+    const postItToDelete = postIts.find(postIt => postIt.id === id);
+    
+    // If deleting a Value Proposition post-it, clear its VPC link
+    if (postItToDelete?.areaId === "value-propositions") {
+      const linkedVpc = availableVpcs.find(vpc => vpc.linkedPostItId === id);
+      if (linkedVpc) {
+        // Clear the VPC connection to make it available again
+        onLinkVpc(id, "");
+      }
+    }
+    
     onPostItsChange(postIts.filter(postIt => postIt.id !== id));
   };
 

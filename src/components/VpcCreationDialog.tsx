@@ -26,6 +26,7 @@ interface VpcCreationDialogProps {
   initiatingPostIt: PostItData | null;
   availablePostIts: PostItData[];
   onCreateVpc: (initiatingPostItId: string, selectedPostItId: string) => void;
+  existingConnections?: string[]; // IDs of PostIts already connected to the initiating PostIt
 }
 
 export const VpcCreationDialog: React.FC<VpcCreationDialogProps> = ({
@@ -33,7 +34,8 @@ export const VpcCreationDialog: React.FC<VpcCreationDialogProps> = ({
   onClose,
   initiatingPostIt,
   availablePostIts,
-  onCreateVpc
+  onCreateVpc,
+  existingConnections = []
 }) => {
   const [selectedPostItId, setSelectedPostItId] = useState<string>("");
 
@@ -87,26 +89,36 @@ export const VpcCreationDialog: React.FC<VpcCreationDialogProps> = ({
                     No {getRequiredAreaTitle()} post-its available. Create one first in the BMC.
                   </p>
                 ) : (
-                  availablePostIts.map((postIt) => (
-                    <div
-                      key={postIt.id}
-                      className={`p-2 rounded border cursor-pointer transition-colors ${
-                        selectedPostItId === postIt.id
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-primary/50"
-                      }`}
-                      onClick={() => setSelectedPostItId(postIt.id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <p className="text-sm">{postIt.text}</p>
+                  availablePostIts.map((postIt) => {
+                    const isAlreadyConnected = existingConnections.includes(postIt.id);
+                    return (
+                      <div
+                        key={postIt.id}
+                        className={`p-2 rounded border transition-colors ${
+                          isAlreadyConnected 
+                            ? "border-muted bg-muted/50 cursor-not-allowed opacity-60" 
+                            : selectedPostItId === postIt.id
+                              ? "border-primary bg-primary/5 cursor-pointer"
+                              : "border-border hover:border-primary/50 cursor-pointer"
+                        }`}
+                        onClick={() => !isAlreadyConnected && setSelectedPostItId(postIt.id)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <p className={`text-sm ${isAlreadyConnected ? "text-muted-foreground" : ""}`}>
+                              {postIt.text}
+                            </p>
+                            {isAlreadyConnected && (
+                              <p className="text-xs text-muted-foreground mt-1">Already connected</p>
+                            )}
+                          </div>
+                          {selectedPostItId === postIt.id && !isAlreadyConnected && (
+                            <Check className="h-4 w-4 text-primary" />
+                          )}
                         </div>
-                        {selectedPostItId === postIt.id && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

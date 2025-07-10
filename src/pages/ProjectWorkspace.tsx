@@ -64,10 +64,12 @@ export default function ProjectWorkspace() {
     isOpen: boolean;
     initiatingPostIt: PostItData | null;
     availablePostIts: PostItData[];
+    existingConnections: string[];
   }>({
     isOpen: false,
     initiatingPostIt: null,
-    availablePostIts: []
+    availablePostIts: [],
+    existingConnections: []
   });
 
   const handleSave = () => {
@@ -229,10 +231,27 @@ export default function ProjectWorkspace() {
       p.bmcId === activeCanvasId // Only from the same BMC
     );
 
+    // Find existing connections for this initiating PostIt
+    const existingConnections: string[] = [];
+    vpcs.forEach(vpc => {
+      if (areaId === "value-propositions") {
+        // If initiating from VP, check which CS are already connected
+        if (vpc.linkedValuePropositionIds.includes(postItId)) {
+          existingConnections.push(...vpc.linkedCustomerSegmentIds);
+        }
+      } else {
+        // If initiating from CS, check which VP are already connected  
+        if (vpc.linkedCustomerSegmentIds.includes(postItId)) {
+          existingConnections.push(...vpc.linkedValuePropositionIds);
+        }
+      }
+    });
+
     setVpcCreationDialog({
       isOpen: true,
       initiatingPostIt,
-      availablePostIts
+      availablePostIts,
+      existingConnections: [...new Set(existingConnections)] // Remove duplicates
     });
   };
 
@@ -366,9 +385,10 @@ export default function ProjectWorkspace() {
         {/* VPC Creation Dialog */}
         <VpcCreationDialog
           isOpen={vpcCreationDialog.isOpen}
-          onClose={() => setVpcCreationDialog({ isOpen: false, initiatingPostIt: null, availablePostIts: [] })}
+          onClose={() => setVpcCreationDialog({ isOpen: false, initiatingPostIt: null, availablePostIts: [], existingConnections: [] })}
           initiatingPostIt={vpcCreationDialog.initiatingPostIt!}
           availablePostIts={vpcCreationDialog.availablePostIts}
+          existingConnections={vpcCreationDialog.existingConnections}
           onCreateVpc={handleVpcCreation}
         />
       </div>

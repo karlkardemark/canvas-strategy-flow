@@ -179,7 +179,9 @@ export default function ProjectWorkspace() {
   };
 
   const handleCreditsClick = () => {
+    console.log("Credits clicked, current showCreditHistory:", showCreditHistory);
     setShowCreditHistory(true);
+    console.log("Setting showCreditHistory to true");
   };
 
   if (activeCanvas) {
@@ -474,57 +476,57 @@ export default function ProjectWorkspace() {
             <p className="text-muted-foreground text-center py-8">
               No recent activity. Start by selecting a canvas to begin working.
             </p>
+          </div>
         </div>
+      </div>
 
-        {/* Credit History Dialog */}
-        <Dialog open={showCreditHistory} onOpenChange={setShowCreditHistory}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <Coins className="h-5 w-5 text-yellow-600" />
-                <span>Credit Transaction History</span>
-              </DialogTitle>
-            </DialogHeader>
-            <div className="max-h-96 overflow-y-auto">
-              <div className="space-y-2">
-                {creditHistory.map((transaction) => (
-                  <div
-                    key={transaction.id}
-                    className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg"
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm">{transaction.description}</span>
-                        <span className="text-xs text-muted-foreground">{transaction.date}</span>
-                      </div>
-                      <div className="flex items-center justify-between mt-1">
-                        <span className={`text-xs px-2 py-1 rounded ${
-                          transaction.type === 'Purchase' ? 'bg-green-100 text-green-700' :
-                          transaction.type === 'Bonus' ? 'bg-blue-100 text-blue-700' :
-                          'bg-red-100 text-red-700'
+      {/* Credit History Dialog - Available in both canvas and workspace views */}
+      <Dialog open={showCreditHistory} onOpenChange={setShowCreditHistory}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <Coins className="h-5 w-5 text-yellow-600" />
+              <span>Credit Transaction History</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="max-h-96 overflow-y-auto">
+            <div className="space-y-2">
+              {creditHistory.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{transaction.description}</span>
+                      <span className="text-xs text-muted-foreground">{transaction.date}</span>
+                    </div>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        transaction.type === 'Purchase' ? 'bg-green-100 text-green-700' :
+                        transaction.type === 'Bonus' ? 'bg-blue-100 text-blue-700' :
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {transaction.type}
+                      </span>
+                      <div className="flex items-center space-x-3">
+                        <span className={`font-medium ${
+                          transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
                         }`}>
-                          {transaction.type}
+                          {transaction.amount > 0 ? '+' : ''}{transaction.amount}
                         </span>
-                        <div className="flex items-center space-x-3">
-                          <span className={`font-medium ${
-                            transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
-                          }`}>
-                            {transaction.amount > 0 ? '+' : ''}{transaction.amount}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            Balance: {transaction.balance}
-                          </span>
-                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          Balance: {transaction.balance}
+                        </span>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-      </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

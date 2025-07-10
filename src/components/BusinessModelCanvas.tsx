@@ -44,6 +44,9 @@ interface VPCOption {
 interface BusinessModelCanvasProps {
   projectId: string;
   bmcId: string;
+  bmcName?: string;
+  dateCreated?: string;
+  lastUpdated?: string;
   availableVpcs: VPCOption[];
   onLinkVpc: (postItId: string, vpcId: string, vpcName?: string) => void;
   onNavigateToVpc?: (vpcId: string) => void;
@@ -65,7 +68,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
+export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onNavigateToVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
@@ -190,12 +193,15 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
           <img 
             src={bmcHeaderImage} 
             alt="Business Model Canvas" 
-            className="w-full h-48 object-cover"
+            className="w-full h-32 object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60 flex items-center justify-center">
-            <div className="text-center text-white">
-              <h1 className="text-4xl font-bold mb-2">The Business Model Canvas</h1>
-              <p className="text-xl opacity-90">Design your business model with interactive Post-its</p>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60 flex items-center justify-between px-8">
+            <div className="text-white">
+              <h1 className="text-2xl font-bold mb-1">{bmcName}</h1>
+              <div className="text-sm opacity-90 space-y-0.5">
+                {dateCreated && <p>Created: {dateCreated}</p>}
+                {lastUpdated && <p>Last updated: {lastUpdated}</p>}
+              </div>
             </div>
           </div>
         </div>

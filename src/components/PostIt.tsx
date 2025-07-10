@@ -334,7 +334,6 @@ export function PostIt({
                         } else {
                           setIsVpcLinkOpen(true);
                         }
-                        setIsPropertiesOpen(false);
                       }}
                     >
                       {linkedVpcId ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}

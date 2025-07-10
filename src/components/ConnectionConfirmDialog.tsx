@@ -50,12 +50,6 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
         </DialogHeader>
         
         <div className="space-y-4">
-          <div>
-            <h4 className="text-sm font-medium mb-2">From:</h4>
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded">
-              <p className="text-sm font-medium">{sourcePostIt.text}</p>
-            </div>
-          </div>
 
           <div className="flex justify-center">
             <div className="w-8 h-0.5 bg-gradient-to-r from-blue-300 to-green-300 my-4"></div>

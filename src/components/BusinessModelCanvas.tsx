@@ -38,7 +38,9 @@ interface VPCOption {
   id: string;
   name: string;
   linkedBmcId?: string;
-  linkedPostItIds?: string[]; // Changed to array to support multiple Post-its
+  linkedValuePropositionId?: string;
+  linkedCustomerSegmentId?: string;
+  isDraft: boolean;
 }
 
 interface BusinessModelCanvasProps {
@@ -48,7 +50,7 @@ interface BusinessModelCanvasProps {
   dateCreated?: string;
   lastUpdated?: string;
   availableVpcs: VPCOption[];
-  onLinkVpc: (postItId: string, vpcId: string, vpcName?: string) => void;
+  onLinkVpc: (postItId: string, vpcId: string, vpcName?: string, areaId?: string) => void;
   onNavigateToVpc?: (vpcId: string) => void;
   postIts: PostItData[];
   onPostItsChange: (postIts: PostItData[]) => void;
@@ -97,17 +99,17 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     );
   };
 
-  const handleVpcLink = (postItId: string, vpcId: string) => {
-    onLinkVpc(postItId, vpcId);
+  const handleVpcLink = (postItId: string, vpcId: string, areaId?: string) => {
+    onLinkVpc(postItId, vpcId, undefined, areaId);
     toast.success("VPC linked successfully!");
   };
 
-  const handleCreateAndLinkVpc = (postItId: string, postItText: string) => {
+  const handleCreateAndLinkVpc = (postItId: string, postItText: string, areaId?: string) => {
     const newVpcId = `vpc_${Date.now()}`;
     const vpcName = postItText.trim() || "Untitled Value Proposition";
     
     // Create new VPC and link it
-    onLinkVpc(postItId, newVpcId, vpcName);
+    onLinkVpc(postItId, newVpcId, vpcName, areaId);
     toast.success("VPC created and linked successfully!");
   };
 
@@ -124,10 +126,12 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     
     // If deleting a Value Proposition or Customer Segment post-it, clear its VPC link
     if (postItToDelete?.areaId === "value-propositions" || postItToDelete?.areaId === "customer-segments") {
-      const linkedVpc = availableVpcs.find(vpc => vpc.linkedPostItIds?.includes(id));
+      const linkedVpc = availableVpcs.find(vpc => 
+        vpc.linkedValuePropositionId === id || vpc.linkedCustomerSegmentId === id
+      );
       if (linkedVpc) {
         // Clear the VPC connection to make it available again
-        onLinkVpc(id, "");
+        onLinkVpc(id, "", undefined, postItToDelete.areaId);
       }
     }
     
@@ -299,14 +303,14 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   {...postIt}
                   showVpcConnection={true}
                   availableVpcs={availableVpcs}
-                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedPostItIds?.includes(postIt.id)).map(vpc => vpc.id)}
+                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedValuePropositionId === postIt.id).map(vpc => vpc.id)}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
-                   onLinkVpc={handleVpcLink}
-                   onCreateAndLinkVpc={handleCreateAndLinkVpc}
+                   onLinkVpc={(postItId, vpcId) => handleVpcLink(postItId, vpcId, "value-propositions")}
+                   onCreateAndLinkVpc={(postItId, postItText) => handleCreateAndLinkVpc(postItId, postItText, "value-propositions")}
                    onNavigateToVpc={onNavigateToVpc}
                    isDragging={draggedPostIt === postIt.id}
                 />
@@ -362,14 +366,14 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   {...postIt}
                   showVpcConnection={true}
                   availableVpcs={availableVpcs}
-                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedPostItIds?.includes(postIt.id)).map(vpc => vpc.id)}
+                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedCustomerSegmentId === postIt.id).map(vpc => vpc.id)}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
-                  onLinkVpc={handleVpcLink}
-                  onCreateAndLinkVpc={handleCreateAndLinkVpc}
+                  onLinkVpc={(postItId, vpcId) => handleVpcLink(postItId, vpcId, "customer-segments")}
+                  onCreateAndLinkVpc={(postItId, postItText) => handleCreateAndLinkVpc(postItId, postItText, "customer-segments")}
                   onNavigateToVpc={onNavigateToVpc}
                   isDragging={draggedPostIt === postIt.id}
                 />

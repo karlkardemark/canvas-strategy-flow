@@ -15,7 +15,9 @@ interface VPCOption {
   id: string;
   name: string;
   linkedBmcId?: string;
-  linkedPostItIds?: string[]; // Changed to array to support multiple Post-its
+  linkedValuePropositionId?: string;
+  linkedCustomerSegmentId?: string;
+  isDraft: boolean;
 }
 
 interface PostItProps {
@@ -315,10 +317,10 @@ export function PostIt({
                                <SelectItem 
                                  key={vpc.id} 
                                  value={vpc.id}
-                                 disabled={vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id)}
+                                  disabled={vpc.linkedValuePropositionId && vpc.linkedValuePropositionId !== id}
                                >
                                  {vpc.name}
-                                 {vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && " (Already linked)"}
+                                  {vpc.linkedValuePropositionId && vpc.linkedValuePropositionId !== id && " (Already linked)"}
                                </SelectItem>
                              ))}
                          </SelectContent>
@@ -343,10 +345,10 @@ export function PostIt({
                              <SelectItem 
                                key={vpc.id} 
                                value={vpc.id}
-                               disabled={vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id)}
+                               disabled={(vpc.linkedValuePropositionId && vpc.linkedValuePropositionId !== id) || (vpc.linkedCustomerSegmentId && vpc.linkedCustomerSegmentId !== id)}
                              >
                                {vpc.name}
-                               {vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && " (Already linked)"}
+                               {((vpc.linkedValuePropositionId && vpc.linkedValuePropositionId !== id) || (vpc.linkedCustomerSegmentId && vpc.linkedCustomerSegmentId !== id)) && " (Already linked)"}
                              </SelectItem>
                            ))}
                          </SelectContent>
@@ -481,11 +483,11 @@ export function PostIt({
                         }
                         setIsVpcLinkOpen(false);
                       }}
-                      disabled={vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && !linkedVpcIds.includes(vpc.id)}
+                      disabled={((vpc.linkedValuePropositionId && vpc.linkedValuePropositionId !== id) || (vpc.linkedCustomerSegmentId && vpc.linkedCustomerSegmentId !== id)) && !linkedVpcIds.includes(vpc.id)}
                     >
                       {vpc.name}
                       {linkedVpcIds.includes(vpc.id) && " (Linked)"}
-                      {vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && !linkedVpcIds.includes(vpc.id) && " (Already linked)"}
+                      {((vpc.linkedValuePropositionId && vpc.linkedValuePropositionId !== id) || (vpc.linkedCustomerSegmentId && vpc.linkedCustomerSegmentId !== id)) && !linkedVpcIds.includes(vpc.id) && " (Already linked)"}
                     </Button>
                   ))}
                 </div>

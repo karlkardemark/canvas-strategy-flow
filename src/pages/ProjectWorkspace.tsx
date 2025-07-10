@@ -39,7 +39,9 @@ interface VPCData {
   name: string;
   createdAt: Date;
   linkedBmcId?: string;
-  linkedPostItIds?: string[]; // Changed to array to support multiple Post-its
+  linkedValuePropositionId?: string; // One Value Proposition Post-it
+  linkedCustomerSegmentId?: string;   // One Customer Segment Post-it
+  isDraft: boolean; // True until both value proposition and customer segment are linked
 }
 
 export default function ProjectWorkspace() {
@@ -88,6 +90,7 @@ export default function ProjectWorkspace() {
       id: `vpc_${Date.now()}`,
       name: vpcName,
       createdAt: new Date(),
+      isDraft: true, // Start as draft
     };
     setVpcs([...vpcs, newVpc]);
     
@@ -105,7 +108,7 @@ export default function ProjectWorkspace() {
     // Remove any VPC links to this BMC
     setVpcs(vpcs.map(vpc => 
       vpc.linkedBmcId === bmcId 
-        ? { ...vpc, linkedBmcId: undefined, linkedPostItIds: undefined }
+        ? { ...vpc, linkedBmcId: undefined, linkedValuePropositionId: undefined, linkedCustomerSegmentId: undefined, isDraft: true }
         : vpc
     ));
     toast.success("BMC deleted successfully!");
@@ -121,7 +124,7 @@ export default function ProjectWorkspace() {
     setActiveCanvasId(canvasId);
   };
 
-  const handleVpcLink = (postItId: string, vpcId: string, vpcName?: string) => {
+  const handleVpcLink = (postItId: string, vpcId: string, vpcName?: string, areaId?: string) => {
     let targetVpcId = vpcId;
     
     // If vpcName is provided, create a new VPC
@@ -132,25 +135,77 @@ export default function ProjectWorkspace() {
       }
     }
     
+    // Find the post-it to determine its area
+    const postIt = postIts.find(p => p.id === postItId);
+    const postItArea = areaId || postIt?.areaId;
+    
     // If unlinking (empty vpcId), remove postItId from all VPCs
     if (!vpcId || vpcId === "") {
-      setVpcs(prev => prev.map(vpc => ({
-        ...vpc,
-        linkedPostItIds: vpc.linkedPostItIds?.filter(id => id !== postItId) || []
-      })));
+      setVpcs(prev => prev.map(vpc => {
+        const updatedVpc = { ...vpc };
+        if (postItArea === "value-propositions" && vpc.linkedValuePropositionId === postItId) {
+          updatedVpc.linkedValuePropositionId = undefined;
+          updatedVpc.isDraft = true;
+        } else if (postItArea === "customer-segments" && vpc.linkedCustomerSegmentId === postItId) {
+          updatedVpc.linkedCustomerSegmentId = undefined;
+          updatedVpc.isDraft = true;
+        }
+        
+        // Update VPC name if it becomes draft
+        if (updatedVpc.isDraft) {
+          // Reset to original name or keep current if manually set
+          const valuePropositionText = updatedVpc.linkedValuePropositionId 
+            ? postIts.find(p => p.id === updatedVpc.linkedValuePropositionId)?.text || ""
+            : "";
+          const customerSegmentText = updatedVpc.linkedCustomerSegmentId 
+            ? postIts.find(p => p.id === updatedVpc.linkedCustomerSegmentId)?.text || ""
+            : "";
+          
+          if (valuePropositionText && customerSegmentText) {
+            updatedVpc.name = `${valuePropositionText} for ${customerSegmentText}`;
+            updatedVpc.isDraft = false;
+          }
+        }
+        
+        return updatedVpc;
+      }));
       return;
     }
     
     // Link to existing or new VPC
-    setVpcs(prev => prev.map(vpc => 
-      vpc.id === targetVpcId 
-        ? { 
-            ...vpc, 
-            linkedBmcId: activeCanvasId, 
-            linkedPostItIds: [...(vpc.linkedPostItIds || []), postItId].filter((id, index, arr) => arr.indexOf(id) === index) // Avoid duplicates
-          }
-        : vpc
-    ));
+    setVpcs(prev => prev.map(vpc => {
+      if (vpc.id === targetVpcId) {
+        const updatedVpc = { 
+          ...vpc, 
+          linkedBmcId: activeCanvasId,
+        };
+        
+        // Add the post-it based on its area
+        if (postItArea === "value-propositions") {
+          updatedVpc.linkedValuePropositionId = postItId;
+        } else if (postItArea === "customer-segments") {
+          updatedVpc.linkedCustomerSegmentId = postItId;
+        }
+        
+        // Check if VPC is complete and update name
+        const valuePropositionText = updatedVpc.linkedValuePropositionId 
+          ? postIts.find(p => p.id === updatedVpc.linkedValuePropositionId)?.text || ""
+          : "";
+        const customerSegmentText = updatedVpc.linkedCustomerSegmentId 
+          ? postIts.find(p => p.id === updatedVpc.linkedCustomerSegmentId)?.text || ""
+          : "";
+        
+        if (valuePropositionText && customerSegmentText) {
+          updatedVpc.name = `${valuePropositionText} for ${customerSegmentText}`;
+          updatedVpc.isDraft = false;
+        } else {
+          updatedVpc.isDraft = true;
+        }
+        
+        return updatedVpc;
+      }
+      return vpc;
+    }));
     
     // Don't automatically navigate - let user stay in properties dialog
   };
@@ -398,13 +453,21 @@ export default function ProjectWorkspace() {
                       <div className="flex items-center gap-3">
                         <Target className="h-5 w-5 text-purple-500" />
                         <div>
-                          <h3 className="font-medium">{vpc.name}</h3>
+                          <h3 className="font-medium">
+                            {vpc.name}
+                            {vpc.isDraft && <span className="ml-2 text-xs text-orange-600 bg-orange-100 px-2 py-0.5 rounded">Draft</span>}
+                          </h3>
                           <p className="text-sm text-muted-foreground">
                             Created {vpc.createdAt.toLocaleDateString()}
                           </p>
                           {vpc.linkedBmcId && (
                             <p className="text-xs text-primary">
                               Linked to {bmcs.find(b => b.id === vpc.linkedBmcId)?.name}
+                            </p>
+                          )}
+                          {!vpc.isDraft && (
+                            <p className="text-xs text-green-600">
+                              Complete VPC (Value Proposition + Customer Segment)
                             </p>
                           )}
                         </div>

@@ -75,9 +75,6 @@ export const VpcCreationDialog: React.FC<VpcCreationDialogProps> = ({
             <div>
               <h4 className="text-sm font-medium mb-2">Selected {getAreaTitle(initiatingPostIt.areaId)}:</h4>
               <div className="p-2 bg-muted rounded border">
-                <Badge variant="outline" className="mb-1">
-                  {getAreaTitle(initiatingPostIt.areaId)}
-                </Badge>
                 <p className="text-sm">{initiatingPostIt.text}</p>
               </div>
             </div>

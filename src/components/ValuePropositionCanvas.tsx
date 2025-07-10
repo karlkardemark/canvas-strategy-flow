@@ -171,7 +171,15 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
           {/* Value Proposition side */}
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-foreground mb-2">Value Proposition</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                Value Proposition: {
+                  postIts
+                    .filter(postIt => postIt.areaId === "products-services")
+                    .map(postIt => postIt.text)
+                    .filter(text => text.trim())
+                    .join(", ") || "Untitled"
+                }
+              </h2>
               <p className="text-muted-foreground">What you offer to customers</p>
             </div>
 

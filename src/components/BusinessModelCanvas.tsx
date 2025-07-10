@@ -79,6 +79,7 @@ const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange
 export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Model Canvas", dateCreated, lastUpdated, availableVpcs, onLinkVpc, onCreateAndLinkVpc, onNavigateToVpc, postIts, onPostItsChange, onAiClick }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
+  const [dragOverPostIt, setDragOverPostIt] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
   const [showConnectionDialog, setShowConnectionDialog] = useState(false);
   const [pendingConnection, setPendingConnection] = useState<{source: PostItData, target: PostItData} | null>(null);
@@ -148,6 +149,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   const handleDragEnd = () => {
     setDraggedPostIt(null);
     setDragOverArea(null);
+    setDragOverPostIt(null);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -183,8 +185,8 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   const handleAreaDragOver = (e: React.DragEvent, areaId: string) => {
     const draggedPostItData = postIts.find(p => p.id === draggedPostIt);
     
-    // Allow drag over for same area repositioning or for connection on channels
-    if ((draggedPostItData && draggedPostItData.areaId === areaId) || areaId === "channels") {
+    // Allow drag over for same area repositioning only (not for channels)
+    if (draggedPostItData && draggedPostItData.areaId === areaId) {
       e.preventDefault();
       setDragOverArea(areaId);
     }
@@ -581,6 +583,19 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                    onDragStart={handleDragStart}
                    onDragEnd={handleDragEnd}
                    isDragging={draggedPostIt === postIt.id}
+                   isDragOver={dragOverPostIt === postIt.id}
+                   onPostItDragOver={(e, postItId) => {
+                     const draggedPostItData = postIts.find(p => p.id === draggedPostIt);
+                     if (draggedPostItData && 
+                         (draggedPostItData.areaId === "value-propositions" || draggedPostItData.areaId === "customer-segments") &&
+                         postItId !== draggedPostIt) {
+                       e.preventDefault();
+                       setDragOverPostIt(postItId);
+                     }
+                   }}
+                   onPostItDragLeave={() => {
+                     setDragOverPostIt(null);
+                   }}
                 />
               ))}
           </CanvasArea>

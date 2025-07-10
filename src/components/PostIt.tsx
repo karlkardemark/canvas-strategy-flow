@@ -58,6 +58,9 @@ interface PostItProps {
   // New drag and drop connection handler
   onDropConnection?: (targetPostItId: string, sourcePostItId: string) => void;
   isDragging?: boolean;
+  isDragOver?: boolean;
+  onPostItDragOver?: (e: React.DragEvent, postItId: string) => void;
+  onPostItDragLeave?: () => void;
   className?: string;
 }
 
@@ -106,6 +109,9 @@ export function PostIt({
   onUnlinkCustomerSegment,
   onDropConnection,
   isDragging = false,
+  isDragOver = false,
+  onPostItDragOver,
+  onPostItDragLeave,
   className,
 }: PostItProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -188,6 +194,13 @@ export function PostIt({
   const handleDragOver = (e: React.DragEvent) => {
     if (areaId === "channels") {
       e.preventDefault(); // Allow drop on Channel Post-its
+      onPostItDragOver?.(e, id);
+    }
+  };
+
+  const handleDragLeave = () => {
+    if (areaId === "channels") {
+      onPostItDragLeave?.();
     }
   };
 
@@ -205,7 +218,8 @@ export function PostIt({
         "absolute p-2 cursor-move select-none transition-all duration-200 border-2 resize overflow-hidden",
         colorClasses[color],
         isDragging && "opacity-50 scale-105 rotate-2",
-        isHovered && !isDragging && "shadow-medium scale-105",
+        isDragOver && "ring-2 ring-primary ring-offset-2 scale-110 shadow-lg",
+        isHovered && !isDragging && !isDragOver && "shadow-medium scale-105",
         className
       )}
       style={{ 
@@ -221,6 +235,7 @@ export function PostIt({
       onDragEnd={onDragEnd}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

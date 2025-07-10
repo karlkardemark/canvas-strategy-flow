@@ -253,19 +253,21 @@ export function PostIt({
               {showVpcConnection && (
                 <div>
                   <label className="text-sm font-medium">Link to VPC:</label>
-                  <Select 
-                    value={linkedVpcId || ""} 
-                    onValueChange={(value) => {
-                      if (value && onLinkVpc) {
-                        onLinkVpc(id, value);
-                      }
-                    }}
+                   <Select 
+                     value={linkedVpcId || "none"} 
+                     onValueChange={(value) => {
+                       if (value === "none") {
+                         onLinkVpc?.(id, "");
+                       } else if (value && onLinkVpc) {
+                         onLinkVpc(id, value);
+                       }
+                     }}
                   >
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select VPC to link..." />
                     </SelectTrigger>
                     <SelectContent className="z-50 bg-background">
-                      <SelectItem value="">No VPC linked</SelectItem>
+                      <SelectItem value="none">No VPC linked</SelectItem>
                       {availableVpcs.map((vpc) => (
                         <SelectItem 
                           key={vpc.id} 

@@ -672,8 +672,8 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
           </CanvasArea>
         </div>
 
-        {/* Bottom row */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Bottom row - smaller height */}
+        <div className="grid grid-cols-5 gap-4">
           <CanvasArea
             id="cost-structure"
             title="Cost Structure"
@@ -687,6 +687,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "cost-structure"}
+            className="col-span-2 min-h-24"
           >
             {postIts
               .filter(postIt => postIt.areaId === "cost-structure")
@@ -717,6 +718,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             onGridArrange={arrangePostItsInGrid}
             isGeneratingAi={isGeneratingAi}
             isDragOver={dragOverArea === "revenue-streams"}
+            className="col-span-3 min-h-24"
           >
             {postIts
               .filter(postIt => postIt.areaId === "revenue-streams")

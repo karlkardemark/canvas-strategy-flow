@@ -122,8 +122,8 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   const deletePostIt = (id: string) => {
     const postItToDelete = postIts.find(postIt => postIt.id === id);
     
-    // If deleting a Value Proposition post-it, clear its VPC link
-    if (postItToDelete?.areaId === "value-propositions") {
+    // If deleting a Value Proposition or Customer Segment post-it, clear its VPC link
+    if (postItToDelete?.areaId === "value-propositions" || postItToDelete?.areaId === "customer-segments") {
       const linkedVpc = availableVpcs.find(vpc => vpc.linkedPostItId === id);
       if (linkedVpc) {
         // Clear the VPC connection to make it available again
@@ -360,11 +360,17 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                 <PostIt
                   key={postIt.id}
                   {...postIt}
+                  showVpcConnection={true}
+                  availableVpcs={availableVpcs}
+                  linkedVpcId={availableVpcs.find(vpc => vpc.linkedPostItId === postIt.id)?.id}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
+                  onLinkVpc={handleVpcLink}
+                  onCreateAndLinkVpc={handleCreateAndLinkVpc}
+                  onNavigateToVpc={onNavigateToVpc}
                   isDragging={draggedPostIt === postIt.id}
                 />
               ))}

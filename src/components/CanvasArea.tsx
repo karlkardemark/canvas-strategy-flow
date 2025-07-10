@@ -8,6 +8,7 @@ interface CanvasAreaProps {
   title: string;
   icon?: React.ReactNode;
   children?: React.ReactNode;
+  onDrop: (areaId: string, e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDoubleClick?: (areaId: string, x: number, y: number) => void;
   onCreatePostIt?: (areaId: string) => void;
@@ -22,6 +23,7 @@ export function CanvasArea({
   title,
   icon,
   children,
+  onDrop,
   onDragOver,
   onDoubleClick,
   onCreatePostIt,
@@ -30,6 +32,11 @@ export function CanvasArea({
   isDragOver = false,
   className,
 }: CanvasAreaProps) {
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    onDrop(id, e);
+  };
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     if (!onDoubleClick) return;
@@ -48,6 +55,7 @@ export function CanvasArea({
         isDragOver && "border-primary bg-primary/5 shadow-medium",
         className
       )}
+      onDrop={handleDrop}
       onDragOver={onDragOver}
       onDoubleClick={handleDoubleClick}
     >

@@ -255,13 +255,15 @@ export function PostIt({
                   <label className="text-sm font-medium">Link to VPC:</label>
                    <Select 
                      value={linkedVpcId || "none"} 
-                     onValueChange={(value) => {
-                       if (value === "none") {
-                         onLinkVpc?.(id, "");
-                       } else if (value && onLinkVpc) {
-                         onLinkVpc(id, value);
-                       }
-                     }}
+                      onValueChange={(value) => {
+                        // Prevent any default navigation behavior
+                        if (value === "none") {
+                          onLinkVpc?.(id, "");
+                        } else if (value && onLinkVpc) {
+                          onLinkVpc(id, value);
+                        }
+                        // Keep the properties dialog open
+                      }}
                   >
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select VPC to link..." />

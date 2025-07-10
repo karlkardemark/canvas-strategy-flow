@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CanvasArea } from "./CanvasArea";
 import { PostIt, PostItColor, PostItMetric } from "./PostIt";
+import { ConnectionConfirmDialog } from "./ConnectionConfirmDialog";
 import { AreaInfoDialog } from "./AreaInfoDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -79,6 +80,8 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
   const [selectedAreaId, setSelectedAreaId] = useState<string | null>(null);
+  const [showConnectionDialog, setShowConnectionDialog] = useState(false);
+  const [pendingConnection, setPendingConnection] = useState<{source: PostItData, target: PostItData} | null>(null);
 
   const createPostIt = (areaId: string) => {
     const newPostIt: PostItData = {
@@ -201,6 +204,69 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     setSelectedAreaId(areaId);
   };
 
+  const handleDropConnection = (targetPostItId: string, sourcePostItId: string) => {
+    const sourcePostIt = postIts.find(p => p.id === sourcePostItId);
+    const targetPostIt = postIts.find(p => p.id === targetPostItId);
+    
+    if (!sourcePostIt || !targetPostIt || targetPostIt.areaId !== "channels") return;
+    
+    // Only allow VP and CS Post-its to be connected to Channel Post-its
+    if (sourcePostIt.areaId !== "value-propositions" && sourcePostIt.areaId !== "customer-segments") {
+      return;
+    }
+    
+    // Check if connection already exists
+    if (sourcePostIt.areaId === "value-propositions") {
+      const existingConnections = targetPostIt.linkedValuePropositionIds || [];
+      if (existingConnections.includes(sourcePostItId)) {
+        toast.error("This Value Proposition is already connected to this Channel!");
+        return;
+      }
+    } else if (sourcePostIt.areaId === "customer-segments") {
+      const existingConnections = targetPostIt.linkedCustomerSegmentIds || [];
+      if (existingConnections.includes(sourcePostItId)) {
+        toast.error("This Customer Segment is already connected to this Channel!");
+        return;
+      }
+    }
+    
+    // Show confirmation dialog
+    setPendingConnection({ source: sourcePostIt, target: targetPostIt });
+    setShowConnectionDialog(true);
+  };
+
+  const handleConnectionConfirm = () => {
+    if (!pendingConnection) return;
+    
+    const { source, target } = pendingConnection;
+    
+    // Make the connection
+    const updatedPostIts = postIts.map(postIt => {
+      if (postIt.id === target.id) {
+        if (source.areaId === "value-propositions") {
+          const currentLinks = postIt.linkedValuePropositionIds || [];
+          return {
+            ...postIt,
+            linkedValuePropositionIds: [...currentLinks, source.id]
+          };
+        } else if (source.areaId === "customer-segments") {
+          const currentLinks = postIt.linkedCustomerSegmentIds || [];
+          return {
+            ...postIt,
+            linkedCustomerSegmentIds: [...currentLinks, source.id]
+          };
+        }
+      }
+      return postIt;
+    });
+    
+    onPostItsChange(updatedPostIts);
+    toast.success(`${source.areaId === "value-propositions" ? "Value Proposition" : "Customer Segment"} connected to Channel!`);
+    
+    setShowConnectionDialog(false);
+    setPendingConnection(null);
+  };
+
   return (
     <div className="h-full bg-workspace overflow-auto">
       <div className="min-w-[1400px] p-8">
@@ -298,22 +364,23 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             {postIts
               .filter(postIt => postIt.areaId === "value-propositions")
               .map(postIt => (
-                <PostIt
-                  key={postIt.id}
-                  {...postIt}
-                  showVpcConnection={true}
-                  availableVpcs={availableVpcs}
-                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedValuePropositionIds.includes(postIt.id)).map(vpc => vpc.id)}
-                  onUpdate={updatePostIt}
-                  onResize={resizePostIt}
-                  onDelete={deletePostIt}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                   onLinkVpc={(postItId, vpcId) => handleVpcLink(postItId, vpcId, "value-propositions")}
-                   onCreateAndLinkVpc={(postItId, postItText) => handleCreateAndLinkVpc(postItId, postItText, "value-propositions")}
-                   onNavigateToVpc={onNavigateToVpc}
-                   isDragging={draggedPostIt === postIt.id}
-                />
+                 <PostIt
+                   key={postIt.id}
+                   {...postIt}
+                   showVpcConnection={true}
+                   availableVpcs={availableVpcs}
+                   linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedValuePropositionIds.includes(postIt.id)).map(vpc => vpc.id)}
+                   onDropConnection={handleDropConnection}
+                   onUpdate={updatePostIt}
+                   onResize={resizePostIt}
+                   onDelete={deletePostIt}
+                   onDragStart={handleDragStart}
+                   onDragEnd={handleDragEnd}
+                    onLinkVpc={(postItId, vpcId) => handleVpcLink(postItId, vpcId, "value-propositions")}
+                    onCreateAndLinkVpc={(postItId, postItText) => handleCreateAndLinkVpc(postItId, postItText, "value-propositions")}
+                    onNavigateToVpc={onNavigateToVpc}
+                    isDragging={draggedPostIt === postIt.id}
+                 />
               ))}
           </CanvasArea>
 
@@ -361,22 +428,23 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             {postIts
               .filter(postIt => postIt.areaId === "customer-segments")
               .map(postIt => (
-                <PostIt
-                  key={postIt.id}
-                  {...postIt}
-                  showVpcConnection={true}
-                  availableVpcs={availableVpcs}
-                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedCustomerSegmentIds.includes(postIt.id)).map(vpc => vpc.id)}
-                  onUpdate={updatePostIt}
-                  onResize={resizePostIt}
-                  onDelete={deletePostIt}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                  onLinkVpc={(postItId, vpcId) => handleVpcLink(postItId, vpcId, "customer-segments")}
-                  onCreateAndLinkVpc={(postItId, postItText) => handleCreateAndLinkVpc(postItId, postItText, "customer-segments")}
-                  onNavigateToVpc={onNavigateToVpc}
-                  isDragging={draggedPostIt === postIt.id}
-                />
+                 <PostIt
+                   key={postIt.id}
+                   {...postIt}
+                   showVpcConnection={true}
+                   availableVpcs={availableVpcs}
+                   linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedCustomerSegmentIds.includes(postIt.id)).map(vpc => vpc.id)}
+                   onDropConnection={handleDropConnection}
+                   onUpdate={updatePostIt}
+                   onResize={resizePostIt}
+                   onDelete={deletePostIt}
+                   onDragStart={handleDragStart}
+                   onDragEnd={handleDragEnd}
+                   onLinkVpc={(postItId, vpcId) => handleVpcLink(postItId, vpcId, "customer-segments")}
+                   onCreateAndLinkVpc={(postItId, postItText) => handleCreateAndLinkVpc(postItId, postItText, "customer-segments")}
+                   onNavigateToVpc={onNavigateToVpc}
+                   isDragging={draggedPostIt === postIt.id}
+                 />
               ))}
           </CanvasArea>
 
@@ -495,13 +563,14 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                       return postIt;
                     });
                     onPostItsChange(updatedPostIts);
-                  }}
-                  onUpdate={updatePostIt}
-                  onResize={resizePostIt}
-                  onDelete={deletePostIt}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                  isDragging={draggedPostIt === postIt.id}
+                   }}
+                   onDropConnection={handleDropConnection}
+                   onUpdate={updatePostIt}
+                   onResize={resizePostIt}
+                   onDelete={deletePostIt}
+                   onDragStart={handleDragStart}
+                   onDragEnd={handleDragEnd}
+                   isDragging={draggedPostIt === postIt.id}
                 />
               ))}
           </CanvasArea>
@@ -575,6 +644,18 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
           areaInfo={bmcAreaInfo[selectedAreaId as keyof typeof bmcAreaInfo]}
         />
       )}
+
+      {/* Connection Confirmation Dialog */}
+      <ConnectionConfirmDialog
+        isOpen={showConnectionDialog}
+        onClose={() => {
+          setShowConnectionDialog(false);
+          setPendingConnection(null);
+        }}
+        sourcePostIt={pendingConnection?.source}
+        targetPostIt={pendingConnection?.target}
+        onConfirm={handleConnectionConfirm}
+      />
     </div>
   );
 }

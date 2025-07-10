@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, Edit3, MessageSquare, ExternalLink, Link, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ConnectionConfirmDialog } from "./ConnectionConfirmDialog";
 
 export type PostItColor = "yellow" | "blue" | "green" | "pink" | "orange" | "purple";
 export type PostItMetric = "Piece" | "Monthly" | "Weekly" | "Credits";
@@ -54,6 +55,8 @@ interface PostItProps {
   onLinkCustomerSegment?: (channelId: string, customerSegmentId: string) => void;
   onUnlinkValueProposition?: (channelId: string, valuePropositionId: string) => void;
   onUnlinkCustomerSegment?: (channelId: string, customerSegmentId: string) => void;
+  // New drag and drop connection handler
+  onDropConnection?: (targetPostItId: string, sourcePostItId: string) => void;
   isDragging?: boolean;
   className?: string;
 }
@@ -101,6 +104,7 @@ export function PostIt({
   onLinkCustomerSegment,
   onUnlinkValueProposition,
   onUnlinkCustomerSegment,
+  onDropConnection,
   isDragging = false,
   className,
 }: PostItProps) {
@@ -115,6 +119,8 @@ export function PostIt({
   const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
   const [isTitleEditing, setIsTitleEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(text);
+  const [showConnectionDialog, setShowConnectionDialog] = useState(false);
+  const [pendingConnection, setPendingConnection] = useState<{source: any, target: any} | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -165,6 +171,33 @@ export function PostIt({
     onDragStart(id);
   };
 
+  const handleDrop = (e: React.DragEvent) => {
+    if (areaId !== "channels") return; // Only Channel Post-its can receive connections
+    
+    e.preventDefault();
+    const draggedPostItId = e.dataTransfer.getData("text/plain");
+    
+    if (draggedPostItId === id) return; // Can't connect to itself
+    
+    if (onDropConnection) {
+      onDropConnection(id, draggedPostItId);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (areaId === "channels") {
+      e.preventDefault(); // Allow drop on Channel Post-its
+    }
+  };
+
+  const handleConnectionConfirm = () => {
+    if (pendingConnection && onDropConnection) {
+      onDropConnection(pendingConnection.target.id, pendingConnection.source.id);
+    }
+    setPendingConnection(null);
+    setShowConnectionDialog(false);
+  };
+
   return (
     <Card
       className={cn(
@@ -185,6 +218,8 @@ export function PostIt({
       draggable={!isEditing}
       onDragStart={handleDragStart}
       onDragEnd={onDragEnd}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -695,6 +730,18 @@ export function PostIt({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Connection Confirmation Dialog */}
+      <ConnectionConfirmDialog
+        isOpen={showConnectionDialog}
+        onClose={() => {
+          setShowConnectionDialog(false);
+          setPendingConnection(null);
+        }}
+        sourcePostIt={pendingConnection?.source}
+        targetPostIt={pendingConnection?.target}
+        onConfirm={handleConnectionConfirm}
+      />
     </Card>
   );
 }

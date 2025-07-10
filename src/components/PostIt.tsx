@@ -176,7 +176,7 @@ export function PostIt({
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Post-it Properties</DialogTitle>
+              <DialogTitle>{text || "Untitled Post-it"}</DialogTitle>
               <DialogDescription>
                 View and edit the properties of this Post-it note.
               </DialogDescription>

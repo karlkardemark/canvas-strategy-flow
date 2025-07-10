@@ -202,7 +202,7 @@ export function PostIt({
                 />
               ) : (
                 <DialogTitle 
-                  className="cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                  className="cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors text-left"
                   onClick={() => setIsTitleEditing(true)}
                 >
                   {text || "Untitled Post-it"}

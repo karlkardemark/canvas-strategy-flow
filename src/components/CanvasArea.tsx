@@ -1,4 +1,6 @@
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CanvasAreaProps {
@@ -9,6 +11,7 @@ interface CanvasAreaProps {
   onDrop: (areaId: string, e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDoubleClick?: (areaId: string, x: number, y: number) => void;
+  onCreatePostIt?: (areaId: string) => void;
   isDragOver?: boolean;
   className?: string;
 }
@@ -21,6 +24,7 @@ export function CanvasArea({
   onDrop,
   onDragOver,
   onDoubleClick,
+  onCreatePostIt,
   isDragOver = false,
   className,
 }: CanvasAreaProps) {
@@ -51,13 +55,27 @@ export function CanvasArea({
       onDoubleClick={handleDoubleClick}
     >
       {/* Area header */}
-      <div className="flex items-center space-x-2 mb-4 relative z-10">
-        {icon && (
-          <div className="p-2 rounded-lg bg-secondary">
-            {icon}
-          </div>
+      <div className="flex items-center justify-between mb-4 relative z-10">
+        <div className="flex items-center space-x-2">
+          {icon && (
+            <div className="p-2 rounded-lg bg-secondary">
+              {icon}
+            </div>
+          )}
+          <h3 className="font-semibold text-foreground">{title}</h3>
+        </div>
+        
+        {/* Add Post-it button */}
+        {onCreatePostIt && (
+          <Button
+            onClick={() => onCreatePostIt(id)}
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground opacity-60 hover:opacity-100"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
         )}
-        <h3 className="font-semibold text-foreground">{title}</h3>
       </div>
 
       {/* Drop zone indicator */}

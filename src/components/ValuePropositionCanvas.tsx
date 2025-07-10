@@ -166,18 +166,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "gain-creators")}
                 onDoubleClick={handleDoubleClick}
+                onCreatePostIt={createPostIt}
                 isDragOver={dragOverArea === "gain-creators"}
                 className="min-h-64"
               >
-                <Button
-                  onClick={() => createPostIt("gain-creators")}
-                  variant="ghost"
-                  size="sm"
-                  className="mb-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Post-it
-                </Button>
                 {postIts
                   .filter(postIt => postIt.areaId === "gain-creators")
                   .map(postIt => (
@@ -202,18 +194,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "products-services")}
                 onDoubleClick={handleDoubleClick}
+                onCreatePostIt={createPostIt}
                 isDragOver={dragOverArea === "products-services"}
                 className="min-h-64"
               >
-                <Button
-                  onClick={() => createPostIt("products-services")}
-                  variant="ghost"
-                  size="sm"
-                  className="mb-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Post-it
-                </Button>
                 {postIts
                   .filter(postIt => postIt.areaId === "products-services")
                   .map(postIt => (
@@ -238,18 +222,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "pain-relievers")}
                 onDoubleClick={handleDoubleClick}
+                onCreatePostIt={createPostIt}
                 isDragOver={dragOverArea === "pain-relievers"}
                 className="min-h-64"
               >
-                <Button
-                  onClick={() => createPostIt("pain-relievers")}
-                  variant="ghost"
-                  size="sm"
-                  className="mb-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Post-it
-                </Button>
                 {postIts
                   .filter(postIt => postIt.areaId === "pain-relievers")
                   .map(postIt => (
@@ -284,18 +260,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "gains")}
                 onDoubleClick={handleDoubleClick}
+                onCreatePostIt={createPostIt}
                 isDragOver={dragOverArea === "gains"}
                 className="min-h-64"
               >
-                <Button
-                  onClick={() => createPostIt("gains")}
-                  variant="ghost"
-                  size="sm"
-                  className="mb-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Post-it
-                </Button>
                 {postIts
                   .filter(postIt => postIt.areaId === "gains")
                   .map(postIt => (
@@ -320,18 +288,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "customer-jobs")}
                 onDoubleClick={handleDoubleClick}
+                onCreatePostIt={createPostIt}
                 isDragOver={dragOverArea === "customer-jobs"}
                 className="min-h-64"
               >
-                <Button
-                  onClick={() => createPostIt("customer-jobs")}
-                  variant="ghost"
-                  size="sm"
-                  className="mb-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Post-it
-                </Button>
                 {postIts
                   .filter(postIt => postIt.areaId === "customer-jobs")
                   .map(postIt => (
@@ -356,18 +316,10 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "pains")}
                 onDoubleClick={handleDoubleClick}
+                onCreatePostIt={createPostIt}
                 isDragOver={dragOverArea === "pains"}
                 className="min-h-64"
               >
-                <Button
-                  onClick={() => createPostIt("pains")}
-                  variant="ghost"
-                  size="sm"
-                  className="mb-2 text-muted-foreground hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Post-it
-                </Button>
                 {postIts
                   .filter(postIt => postIt.areaId === "pains")
                   .map(postIt => (

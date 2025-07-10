@@ -196,18 +196,10 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={handleDragOver}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
           >
-            <Button
-              onClick={() => createPostIt("key-partners")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "key-partners")
               .map(postIt => (
@@ -231,17 +223,9 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-activities")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "key-activities"}
           >
-            <Button
-              onClick={() => createPostIt("key-activities")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "key-activities")
               .map(postIt => (
@@ -265,18 +249,10 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "value-propositions")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
           >
-            <Button
-              onClick={() => createPostIt("value-propositions")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "value-propositions")
               .map(postIt => (
@@ -305,17 +281,9 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-relationships")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "customer-relationships"}
           >
-            <Button
-              onClick={() => createPostIt("customer-relationships")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "customer-relationships")
               .map(postIt => (
@@ -339,18 +307,10 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-segments")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
           >
-            <Button
-              onClick={() => createPostIt("customer-segments")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "customer-segments")
               .map(postIt => (
@@ -375,17 +335,9 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-resources")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "key-resources"}
           >
-            <Button
-              onClick={() => createPostIt("key-resources")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "key-resources")
               .map(postIt => (
@@ -409,17 +361,9 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "channels")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "channels"}
           >
-            <Button
-              onClick={() => createPostIt("channels")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "channels")
               .map(postIt => (
@@ -446,17 +390,9 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "cost-structure")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "cost-structure"}
           >
-            <Button
-              onClick={() => createPostIt("cost-structure")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "cost-structure")
               .map(postIt => (
@@ -480,17 +416,9 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "revenue-streams")}
             onDoubleClick={handleDoubleClick}
+            onCreatePostIt={createPostIt}
             isDragOver={dragOverArea === "revenue-streams"}
           >
-            <Button
-              onClick={() => createPostIt("revenue-streams")}
-              variant="ghost"
-              size="sm"
-              className="mb-2 text-muted-foreground hover:text-foreground"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Post-it
-            </Button>
             {postIts
               .filter(postIt => postIt.areaId === "revenue-streams")
               .map(postIt => (

@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Bot } from "lucide-react";
 import { toast } from "sonner";
 import { generatePostIts } from "@/services/aiService";
 import { PostItColor, PostItMetric } from "@/components/PostIt";
@@ -479,7 +479,10 @@ export default function ProjectWorkspace() {
           {/* BMC Section */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-foreground">Business Model Canvas</h2>
+              <div className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-primary" />
+                <h2 className="text-xl font-semibold text-foreground">Business Model Canvas</h2>
+              </div>
               <Dialog open={isCreateBmcOpen} onOpenChange={setIsCreateBmcOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm" className="flex items-center gap-2">

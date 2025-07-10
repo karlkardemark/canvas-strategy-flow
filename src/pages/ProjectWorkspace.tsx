@@ -479,10 +479,7 @@ export default function ProjectWorkspace() {
           {/* BMC Section */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Bot className="h-5 w-5 text-primary" />
-                <h2 className="text-xl font-semibold text-foreground">Business Model Canvas</h2>
-              </div>
+              <h2 className="text-xl font-semibold text-foreground">Business Model Canvas</h2>
               <Dialog open={isCreateBmcOpen} onOpenChange={setIsCreateBmcOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm" className="flex items-center gap-2">

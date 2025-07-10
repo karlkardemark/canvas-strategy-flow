@@ -250,6 +250,42 @@ export function PostIt({
                 </>
               )}
               
+              {showVpcConnection && (
+                <div>
+                  <label className="text-sm font-medium">Link to VPC:</label>
+                  <Select 
+                    value={linkedVpcId || ""} 
+                    onValueChange={(value) => {
+                      if (value && onLinkVpc) {
+                        onLinkVpc(id, value);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select VPC to link..." />
+                    </SelectTrigger>
+                    <SelectContent className="z-50 bg-background">
+                      <SelectItem value="">No VPC linked</SelectItem>
+                      {availableVpcs.map((vpc) => (
+                        <SelectItem 
+                          key={vpc.id} 
+                          value={vpc.id}
+                          disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
+                        >
+                          {vpc.name}
+                          {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {availableVpcs.length === 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      No VPCs available. Create a VPC first.
+                    </p>
+                  )}
+                </div>
+              )}
+              
               <div className="border-t pt-4">
                 <label className="text-sm font-medium">Actions:</label>
                 <div className="flex space-x-2 mt-2">

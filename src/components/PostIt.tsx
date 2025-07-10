@@ -253,17 +253,6 @@ export function PostIt({
               <div className="border-t pt-4">
                 <label className="text-sm font-medium">Actions:</label>
                 <div className="flex space-x-2 mt-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditing(true);
-                      setIsPropertiesOpen(false);
-                    }}
-                  >
-                    <Edit3 className="h-3 w-3 mr-1" />
-                    Edit
-                  </Button>
                   
                   {showVpcConnection && (
                     <Button

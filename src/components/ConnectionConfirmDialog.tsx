@@ -55,12 +55,6 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
             <div className="w-8 h-0.5 bg-gradient-to-r from-blue-300 to-green-300 my-4"></div>
           </div>
 
-          <div>
-            <h4 className="text-sm font-medium mb-2">To:</h4>
-            <div className="p-3 bg-green-50 border border-green-200 rounded">
-              <p className="text-sm font-medium">{targetPostIt.text}</p>
-            </div>
-          </div>
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button variant="outline" onClick={onClose}>

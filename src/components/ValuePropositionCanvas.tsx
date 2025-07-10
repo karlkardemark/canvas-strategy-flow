@@ -82,6 +82,24 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
     setDragOverArea(null);
   };
 
+  const handleDoubleClick = (areaId: string, x: number, y: number) => {
+    const colors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    
+    const newPostIt = {
+      id: `postit_${Date.now()}`,
+      text: "",
+      areaId,
+      x: Math.max(0, x - 60), // Center the post-it on click position
+      y: Math.max(0, y - 40),
+      color: randomColor,
+      width: 120,
+      height: 80,
+    };
+    
+    setPostIts(prev => [...prev, newPostIt]);
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
@@ -147,6 +165,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 icon={<TrendingUp className="h-4 w-4" />}
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "gain-creators")}
+                onDoubleClick={handleDoubleClick}
                 isDragOver={dragOverArea === "gain-creators"}
                 className="min-h-64"
               >
@@ -182,6 +201,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 icon={<Package className="h-4 w-4" />}
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "products-services")}
+                onDoubleClick={handleDoubleClick}
                 isDragOver={dragOverArea === "products-services"}
                 className="min-h-64"
               >
@@ -217,6 +237,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 icon={<Shield className="h-4 w-4" />}
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "pain-relievers")}
+                onDoubleClick={handleDoubleClick}
                 isDragOver={dragOverArea === "pain-relievers"}
                 className="min-h-64"
               >
@@ -262,6 +283,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 icon={<Smile className="h-4 w-4" />}
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "gains")}
+                onDoubleClick={handleDoubleClick}
                 isDragOver={dragOverArea === "gains"}
                 className="min-h-64"
               >
@@ -297,6 +319,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 icon={<Briefcase className="h-4 w-4" />}
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "customer-jobs")}
+                onDoubleClick={handleDoubleClick}
                 isDragOver={dragOverArea === "customer-jobs"}
                 className="min-h-64"
               >
@@ -332,6 +355,7 @@ export function ValuePropositionCanvas({ projectId, vpcId }: ValuePropositionCan
                 icon={<Frown className="h-4 w-4" />}
                 onDrop={handleDrop}
                 onDragOver={(e) => handleAreaDragOver(e, "pains")}
+                onDoubleClick={handleDoubleClick}
                 isDragOver={dragOverArea === "pains"}
                 className="min-h-64"
               >

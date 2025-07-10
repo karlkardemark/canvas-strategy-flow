@@ -8,6 +8,7 @@ interface CanvasAreaProps {
   children?: React.ReactNode;
   onDrop: (areaId: string, e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
+  onDoubleClick?: (areaId: string, x: number, y: number) => void;
   isDragOver?: boolean;
   className?: string;
 }
@@ -19,12 +20,23 @@ export function CanvasArea({
   children,
   onDrop,
   onDragOver,
+  onDoubleClick,
   isDragOver = false,
   className,
 }: CanvasAreaProps) {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     onDrop(id, e);
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    if (!onDoubleClick) return;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    onDoubleClick(id, x, y);
   };
 
   return (
@@ -36,6 +48,7 @@ export function CanvasArea({
       )}
       onDrop={handleDrop}
       onDragOver={onDragOver}
+      onDoubleClick={handleDoubleClick}
     >
       {/* Area header */}
       <div className="flex items-center space-x-2 mb-4 relative z-10">

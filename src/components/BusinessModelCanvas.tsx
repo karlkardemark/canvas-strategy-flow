@@ -145,6 +145,24 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
     setDragOverArea(null);
   };
 
+  const handleDoubleClick = (areaId: string, x: number, y: number) => {
+    const colors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    
+    const newPostIt = {
+      id: `postit_${Date.now()}`,
+      text: "",
+      areaId,
+      x: Math.max(0, x - 60), // Center the post-it on click position
+      y: Math.max(0, y - 40),
+      color: randomColor,
+      width: 120,
+      height: 80,
+    };
+    
+    setPostIts(prev => [...prev, newPostIt]);
+  };
+
   const handleAreaDragOver = (e: React.DragEvent, areaId: string) => {
     e.preventDefault();
     setDragOverArea(areaId);
@@ -177,6 +195,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<Users className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={handleDragOver}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "key-partners"}
             className="row-span-2"
           >
@@ -211,6 +230,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<CheckCircle className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-activities")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "key-activities"}
           >
             <Button
@@ -244,6 +264,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<Gift className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "value-propositions")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "value-propositions"}
             className="row-span-2"
           >
@@ -283,6 +304,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<Heart className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-relationships")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "customer-relationships"}
           >
             <Button
@@ -316,6 +338,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<UserCheck className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-segments")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "customer-segments"}
             className="row-span-2"
           >
@@ -351,6 +374,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<TrendingUp className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-resources")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "key-resources"}
           >
             <Button
@@ -384,6 +408,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<Truck className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "channels")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "channels"}
           >
             <Button
@@ -420,6 +445,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<CreditCard className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "cost-structure")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "cost-structure"}
           >
             <Button
@@ -453,6 +479,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
             icon={<DollarSign className="h-4 w-4" />}
             onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "revenue-streams")}
+            onDoubleClick={handleDoubleClick}
             isDragOver={dragOverArea === "revenue-streams"}
           >
             <Button

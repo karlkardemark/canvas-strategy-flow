@@ -8,6 +8,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { PostItColor, PostItMetric } from "@/components/PostIt";
+
+interface PostItData {
+  id: string;
+  text: string;
+  comment?: string;
+  price?: string;
+  metric?: PostItMetric;
+  color: PostItColor;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  areaId: string;
+  bmcId: string;
+}
 
 type CanvasType = "BMC" | "VPC" | null;
 
@@ -36,6 +52,7 @@ export default function ProjectWorkspace() {
   const [newVpcName, setNewVpcName] = useState("");
   const [isCreateBmcOpen, setIsCreateBmcOpen] = useState(false);
   const [isCreateVpcOpen, setIsCreateVpcOpen] = useState(false);
+  const [postIts, setPostIts] = useState<PostItData[]>([]);
 
   const handleSave = () => {
     toast.success("Project saved successfully!");
@@ -198,6 +215,14 @@ export default function ProjectWorkspace() {
               bmcId={activeCanvasId}
               availableVpcs={vpcs}
               onLinkVpc={handleVpcLink}
+              postIts={postIts.filter(p => p.bmcId === activeCanvasId)}
+              onPostItsChange={(updatedPostIts) => {
+                // Merge the updated postIts for this BMC with postIts from other BMCs
+                setPostIts(prev => [
+                  ...prev.filter(p => p.bmcId !== activeCanvasId),
+                  ...updatedPostIts
+                ]);
+              }}
             />
           ) : (
             <ValuePropositionCanvas 

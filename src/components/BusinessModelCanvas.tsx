@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CanvasArea } from "./CanvasArea";
-import { PostIt, PostItColor } from "./PostIt";
+import { PostIt, PostItColor, PostItMetric } from "./PostIt";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -21,12 +21,15 @@ interface PostItData {
   id: string;
   text: string;
   comment?: string;
+  price?: string;
+  metric?: PostItMetric;
   color: PostItColor;
   x: number;
   y: number;
   width: number;
   height: number;
   areaId: string;
+  bmcId: string;
 }
 
 interface VPCOption {
@@ -41,6 +44,8 @@ interface BusinessModelCanvasProps {
   bmcId: string;
   availableVpcs: VPCOption[];
   onLinkVpc: (postItId: string, vpcId: string, vpcName?: string) => void;
+  postIts: PostItData[];
+  onPostItsChange: (postIts: PostItData[]) => void;
 }
 
 const canvasAreas = [
@@ -57,8 +62,7 @@ const canvasAreas = [
 
 const defaultColors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
 
-export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc }: BusinessModelCanvasProps) {
-  const [postIts, setPostIts] = useState<PostItData[]>([]);
+export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc, postIts, onPostItsChange }: BusinessModelCanvasProps) {
   const [draggedPostIt, setDraggedPostIt] = useState<string | null>(null);
   const [dragOverArea, setDragOverArea] = useState<string | null>(null);
 
@@ -72,14 +76,15 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
       width: 120, // Smaller default width
       height: 80, // Smaller default height
       areaId,
+      bmcId, // Add the bmcId to associate with this canvas
     };
-    setPostIts(prev => [...prev, newPostIt]);
+    onPostItsChange([...postIts, newPostIt]);
   };
 
-  const updatePostIt = (id: string, text: string, comment?: string) => {
-    setPostIts(prev => 
-      prev.map(postIt => 
-        postIt.id === id ? { ...postIt, text, comment } : postIt
+  const updatePostIt = (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => {
+    onPostItsChange(
+      postIts.map(postIt => 
+        postIt.id === id ? { ...postIt, text, comment, price, metric } : postIt
       )
     );
   };
@@ -99,15 +104,15 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
   };
 
   const resizePostIt = (id: string, width: number, height: number) => {
-    setPostIts(prev => 
-      prev.map(postIt => 
+    onPostItsChange(
+      postIts.map(postIt => 
         postIt.id === id ? { ...postIt, width, height } : postIt
       )
     );
   };
 
   const deletePostIt = (id: string) => {
-    setPostIts(prev => prev.filter(postIt => postIt.id !== id));
+    onPostItsChange(postIts.filter(postIt => postIt.id !== id));
   };
 
   const handleDragStart = (id: string) => {
@@ -129,8 +134,8 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      setPostIts(prev =>
-        prev.map(postIt =>
+      onPostItsChange(
+        postIts.map(postIt =>
           postIt.id === draggedPostIt
             ? { 
                 ...postIt, 
@@ -149,7 +154,7 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
     const colors: PostItColor[] = ["yellow", "blue", "green", "pink", "orange", "purple"];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     
-    const newPostIt = {
+    const newPostIt: PostItData = {
       id: `postit_${Date.now()}`,
       text: "",
       areaId,
@@ -158,9 +163,10 @@ export function BusinessModelCanvas({ projectId, bmcId, availableVpcs, onLinkVpc
       color: randomColor,
       width: 120,
       height: 80,
+      bmcId, // Add bmcId to associate with this canvas
     };
     
-    setPostIts(prev => [...prev, newPostIt]);
+    onPostItsChange([...postIts, newPostIt]);
   };
 
   const handleAreaDragOver = (e: React.DragEvent, areaId: string) => {

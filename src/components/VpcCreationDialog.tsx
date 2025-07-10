@@ -102,9 +102,6 @@ export const VpcCreationDialog: React.FC<VpcCreationDialogProps> = ({
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <Badge variant="outline" className="mb-1">
-                            {getAreaTitle(postIt.areaId)}
-                          </Badge>
                           <p className="text-sm">{postIt.text}</p>
                         </div>
                         {selectedPostItId === postIt.id && (

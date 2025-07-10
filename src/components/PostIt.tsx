@@ -368,22 +368,33 @@ export function PostIt({
                 <div className="flex space-x-2 mt-2">
                   
                    {showVpcConnection && (
-                     <Button
-                       size="sm"
-                       variant="outline"
-                       className={linkedVpcIds.length > 0 ? "text-green-600" : ""}
-                       onClick={() => {
-                         if (linkedVpcIds.length === 0) {
+                     <>
+                       <Button
+                         size="sm"
+                         variant="outline"
+                         onClick={() => {
                            onCreateAndLinkVpc?.(id, text);
-                         } else {
-                           setIsVpcLinkOpen(true);
-                         }
-                         setIsPropertiesOpen(false);
-                       }}
-                     >
-                       {linkedVpcIds.length > 0 ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
-                       {linkedVpcIds.length > 0 ? `VPCs (${linkedVpcIds.length})` : "Create VPC"}
-                     </Button>
+                           setIsPropertiesOpen(false);
+                         }}
+                       >
+                         <ExternalLink className="h-3 w-3 mr-1" />
+                         Create VPC
+                       </Button>
+                       {linkedVpcIds.length > 0 && (
+                         <Button
+                           size="sm"
+                           variant="outline"
+                           className="text-green-600"
+                           onClick={() => {
+                             setIsVpcLinkOpen(true);
+                             setIsPropertiesOpen(false);
+                           }}
+                         >
+                           <Link className="h-3 w-3 mr-1" />
+                           VPCs ({linkedVpcIds.length})
+                         </Button>
+                       )}
+                     </>
                    )}
                   
                   <Button

@@ -114,7 +114,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     const postItHeight = 70;
     const spacing = 10;
     const startX = 20;
-    const startY = 70;
+    const startY = 20; // Reduced to place Post-its higher within the area
 
     const updatedPostIts = postIts.map(postIt => {
       if (postIt.areaId === areaId && postIt.bmcId === bmcId) {

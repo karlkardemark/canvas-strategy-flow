@@ -340,7 +340,7 @@ export default function ProjectWorkspace() {
         const postItHeight = 70;
         const spacing = 10;
         const startX = 20;
-        const startY = 70; // Leave space for area header
+        const startY = 20; // Reduced from 70 to place Post-its higher within the area
         
         return {
           id: `ai-postit-${Date.now()}-${index}`,

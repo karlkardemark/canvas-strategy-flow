@@ -3,11 +3,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Check, X } from 'lucide-react';
+
 interface PostItData {
   id: string;
   text: string;
   areaId: string;
 }
+
 interface ConnectionConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +17,7 @@ interface ConnectionConfirmDialogProps {
   targetPostIt: PostItData | null;
   onConfirm: () => void;
 }
+
 export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = ({
   isOpen,
   onClose,
@@ -28,27 +31,28 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
     if (areaId === "channels") return "Channel";
     return areaId.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
   };
+
   const handleConfirm = () => {
     onConfirm();
     onClose();
   };
+
   if (!sourcePostIt || !targetPostIt) return null;
-  return <Dialog open={isOpen} onOpenChange={onClose}>
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Confirm Connection</DialogTitle>
+          <DialogTitle>Confirm Business Connection</DialogTitle>
           <DialogDescription>
-            Do you want to connect these Post-its?
+            Do you sell <strong>{sourcePostIt.text}</strong> via <strong>{targetPostIt.text}</strong>?
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
           <div>
-            
+            <h4 className="text-sm font-medium mb-2">From:</h4>
             <div className="p-3 bg-blue-50 border border-blue-200 rounded">
-              <Badge variant="outline" className="mb-1 bg-blue-100">
-                {getAreaTitle(sourcePostIt.areaId)}
-              </Badge>
               <p className="text-sm font-medium">{sourcePostIt.text}</p>
             </div>
           </div>
@@ -60,9 +64,6 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
           <div>
             <h4 className="text-sm font-medium mb-2">To:</h4>
             <div className="p-3 bg-green-50 border border-green-200 rounded">
-              <Badge variant="outline" className="mb-1 bg-green-100">
-                {getAreaTitle(targetPostIt.areaId)}
-              </Badge>
               <p className="text-sm font-medium">{targetPostIt.text}</p>
             </div>
           </div>
@@ -79,5 +80,6 @@ export const ConnectionConfirmDialog: React.FC<ConnectionConfirmDialogProps> = (
           </div>
         </div>
       </DialogContent>
-    </Dialog>;
+    </Dialog>
+  );
 };

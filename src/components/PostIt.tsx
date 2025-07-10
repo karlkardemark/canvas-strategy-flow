@@ -87,6 +87,8 @@ export function PostIt({
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [isVpcLinkOpen, setIsVpcLinkOpen] = useState(false);
   const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
+  const [isTitleEditing, setIsTitleEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(text);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -101,6 +103,7 @@ export function PostIt({
     setEditComment(comment);
     setEditPrice(price);
     setEditMetric(metric);
+    setEditTitle(text);
   }, [text, comment, price, metric]);
 
   const handleSave = () => {
@@ -176,7 +179,35 @@ export function PostIt({
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>{text || "Untitled Post-it"}</DialogTitle>
+              {isTitleEditing ? (
+                <Input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onBlur={() => {
+                    onUpdate(id, editTitle.trim(), editComment.trim(), editPrice.trim(), editMetric);
+                    setIsTitleEditing(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      onUpdate(id, editTitle.trim(), editComment.trim(), editPrice.trim(), editMetric);
+                      setIsTitleEditing(false);
+                    }
+                    if (e.key === "Escape") {
+                      setEditTitle(text);
+                      setIsTitleEditing(false);
+                    }
+                  }}
+                  className="text-lg font-semibold"
+                  autoFocus
+                />
+              ) : (
+                <DialogTitle 
+                  className="cursor-pointer hover:bg-muted/50 px-2 py-1 rounded transition-colors"
+                  onClick={() => setIsTitleEditing(true)}
+                >
+                  {text || "Untitled Post-it"}
+                </DialogTitle>
+              )}
             </DialogHeader>
             <div className="space-y-4">
               

@@ -4,7 +4,7 @@ import { BusinessModelCanvas } from "@/components/BusinessModelCanvas";
 import { ValuePropositionCanvas } from "@/components/ValuePropositionCanvas";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Save, Share, Download, Layout, Target, Plus, Edit3, Trash2, Coins, CreditCard } from "lucide-react";
 import { toast } from "sonner";
@@ -180,6 +180,8 @@ export default function ProjectWorkspace() {
 
   const handleCreditsClick = () => {
     console.log("Credits clicked, current showCreditHistory:", showCreditHistory);
+    console.log("Current activeCanvas:", activeCanvas);
+    console.log("Current activeCanvasId:", activeCanvasId);
     setShowCreditHistory(true);
     console.log("Setting showCreditHistory to true");
   };
@@ -482,12 +484,15 @@ export default function ProjectWorkspace() {
 
       {/* Credit History Dialog - Available in both canvas and workspace views */}
       <Dialog open={showCreditHistory} onOpenChange={setShowCreditHistory}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl z-50">{/* Added z-50 to ensure it's on top */}
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2">
               <Coins className="h-5 w-5 text-yellow-600" />
               <span>Credit Transaction History</span>
             </DialogTitle>
+            <DialogDescription>
+              View your complete credit transaction history including purchases, usage, and bonuses.
+            </DialogDescription>
           </DialogHeader>
           <div className="max-h-96 overflow-y-auto">
             <div className="space-y-2">

@@ -218,6 +218,8 @@ export default function ProjectWorkspace() {
             <BusinessModelCanvas 
               projectId={id || ""} 
               bmcId={activeCanvasId}
+              bmcName={bmcs.find(bmc => bmc.id === activeCanvasId)?.name}
+              dateCreated={bmcs.find(bmc => bmc.id === activeCanvasId)?.createdAt.toLocaleDateString()}
               availableVpcs={vpcs}
               onLinkVpc={handleVpcLink}
               onNavigateToVpc={handleNavigateToVpc}

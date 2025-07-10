@@ -328,18 +328,32 @@ export default function ProjectWorkspace() {
         llmModel: llmId
       });
 
-      // Create post-its from suggestions
-      const newPostIts = suggestions.map((suggestion, index) => ({
-        id: `ai-postit-${Date.now()}-${index}`,
-        text: suggestion.text,
-        color: suggestion.color,
-        x: Math.random() * 200 + 50,
-        y: Math.random() * 100 + 80,
-        width: 120,
-        height: 80,
-        areaId,
-        bmcId: activeCanvasId,
-      }));
+      // Create post-its from suggestions with proper positioning within the area
+      const newPostIts = suggestions.map((suggestion, index) => {
+        // Calculate grid position to ensure Post-its stay within area bounds
+        const cols = Math.ceil(Math.sqrt(suggestions.length));
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        
+        // Post-it dimensions and spacing for proper placement
+        const postItWidth = 100;
+        const postItHeight = 70;
+        const spacing = 10;
+        const startX = 20;
+        const startY = 70; // Leave space for area header
+        
+        return {
+          id: `ai-postit-${Date.now()}-${index}`,
+          text: suggestion.text,
+          color: suggestion.color,
+          x: startX + col * (postItWidth + spacing),
+          y: startY + row * (postItHeight + spacing),
+          width: postItWidth,
+          height: postItHeight,
+          areaId,
+          bmcId: activeCanvasId,
+        };
+      });
 
       setPostIts(prev => [...prev, ...newPostIts]);
       toast.success(`Generated ${suggestions.length} Post-its for ${areaId.replace('-', ' ')}`);

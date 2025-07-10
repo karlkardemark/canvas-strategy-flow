@@ -174,93 +174,103 @@ export function ValuePropositionCanvas({ projectId, vpcId, vpcName = "Value Prop
               <p className="text-muted-foreground">What you offer to customers</p>
             </div>
 
-            <div className="grid gap-4">
-              <CanvasArea
-                id="gain-creators"
-                title="Gain Creators"
-                icon={<TrendingUp className="h-4 w-4" />}
-                onDrop={handleDrop}
-                onDragOver={(e) => handleAreaDragOver(e, "gain-creators")}
-                onDoubleClick={handleDoubleClick}
-                onCreatePostIt={createPostIt}
-                onIconClick={handleIconClick}
-                isDragOver={dragOverArea === "gain-creators"}
-                className="min-h-64"
-              >
-                {postIts
-                  .filter(postIt => postIt.areaId === "gain-creators")
-                  .map(postIt => (
-                     <PostIt
-                       key={postIt.id}
-                       {...postIt}
-                       showMetadata={false}
-                       onUpdate={updatePostIt}
-                       onResize={resizePostIt}
-                       onDelete={deletePostIt}
-                       onDragStart={handleDragStart}
-                       onDragEnd={handleDragEnd}
-                       isDragging={draggedPostIt === postIt.id}
-                     />
-                  ))}
-              </CanvasArea>
+            {/* Square layout for Value Proposition areas */}
+            <div className="aspect-square grid grid-cols-2 grid-rows-2 gap-2">
+              {/* Gain Creators - Top Right */}
+              <div className="col-start-2 row-start-1">
+                <CanvasArea
+                  id="gain-creators"
+                  title="Gain Creators"
+                  icon={<TrendingUp className="h-4 w-4" />}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => handleAreaDragOver(e, "gain-creators")}
+                  onDoubleClick={handleDoubleClick}
+                  onCreatePostIt={createPostIt}
+                  onIconClick={handleIconClick}
+                  isDragOver={dragOverArea === "gain-creators"}
+                  className="h-full"
+                >
+                  {postIts
+                    .filter(postIt => postIt.areaId === "gain-creators")
+                    .map(postIt => (
+                       <PostIt
+                         key={postIt.id}
+                         {...postIt}
+                         showMetadata={false}
+                         onUpdate={updatePostIt}
+                         onResize={resizePostIt}
+                         onDelete={deletePostIt}
+                         onDragStart={handleDragStart}
+                         onDragEnd={handleDragEnd}
+                         isDragging={draggedPostIt === postIt.id}
+                       />
+                    ))}
+                </CanvasArea>
+              </div>
 
-              <CanvasArea
-                id="products-services"
-                title="Products & Services"
-                icon={<Package className="h-4 w-4" />}
-                onDrop={handleDrop}
-                onDragOver={(e) => handleAreaDragOver(e, "products-services")}
-                onDoubleClick={handleDoubleClick}
-                onCreatePostIt={createPostIt}
-                onIconClick={handleIconClick}
-                isDragOver={dragOverArea === "products-services"}
-                className="min-h-64"
-              >
-                {postIts
-                  .filter(postIt => postIt.areaId === "products-services")
-                  .map(postIt => (
-                     <PostIt
-                       key={postIt.id}
-                       {...postIt}
-                       showMetadata={true}
-                       onUpdate={updatePostIt}
-                       onResize={resizePostIt}
-                       onDelete={deletePostIt}
-                       onDragStart={handleDragStart}
-                       onDragEnd={handleDragEnd}
-                       isDragging={draggedPostIt === postIt.id}
-                     />
-                  ))}
-              </CanvasArea>
+              {/* Products & Services - Left side spanning both rows */}
+              <div className="col-start-1 row-span-2">
+                <CanvasArea
+                  id="products-services"
+                  title="Products & Services"
+                  icon={<Package className="h-4 w-4" />}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => handleAreaDragOver(e, "products-services")}
+                  onDoubleClick={handleDoubleClick}
+                  onCreatePostIt={createPostIt}
+                  onIconClick={handleIconClick}
+                  isDragOver={dragOverArea === "products-services"}
+                  className="h-full"
+                >
+                  {postIts
+                    .filter(postIt => postIt.areaId === "products-services")
+                    .map(postIt => (
+                       <PostIt
+                         key={postIt.id}
+                         {...postIt}
+                         showMetadata={true}
+                         onUpdate={updatePostIt}
+                         onResize={resizePostIt}
+                         onDelete={deletePostIt}
+                         onDragStart={handleDragStart}
+                         onDragEnd={handleDragEnd}
+                         isDragging={draggedPostIt === postIt.id}
+                       />
+                    ))}
+                </CanvasArea>
+              </div>
 
-              <CanvasArea
-                id="pain-relievers"
-                title="Pain Relievers"
-                icon={<Shield className="h-4 w-4" />}
-                onDrop={handleDrop}
-                onDragOver={(e) => handleAreaDragOver(e, "pain-relievers")}
-                onDoubleClick={handleDoubleClick}
-                onCreatePostIt={createPostIt}
-                onIconClick={handleIconClick}
-                isDragOver={dragOverArea === "pain-relievers"}
-                className="min-h-64"
-              >
-                {postIts
-                  .filter(postIt => postIt.areaId === "pain-relievers")
-                  .map(postIt => (
-                     <PostIt
-                       key={postIt.id}
-                        {...postIt}
-                        showMetadata={false}
-                        onUpdate={updatePostIt}
-                        onResize={resizePostIt}
-                       onDelete={deletePostIt}
-                       onDragStart={handleDragStart}
-                       onDragEnd={handleDragEnd}
-                       isDragging={draggedPostIt === postIt.id}
-                     />
-                  ))}
-              </CanvasArea>
+              {/* Pain Relievers - Bottom Right */}
+              <div className="col-start-2 row-start-2">
+                <CanvasArea
+                  id="pain-relievers"
+                  title="Pain Relievers"
+                  icon={<Shield className="h-4 w-4" />}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => handleAreaDragOver(e, "pain-relievers")}
+                  onDoubleClick={handleDoubleClick}
+                  onCreatePostIt={createPostIt}
+                  onIconClick={handleIconClick}
+                  isDragOver={dragOverArea === "pain-relievers"}
+                  className="h-full"
+                >
+                  {postIts
+                    .filter(postIt => postIt.areaId === "pain-relievers")
+                    .map(postIt => (
+                       <PostIt
+                         key={postIt.id}
+                          {...postIt}
+                          showMetadata={false}
+                          onUpdate={updatePostIt}
+                          onResize={resizePostIt}
+                         onDelete={deletePostIt}
+                         onDragStart={handleDragStart}
+                         onDragEnd={handleDragEnd}
+                         isDragging={draggedPostIt === postIt.id}
+                       />
+                    ))}
+                </CanvasArea>
+              </div>
             </div>
           </div>
 

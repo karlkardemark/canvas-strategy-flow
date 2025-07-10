@@ -36,6 +36,11 @@ interface PostItProps {
   showVpcConnection?: boolean;
   availableVpcs?: VPCOption[];
   linkedVpcIds?: string[]; // Changed to array to support multiple VPCs
+  // New properties for Channel Post-its
+  linkedValuePropositionIds?: string[];
+  linkedCustomerSegmentIds?: string[];
+  availableValuePropositions?: { id: string; text: string }[];
+  availableCustomerSegments?: { id: string; text: string }[];
   onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
@@ -44,6 +49,11 @@ interface PostItProps {
   onLinkVpc?: (postItId: string, vpcId: string) => void;
   onCreateAndLinkVpc?: (postItId: string, postItText: string, areaId?: string) => void;
   onNavigateToVpc?: (vpcId: string) => void;
+  // New handlers for Channel connections
+  onLinkValueProposition?: (channelId: string, valuePropositionId: string) => void;
+  onLinkCustomerSegment?: (channelId: string, customerSegmentId: string) => void;
+  onUnlinkValueProposition?: (channelId: string, valuePropositionId: string) => void;
+  onUnlinkCustomerSegment?: (channelId: string, customerSegmentId: string) => void;
   isDragging?: boolean;
   className?: string;
 }
@@ -73,6 +83,11 @@ export function PostIt({
   showVpcConnection = false,
   availableVpcs = [],
   linkedVpcIds = [], // Default to empty array
+  // New Channel connection props
+  linkedValuePropositionIds = [],
+  linkedCustomerSegmentIds = [],
+  availableValuePropositions = [],
+  availableCustomerSegments = [],
   onUpdate,
   onResize,
   onDelete,
@@ -81,6 +96,11 @@ export function PostIt({
   onLinkVpc,
   onCreateAndLinkVpc,
   onNavigateToVpc,
+  // New Channel connection handlers
+  onLinkValueProposition,
+  onLinkCustomerSegment,
+  onUnlinkValueProposition,
+  onUnlinkCustomerSegment,
   isDragging = false,
   className,
 }: PostItProps) {
@@ -362,6 +382,109 @@ export function PostIt({
                        )}
                      </>
                    )}
+                 </div>
+               )}
+
+               {/* Channel connections - only show for Channel Post-its */}
+               {areaId === "channels" && (
+                 <div className="space-y-4">
+                   {/* Value Proposition connections */}
+                   <div>
+                     <label className="text-sm font-medium">Connected Value Propositions:</label>
+                     <div className="mt-1 space-y-2">
+                       {linkedValuePropositionIds.length > 0 && (
+                         <div className="space-y-2">
+                           {linkedValuePropositionIds.map(vpId => {
+                             const vp = availableValuePropositions.find(v => v.id === vpId);
+                             return vp ? (
+                               <div key={vpId} className="flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded">
+                                 <span className="text-sm text-blue-800">{vp.text}</span>
+                                 <Button
+                                   size="sm"
+                                   variant="outline"
+                                   className="flex items-center gap-1 text-xs text-destructive"
+                                   onClick={() => onUnlinkValueProposition?.(id, vpId)}
+                                 >
+                                   <X className="h-3 w-3" />
+                                 </Button>
+                               </div>
+                             ) : null;
+                           })}
+                         </div>
+                       )}
+                       <Select 
+                         value="none" 
+                         onValueChange={(value) => {
+                           if (value !== "none" && onLinkValueProposition) {
+                             onLinkValueProposition(id, value);
+                           }
+                         }}
+                       >
+                         <SelectTrigger>
+                           <SelectValue placeholder="Link to Value Proposition..." />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="none">Select Value Proposition...</SelectItem>
+                           {availableValuePropositions
+                             .filter(vp => !linkedValuePropositionIds.includes(vp.id))
+                             .map((vp) => (
+                               <SelectItem key={vp.id} value={vp.id}>
+                                 {vp.text}
+                               </SelectItem>
+                             ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
+                   </div>
+
+                   {/* Customer Segment connections */}
+                   <div>
+                     <label className="text-sm font-medium">Connected Customer Segments:</label>
+                     <div className="mt-1 space-y-2">
+                       {linkedCustomerSegmentIds.length > 0 && (
+                         <div className="space-y-2">
+                           {linkedCustomerSegmentIds.map(csId => {
+                             const cs = availableCustomerSegments.find(c => c.id === csId);
+                             return cs ? (
+                               <div key={csId} className="flex items-center justify-between p-2 bg-purple-50 border border-purple-200 rounded">
+                                 <span className="text-sm text-purple-800">{cs.text}</span>
+                                 <Button
+                                   size="sm"
+                                   variant="outline"
+                                   className="flex items-center gap-1 text-xs text-destructive"
+                                   onClick={() => onUnlinkCustomerSegment?.(id, csId)}
+                                 >
+                                   <X className="h-3 w-3" />
+                                 </Button>
+                               </div>
+                             ) : null;
+                           })}
+                         </div>
+                       )}
+                       <Select 
+                         value="none" 
+                         onValueChange={(value) => {
+                           if (value !== "none" && onLinkCustomerSegment) {
+                             onLinkCustomerSegment(id, value);
+                           }
+                         }}
+                       >
+                         <SelectTrigger>
+                           <SelectValue placeholder="Link to Customer Segment..." />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="none">Select Customer Segment...</SelectItem>
+                           {availableCustomerSegments
+                             .filter(cs => !linkedCustomerSegmentIds.includes(cs.id))
+                             .map((cs) => (
+                               <SelectItem key={cs.id} value={cs.id}>
+                                 {cs.text}
+                               </SelectItem>
+                             ))}
+                         </SelectContent>
+                       </Select>
+                     </div>
+                   </div>
                  </div>
                )}
               

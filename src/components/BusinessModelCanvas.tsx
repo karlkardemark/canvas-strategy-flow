@@ -150,30 +150,12 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     setDragOverArea(null);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (areaId: string, e: React.DragEvent) => {
-    if (draggedPostIt) {
-      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      onPostItsChange(
-        postIts.map(postIt =>
-          postIt.id === draggedPostIt
-            ? { 
-                ...postIt, 
-                areaId,
-                x: Math.max(0, Math.min(x - 60, rect.width - 120)), // Center the smaller post-it and keep within bounds
-                y: Math.max(0, Math.min(y - 40, rect.height - 80))
-              }
-            : postIt
-        )
-      );
+  const handleAreaDragOver = (e: React.DragEvent, areaId: string) => {
+    // Only allow drag over for connection functionality on channels
+    if (areaId === "channels") {
+      e.preventDefault();
+      setDragOverArea(areaId);
     }
-    setDragOverArea(null);
   };
 
   const handleDoubleClick = (areaId: string, x: number, y: number) => {
@@ -195,10 +177,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     onPostItsChange([...postIts, newPostIt]);
   };
 
-  const handleAreaDragOver = (e: React.DragEvent, areaId: string) => {
-    e.preventDefault();
-    setDragOverArea(areaId);
-  };
 
   const handleIconClick = (areaId: string) => {
     setSelectedAreaId(areaId);
@@ -295,8 +273,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="key-partners"
             title="Key Partners"
             icon={<Users className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => handleAreaDragOver(e, "key-partners")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
             onIconClick={handleIconClick}
@@ -324,7 +301,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="key-activities"
             title="Key Activities"
             icon={<CheckCircle className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-activities")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -352,7 +328,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="value-propositions"
             title="Value Propositions"
             icon={<Gift className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "value-propositions")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -388,7 +363,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="customer-relationships"
             title="Customer Relationships"
             icon={<Heart className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-relationships")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -416,7 +390,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="customer-segments"
             title="Customer Segments"
             icon={<UserCheck className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "customer-segments")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -453,7 +426,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="key-resources"
             title="Key Resources"
             icon={<TrendingUp className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "key-resources")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -481,7 +453,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="channels"
             title="Channels"
             icon={<Truck className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "channels")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -582,7 +553,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="cost-structure"
             title="Cost Structure"
             icon={<CreditCard className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "cost-structure")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}
@@ -610,7 +580,6 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
             id="revenue-streams"
             title="Revenue Streams"
             icon={<DollarSign className="h-4 w-4" />}
-            onDrop={(areaId, e) => handleDrop(areaId, e)}
             onDragOver={(e) => handleAreaDragOver(e, "revenue-streams")}
             onDoubleClick={handleDoubleClick}
             onCreatePostIt={createPostIt}

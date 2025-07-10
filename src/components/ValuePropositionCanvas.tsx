@@ -164,21 +164,21 @@ export function ValuePropositionCanvas({
             <div className="aspect-square grid grid-cols-2 grid-rows-2 gap-2">
               {/* Gain Creators - Top Right */}
               <div className="col-start-2 row-start-1">
-                <CanvasArea id="gain-creators" title="Gain Creators" icon={<TrendingUp className="h-4 w-4" />} onDrop={handleDrop} onDragOver={e => handleAreaDragOver(e, "gain-creators")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "gain-creators"} className="h-full">
+                <CanvasArea id="gain-creators" title="Gain Creators" icon={<TrendingUp className="h-4 w-4" />} onDragOver={e => handleAreaDragOver(e, "gain-creators")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "gain-creators"} className="h-full">
                   {postIts.filter(postIt => postIt.areaId === "gain-creators").map(postIt => <PostIt key={postIt.id} {...postIt} showMetadata={false} onUpdate={updatePostIt} onResize={resizePostIt} onDelete={deletePostIt} onDragStart={handleDragStart} onDragEnd={handleDragEnd} isDragging={draggedPostIt === postIt.id} />)}
                 </CanvasArea>
               </div>
 
               {/* Products & Services - Left side spanning both rows */}
               <div className="col-start-1 row-span-2">
-                <CanvasArea id="products-services" title="Products & Services" icon={<Package className="h-4 w-4" />} onDrop={handleDrop} onDragOver={e => handleAreaDragOver(e, "products-services")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "products-services"} className="h-full">
+                <CanvasArea id="products-services" title="Products & Services" icon={<Package className="h-4 w-4" />} onDragOver={e => handleAreaDragOver(e, "products-services")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "products-services"} className="h-full">
                   {postIts.filter(postIt => postIt.areaId === "products-services").map(postIt => <PostIt key={postIt.id} {...postIt} showMetadata={true} onUpdate={updatePostIt} onResize={resizePostIt} onDelete={deletePostIt} onDragStart={handleDragStart} onDragEnd={handleDragEnd} isDragging={draggedPostIt === postIt.id} />)}
                 </CanvasArea>
               </div>
 
               {/* Pain Relievers - Bottom Right */}
               <div className="col-start-2 row-start-2">
-                <CanvasArea id="pain-relievers" title="Pain Relievers" icon={<Shield className="h-4 w-4" />} onDrop={handleDrop} onDragOver={e => handleAreaDragOver(e, "pain-relievers")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "pain-relievers"} className="h-full">
+                <CanvasArea id="pain-relievers" title="Pain Relievers" icon={<Shield className="h-4 w-4" />} onDragOver={e => handleAreaDragOver(e, "pain-relievers")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "pain-relievers"} className="h-full">
                   {postIts.filter(postIt => postIt.areaId === "pain-relievers").map(postIt => <PostIt key={postIt.id} {...postIt} showMetadata={false} onUpdate={updatePostIt} onResize={resizePostIt} onDelete={deletePostIt} onDragStart={handleDragStart} onDragEnd={handleDragEnd} isDragging={draggedPostIt === postIt.id} />)}
                 </CanvasArea>
               </div>
@@ -198,21 +198,21 @@ export function ValuePropositionCanvas({
             <div className="aspect-square grid grid-cols-2 grid-rows-2 gap-2">
               {/* Gains - Top Left */}
               <div className="col-start-1 row-start-1">
-                <CanvasArea id="gains" title="Gains" icon={<Smile className="h-4 w-4" />} onDrop={handleDrop} onDragOver={e => handleAreaDragOver(e, "gains")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "gains"} className="h-full">
+                <CanvasArea id="gains" title="Gains" icon={<Smile className="h-4 w-4" />} onDragOver={e => handleAreaDragOver(e, "gains")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "gains"} className="h-full">
                   {postIts.filter(postIt => postIt.areaId === "gains").map(postIt => <PostIt key={postIt.id} {...postIt} showMetadata={false} onUpdate={updatePostIt} onResize={resizePostIt} onDelete={deletePostIt} onDragStart={handleDragStart} onDragEnd={handleDragEnd} isDragging={draggedPostIt === postIt.id} />)}
                 </CanvasArea>
               </div>
 
               {/* Customer Jobs - Right side spanning both rows */}
               <div className="col-start-2 row-span-2">
-                <CanvasArea id="customer-jobs" title="Customer Jobs" icon={<Briefcase className="h-4 w-4" />} onDrop={handleDrop} onDragOver={e => handleAreaDragOver(e, "customer-jobs")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "customer-jobs"} className="h-full">
+                <CanvasArea id="customer-jobs" title="Customer Jobs" icon={<Briefcase className="h-4 w-4" />} onDragOver={e => handleAreaDragOver(e, "customer-jobs")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "customer-jobs"} className="h-full">
                   {postIts.filter(postIt => postIt.areaId === "customer-jobs").map(postIt => <PostIt key={postIt.id} {...postIt} showMetadata={false} onUpdate={updatePostIt} onResize={resizePostIt} onDelete={deletePostIt} onDragStart={handleDragStart} onDragEnd={handleDragEnd} isDragging={draggedPostIt === postIt.id} />)}
                 </CanvasArea>
               </div>
 
               {/* Pains - Bottom Left */}
               <div className="col-start-1 row-start-2">
-                <CanvasArea id="pains" title="Pains" icon={<Frown className="h-4 w-4" />} onDrop={handleDrop} onDragOver={e => handleAreaDragOver(e, "pains")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "pains"} className="h-full">
+                <CanvasArea id="pains" title="Pains" icon={<Frown className="h-4 w-4" />} onDragOver={e => handleAreaDragOver(e, "pains")} onDoubleClick={handleDoubleClick} onCreatePostIt={createPostIt} onIconClick={handleIconClick} onAiClick={onAiClick} isDragOver={dragOverArea === "pains"} className="h-full">
                   {postIts.filter(postIt => postIt.areaId === "pains").map(postIt => <PostIt key={postIt.id} {...postIt} showMetadata={false} onUpdate={updatePostIt} onResize={resizePostIt} onDelete={deletePostIt} onDragStart={handleDragStart} onDragEnd={handleDragEnd} isDragging={draggedPostIt === postIt.id} />)}
                 </CanvasArea>
               </div>

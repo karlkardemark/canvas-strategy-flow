@@ -39,7 +39,7 @@ interface VPCData {
   name: string;
   createdAt: Date;
   linkedBmcId?: string;
-  linkedPostItId?: string;
+  linkedPostItIds?: string[]; // Changed to array to support multiple Post-its
 }
 
 export default function ProjectWorkspace() {
@@ -105,7 +105,7 @@ export default function ProjectWorkspace() {
     // Remove any VPC links to this BMC
     setVpcs(vpcs.map(vpc => 
       vpc.linkedBmcId === bmcId 
-        ? { ...vpc, linkedBmcId: undefined, linkedPostItId: undefined }
+        ? { ...vpc, linkedBmcId: undefined, linkedPostItIds: undefined }
         : vpc
     ));
     toast.success("BMC deleted successfully!");
@@ -132,20 +132,23 @@ export default function ProjectWorkspace() {
       }
     }
     
-    // If unlinking (empty vpcId), remove the links
+    // If unlinking (empty vpcId), remove postItId from all VPCs
     if (!vpcId || vpcId === "") {
-      setVpcs(prev => prev.map(vpc => 
-        vpc.linkedPostItId === postItId 
-          ? { ...vpc, linkedBmcId: undefined, linkedPostItId: undefined }
-          : vpc
-      ));
+      setVpcs(prev => prev.map(vpc => ({
+        ...vpc,
+        linkedPostItIds: vpc.linkedPostItIds?.filter(id => id !== postItId) || []
+      })));
       return;
     }
     
-    // Link the VPC to the BMC and Post-it
+    // Link to existing or new VPC
     setVpcs(prev => prev.map(vpc => 
       vpc.id === targetVpcId 
-        ? { ...vpc, linkedBmcId: activeCanvasId, linkedPostItId: postItId }
+        ? { 
+            ...vpc, 
+            linkedBmcId: activeCanvasId, 
+            linkedPostItIds: [...(vpc.linkedPostItIds || []), postItId].filter((id, index, arr) => arr.indexOf(id) === index) // Avoid duplicates
+          }
         : vpc
     ));
     

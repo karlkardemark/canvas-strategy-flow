@@ -38,7 +38,7 @@ interface VPCOption {
   id: string;
   name: string;
   linkedBmcId?: string;
-  linkedPostItId?: string;
+  linkedPostItIds?: string[]; // Changed to array to support multiple Post-its
 }
 
 interface BusinessModelCanvasProps {
@@ -124,7 +124,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
     
     // If deleting a Value Proposition or Customer Segment post-it, clear its VPC link
     if (postItToDelete?.areaId === "value-propositions" || postItToDelete?.areaId === "customer-segments") {
-      const linkedVpc = availableVpcs.find(vpc => vpc.linkedPostItId === id);
+      const linkedVpc = availableVpcs.find(vpc => vpc.linkedPostItIds?.includes(id));
       if (linkedVpc) {
         // Clear the VPC connection to make it available again
         onLinkVpc(id, "");
@@ -299,7 +299,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   {...postIt}
                   showVpcConnection={true}
                   availableVpcs={availableVpcs}
-                  linkedVpcId={availableVpcs.find(vpc => vpc.linkedPostItId === postIt.id)?.id}
+                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedPostItIds?.includes(postIt.id)).map(vpc => vpc.id)}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}
@@ -362,7 +362,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   {...postIt}
                   showVpcConnection={true}
                   availableVpcs={availableVpcs}
-                  linkedVpcId={availableVpcs.find(vpc => vpc.linkedPostItId === postIt.id)?.id}
+                  linkedVpcIds={availableVpcs.filter(vpc => vpc.linkedPostItIds?.includes(postIt.id)).map(vpc => vpc.id)}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
                   onDelete={deletePostIt}

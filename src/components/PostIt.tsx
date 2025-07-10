@@ -15,7 +15,7 @@ interface VPCOption {
   id: string;
   name: string;
   linkedBmcId?: string;
-  linkedPostItId?: string;
+  linkedPostItIds?: string[]; // Changed to array to support multiple Post-its
 }
 
 interface PostItProps {
@@ -32,7 +32,7 @@ interface PostItProps {
   showMetadata?: boolean;
   showVpcConnection?: boolean;
   availableVpcs?: VPCOption[];
-  linkedVpcId?: string;
+  linkedVpcIds?: string[]; // Changed to array to support multiple VPCs
   onUpdate: (id: string, text: string, comment?: string, price?: string, metric?: PostItMetric) => void;
   onResize: (id: string, width: number, height: number) => void;
   onDelete: (id: string) => void;
@@ -68,7 +68,7 @@ export function PostIt({
   showMetadata = false,
   showVpcConnection = false,
   availableVpcs = [],
-  linkedVpcId,
+  linkedVpcIds = [], // Default to empty array
   onUpdate,
   onResize,
   onDelete,
@@ -256,40 +256,82 @@ export function PostIt({
                {showVpcConnection && (
                  <div>
                    <label className="text-sm font-medium">
-                     {linkedVpcId ? "VPC Connection:" : "Link to VPC:"}
+                     {linkedVpcIds.length > 0 ? "VPC Connections:" : "Link to VPC:"}
                    </label>
-                   {linkedVpcId ? (
-                     <div className="mt-1 flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded">
-                       <span className="text-sm text-green-800">
-                         Linked to: {availableVpcs.find(v => v.id === linkedVpcId)?.name}
-                       </span>
-                       <Button
-                         size="sm"
-                         variant="outline"
-                         className="flex items-center gap-1 text-xs"
-                         onClick={() => {
-                           if (onNavigateToVpc && linkedVpcId) {
-                             onNavigateToVpc(linkedVpcId);
-                             setIsPropertiesOpen(false);
+                   {linkedVpcIds.length > 0 ? (
+                     <div className="mt-1 space-y-2">
+                       {linkedVpcIds.map(vpcId => {
+                         const vpc = availableVpcs.find(v => v.id === vpcId);
+                         return vpc ? (
+                           <div key={vpcId} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded">
+                             <span className="text-sm text-green-800">
+                               {vpc.name}
+                             </span>
+                             <div className="flex gap-1">
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="flex items-center gap-1 text-xs"
+                                 onClick={() => {
+                                   if (onNavigateToVpc) {
+                                     onNavigateToVpc(vpcId);
+                                     setIsPropertiesOpen(false);
+                                   }
+                                 }}
+                               >
+                                 <ExternalLink className="h-3 w-3" />
+                                 Go
+                               </Button>
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 className="flex items-center gap-1 text-xs text-destructive"
+                                 onClick={() => {
+                                   onLinkVpc?.(id, "");
+                                 }}
+                               >
+                                 <X className="h-3 w-3" />
+                               </Button>
+                             </div>
+                           </div>
+                         ) : null;
+                       })}
+                       <Select 
+                         value="none" 
+                         onValueChange={(value) => {
+                           if (value !== "none" && onLinkVpc) {
+                             onLinkVpc(id, value);
                            }
                          }}
                        >
-                         <ExternalLink className="h-3 w-3" />
-                         Go to VPC
-                       </Button>
+                         <SelectTrigger className="mt-1">
+                           <SelectValue placeholder="Link to another VPC..." />
+                         </SelectTrigger>
+                         <SelectContent className="z-50 bg-background">
+                           <SelectItem value="none">Select VPC to link...</SelectItem>
+                           {availableVpcs
+                             .filter(vpc => !linkedVpcIds.includes(vpc.id))
+                             .map((vpc) => (
+                               <SelectItem 
+                                 key={vpc.id} 
+                                 value={vpc.id}
+                                 disabled={vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id)}
+                               >
+                                 {vpc.name}
+                                 {vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && " (Already linked)"}
+                               </SelectItem>
+                             ))}
+                         </SelectContent>
+                       </Select>
                      </div>
                    ) : (
                      <>
                        <Select 
-                         value={linkedVpcId || "none"} 
+                         value="none" 
                          onValueChange={(value) => {
-                           // Prevent any default navigation behavior
-                           if (value === "none") {
-                             onLinkVpc?.(id, "");
-                           } else if (value && onLinkVpc) {
+                           if (value !== "none" && onLinkVpc) {
                              onLinkVpc(id, value);
                            }
-                           // Keep the properties dialog open
                          }}
                        >
                          <SelectTrigger className="mt-1">
@@ -301,10 +343,10 @@ export function PostIt({
                              <SelectItem 
                                key={vpc.id} 
                                value={vpc.id}
-                               disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
+                               disabled={vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id)}
                              >
                                {vpc.name}
-                               {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
+                               {vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && " (Already linked)"}
                              </SelectItem>
                            ))}
                          </SelectContent>
@@ -323,24 +365,24 @@ export function PostIt({
                 <label className="text-sm font-medium">Actions:</label>
                 <div className="flex space-x-2 mt-2">
                   
-                  {showVpcConnection && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={linkedVpcId ? "text-green-600" : ""}
-                      onClick={() => {
-                        if (!linkedVpcId) {
-                          onCreateAndLinkVpc?.(id, text);
-                        } else {
-                          setIsVpcLinkOpen(true);
-                        }
-                        setIsPropertiesOpen(false);
-                      }}
-                    >
-                      {linkedVpcId ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
-                      {linkedVpcId ? "VPC" : "Create VPC"}
-                    </Button>
-                  )}
+                   {showVpcConnection && (
+                     <Button
+                       size="sm"
+                       variant="outline"
+                       className={linkedVpcIds.length > 0 ? "text-green-600" : ""}
+                       onClick={() => {
+                         if (linkedVpcIds.length === 0) {
+                           onCreateAndLinkVpc?.(id, text);
+                         } else {
+                           setIsVpcLinkOpen(true);
+                         }
+                         setIsPropertiesOpen(false);
+                       }}
+                     >
+                       {linkedVpcIds.length > 0 ? <Link className="h-3 w-3 mr-1" /> : <ExternalLink className="h-3 w-3 mr-1" />}
+                       {linkedVpcIds.length > 0 ? `VPCs (${linkedVpcIds.length})` : "Create VPC"}
+                     </Button>
+                   )}
                   
                   <Button
                     size="sm"
@@ -407,10 +449,14 @@ export function PostIt({
             <DialogTitle>Link to VPC</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {linkedVpcId && (
+            {linkedVpcIds.length > 0 && (
               <div className="p-3 bg-green-50 border border-green-200 rounded">
                 <p className="text-sm text-green-800">
-                  Currently linked to: {availableVpcs.find(v => v.id === linkedVpcId)?.name}
+                  Currently linked to {linkedVpcIds.length} VPC{linkedVpcIds.length > 1 ? 's' : ''}:
+                  {linkedVpcIds.map(vpcId => {
+                    const vpc = availableVpcs.find(v => v.id === vpcId);
+                    return vpc ? ` ${vpc.name}` : '';
+                  }).join(', ')}
                 </p>
               </div>
             )}
@@ -423,16 +469,23 @@ export function PostIt({
                   {availableVpcs.map((vpc) => (
                     <Button
                       key={vpc.id}
-                      variant={vpc.linkedPostItId === id ? "default" : "outline"}
+                      variant={linkedVpcIds.includes(vpc.id) ? "default" : "outline"}
                       className="w-full justify-start"
                       onClick={() => {
-                        onLinkVpc?.(id, vpc.id);
+                        if (linkedVpcIds.includes(vpc.id)) {
+                          // Unlink if already linked
+                          onLinkVpc?.(id, "");
+                        } else {
+                          // Link if not already linked
+                          onLinkVpc?.(id, vpc.id);
+                        }
                         setIsVpcLinkOpen(false);
                       }}
-                      disabled={vpc.linkedPostItId && vpc.linkedPostItId !== id}
+                      disabled={vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && !linkedVpcIds.includes(vpc.id)}
                     >
                       {vpc.name}
-                      {vpc.linkedPostItId && vpc.linkedPostItId !== id && " (Already linked)"}
+                      {linkedVpcIds.includes(vpc.id) && " (Linked)"}
+                      {vpc.linkedPostItIds && vpc.linkedPostItIds.some(postItId => postItId !== id) && !linkedVpcIds.includes(vpc.id) && " (Already linked)"}
                     </Button>
                   ))}
                 </div>

@@ -179,10 +179,6 @@ export function PostIt({
               <DialogTitle>{text || "Untitled Post-it"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Main Text:</label>
-                <p className="text-sm text-muted-foreground mt-1">{text || "No text"}</p>
-              </div>
               
               <div>
                 <label className="text-sm font-medium">Comment:</label>

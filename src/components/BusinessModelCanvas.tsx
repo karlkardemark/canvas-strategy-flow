@@ -197,7 +197,7 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60 flex items-center justify-between px-8">
             <div className="text-white">
-              <h1 className="text-2xl font-bold mb-1">The Business Model Canvas</h1>
+              <h1 className="text-2xl font-bold mb-1">Business Model Canvas: {bmcName}</h1>
               <div className="text-sm opacity-90 space-y-0.5">
                 {dateCreated && <p>Created: {dateCreated}</p>}
                 {lastUpdated && <p>Last updated: {lastUpdated}</p>}

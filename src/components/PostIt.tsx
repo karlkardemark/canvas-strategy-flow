@@ -388,86 +388,85 @@ export function PostIt({
                {/* Channel connections - only show for Channel Post-its */}
                {areaId === "channels" && (
                  <div className="space-y-4">
-                   {/* Value Proposition connections */}
-                   <div>
-                     <label className="text-sm font-medium">Connected Value Propositions:</label>
-                     <div className="mt-1 space-y-2">
-                       {linkedValuePropositionIds.length > 0 && (
-                         <div className="space-y-2">
-                           {linkedValuePropositionIds.map(vpId => {
-                             const vp = availableValuePropositionPostIts.find(v => v.id === vpId);
-                             return vp ? (
-                               <div key={vpId} className="flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded">
-                                 <span className="text-sm text-blue-800">{vp.text}</span>
-                                 <Button
-                                   size="sm"
-                                   variant="outline"
-                                   className="flex items-center gap-1 text-xs text-destructive"
-                                   onClick={() => onUnlinkValueProposition?.(id, vpId)}
+                     <div>
+                       <label className="text-sm font-medium">Connected Value Propositions:</label>
+                       <div className="mt-1 space-y-2">
+                         {linkedValuePropositionIds.length > 0 && (
+                           <div className="space-y-2">
+                             {linkedValuePropositionIds.map(vpId => {
+                               const vp = availableValuePropositionPostIts.find(v => v.id === vpId);
+                               return vp ? (
+                                 <div key={vpId} className="flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded">
+                                   <span className="text-sm text-blue-800">{vp.text}</span>
+                                   <Button
+                                     size="sm"
+                                     variant="outline"
+                                     className="flex items-center gap-1 text-xs text-destructive"
+                                     onClick={() => onUnlinkValueProposition?.(id, vpId)}
+                                   >
+                                     <X className="h-3 w-3" />
+                                   </Button>
+                                 </div>
+                               ) : null;
+                             })}
+                           </div>
+                         )}
+                         <Select 
+                           value="none" 
+                           onValueChange={(value) => {
+                             console.log('Select onValueChange triggered:', value);
+                             if (value !== "none" && onLinkValueProposition) {
+                               console.log('Calling onLinkValueProposition:', id, value);
+                               onLinkValueProposition(id, value);
+                             }
+                           }}
+                         >
+                           <SelectTrigger 
+                             className="pointer-events-auto"
+                             onClick={(e) => {
+                               console.log('SelectTrigger clicked');
+                               e.stopPropagation();
+                             }}
+                           >
+                             <SelectValue placeholder="Add Value Proposition..." />
+                           </SelectTrigger>
+                           <SelectContent 
+                             className="z-[100] bg-background border shadow-lg pointer-events-auto" 
+                             side="bottom" 
+                             align="start"
+                             sideOffset={4}
+                             onClick={(e) => {
+                               console.log('SelectContent clicked');
+                               e.stopPropagation();
+                             }}
+                           >
+                             <SelectItem 
+                               value="none"
+                               onClick={(e) => {
+                                 console.log('SelectItem none clicked');
+                                 e.stopPropagation();
+                               }}
+                             >
+                               Select Value Proposition...
+                             </SelectItem>
+                             {availableValuePropositionPostIts
+                               .filter(vp => !linkedValuePropositionIds.includes(vp.id))
+                               .map((vp) => (
+                                 <SelectItem 
+                                   key={vp.id} 
+                                   value={vp.id}
+                                   onClick={(e) => {
+                                     console.log('SelectItem clicked:', vp.id, vp.text);
+                                     e.stopPropagation();
+                                   }}
                                  >
-                                   <X className="h-3 w-3" />
-                                 </Button>
-                               </div>
-                             ) : null;
-                           })}
-                         </div>
-                       )}
-                        <Select 
-                          value="none" 
-                          onValueChange={(value) => {
-                            console.log('Select onValueChange triggered:', value);
-                            if (value !== "none" && onLinkValueProposition) {
-                              console.log('Calling onLinkValueProposition:', id, value);
-                              onLinkValueProposition(id, value);
-                            }
-                          }}
-                        >
-                          <SelectTrigger 
-                            className="pointer-events-auto"
-                            onClick={(e) => {
-                              console.log('SelectTrigger clicked');
-                              e.stopPropagation();
-                            }}
-                          >
-                            <SelectValue placeholder="Link to Value Proposition..." />
-                          </SelectTrigger>
-                          <SelectContent 
-                            className="z-[100] bg-background border shadow-lg pointer-events-auto" 
-                            side="bottom" 
-                            align="start"
-                            sideOffset={4}
-                            onClick={(e) => {
-                              console.log('SelectContent clicked');
-                              e.stopPropagation();
-                            }}
-                          >
-                            <SelectItem 
-                              value="none"
-                              onClick={(e) => {
-                                console.log('SelectItem none clicked');
-                                e.stopPropagation();
-                              }}
-                            >
-                              Select Value Proposition...
-                            </SelectItem>
-                            {availableValuePropositionPostIts
-                              .filter(vp => !linkedValuePropositionIds.includes(vp.id))
-                              .map((vp) => (
-                                <SelectItem 
-                                  key={vp.id} 
-                                  value={vp.id}
-                                  onClick={(e) => {
-                                    console.log('SelectItem clicked:', vp.id, vp.text);
-                                    e.stopPropagation();
-                                  }}
-                                >
-                                  {vp.text}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
+                                   {vp.text}
+                                 </SelectItem>
+                               ))}
+                           </SelectContent>
+                         </Select>
+                       </div>
                      </div>
-                   </div>
 
                    {/* Customer Segment connections */}
                    <div>
@@ -510,7 +509,7 @@ export function PostIt({
                               e.stopPropagation();
                             }}
                           >
-                            <SelectValue placeholder="Link to Customer Segment..." />
+                            <SelectValue placeholder="Add Customer Segment..." />
                           </SelectTrigger>
                           <SelectContent 
                             className="z-[100] bg-background border shadow-lg pointer-events-auto" 

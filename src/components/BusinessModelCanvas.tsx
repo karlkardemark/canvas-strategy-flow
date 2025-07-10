@@ -439,20 +439,62 @@ export function BusinessModelCanvas({ projectId, bmcId, bmcName = "Business Mode
                   linkedValuePropositionIds={postIt.linkedValuePropositionIds || []}
                   linkedCustomerSegmentIds={postIt.linkedCustomerSegmentIds || []}
                   onLinkValueProposition={(channelId, vpId) => {
-                    // TODO: Implement connection logic
-                    console.log('Link Channel to VP:', channelId, vpId);
+                    // Update the post-it to add the VP connection
+                    const updatedPostIts = postIts.map(postIt => {
+                      if (postIt.id === channelId) {
+                        const currentLinks = postIt.linkedValuePropositionIds || [];
+                        if (!currentLinks.includes(vpId)) {
+                          return {
+                            ...postIt,
+                            linkedValuePropositionIds: [...currentLinks, vpId]
+                          };
+                        }
+                      }
+                      return postIt;
+                    });
+                    onPostItsChange(updatedPostIts);
                   }}
                   onLinkCustomerSegment={(channelId, csId) => {
-                    // TODO: Implement connection logic
-                    console.log('Link Channel to CS:', channelId, csId);
+                    // Update the post-it to add the CS connection
+                    const updatedPostIts = postIts.map(postIt => {
+                      if (postIt.id === channelId) {
+                        const currentLinks = postIt.linkedCustomerSegmentIds || [];
+                        if (!currentLinks.includes(csId)) {
+                          return {
+                            ...postIt,
+                            linkedCustomerSegmentIds: [...currentLinks, csId]
+                          };
+                        }
+                      }
+                      return postIt;
+                    });
+                    onPostItsChange(updatedPostIts);
                   }}
                   onUnlinkValueProposition={(channelId, vpId) => {
-                    // TODO: Implement unlink logic
-                    console.log('Unlink Channel from VP:', channelId, vpId);
+                    // Update the post-it to remove the VP connection
+                    const updatedPostIts = postIts.map(postIt => {
+                      if (postIt.id === channelId) {
+                        return {
+                          ...postIt,
+                          linkedValuePropositionIds: (postIt.linkedValuePropositionIds || []).filter(id => id !== vpId)
+                        };
+                      }
+                      return postIt;
+                    });
+                    onPostItsChange(updatedPostIts);
                   }}
                   onUnlinkCustomerSegment={(channelId, csId) => {
-                    // TODO: Implement unlink logic
-                    console.log('Unlink Channel from CS:', channelId, csId);
+                    // Update the post-it to remove the CS connection
+                    const updatedPostIts = postIts.map(postIt => {
+                      if (postIt.id === channelId) {
+                        return {
+                          ...postIt,
+                          linkedCustomerSegmentIds: (postIt.linkedCustomerSegmentIds || []).filter(id => id !== csId)
+                        };
+                      }
+                      return postIt;
+                    });
+                    onPostItsChange(updatedPostIts);
                   }}
                   onUpdate={updatePostIt}
                   onResize={resizePostIt}
